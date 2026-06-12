@@ -91,6 +91,7 @@ body{font-family:Arial,sans-serif;background:#0f1117;color:#e8eaf6;height:100vh;
     <button class="ni" data-v="qw" onclick="go('qw')">&#9997; Viết bài ngay</button>
     <button class="ni" data-v="qi" onclick="go('qi')">&#128444; Image Prompts</button>
     <button class="ni" data-v="qc" onclick="go('qc')">&#128241; Convert kênh</button>
+    <button class="ni" data-v="qs" onclick="go('qs')">&#128202; Topics từ Sheet</button>
     <div class="nl" style="margin-top:10px">9 Bước Pipeline</div>
     <button class="ni" data-v="s1" onclick="go('s1')"><span class="nn">1</span>Kế hoạch tháng</button>
     <button class="ni" data-v="s2" onclick="go('s2')"><span class="nn">2</span>Generate Topics</button>
@@ -125,6 +126,7 @@ body{font-family:Arial,sans-serif;background:#0f1117;color:#e8eaf6;height:100vh;
       <div class="hc" onclick="go('qw')"><div class="ic">&#9997;</div><div class="lb">Viết bài ngay</div></div>
       <div class="hc" onclick="go('qi')"><div class="ic">&#128444;</div><div class="lb">Image Prompts</div></div>
       <div class="hc" onclick="go('qc')"><div class="ic">&#128241;</div><div class="lb">Convert kênh</div></div>
+      <div class="hc" onclick="go('qs')"><div class="ic">&#128202;</div><div class="lb">Topics từ Sheet</div></div>
     </div>
     <div class="slb">Pipeline đầy đủ</div>
     <div class="sg">
@@ -259,14 +261,29 @@ body{font-family:Arial,sans-serif;background:#0f1117;color:#e8eaf6;height:100vh;
     <button class="btn-g" id="bqc" onclick="run('qc')">Convert ngay</button><div id="oqc"></div>
   </div>
 
+  <div id="v-qs" class="sv" style="display:none">
+    <h2>&#128202; Generate Topics từ Google Sheet</h2><p class="dsc">Đọc kế hoạch từ Google Sheet và generate topics mới phù hợp</p>
+    <div class="fg"><label class="fl">Link Google Sheet kế hoạch</label>
+      <div class="sr"><input type="text" id="qsu" placeholder="Paste link Google Sheet..." /><button class="btn-sh" onclick="loadSheetAndGenerate()">Đọc &amp; Generate</button></div>
+      <div id="qs-status" style="font-size:12px;color:#7b82a8;margin-top:6px"></div>
+    </div>
+    <div class="fg"><label class="fl">Số topics cần tạo</label>
+      <select id="qsn"><option>8 topics</option><option>10 topics</option><option>12 topics</option><option>15 topics</option></select></div>
+    <div class="fg"><label class="fl">Tháng lập kế hoạch</label>
+      <select id="qsm"><option>Tháng 7/2026</option><option>Tháng 8/2026</option><option>Tháng 9/2026</option></select></div>
+    <div class="fg"><label class="fl">Ghi chú thêm</label>
+      <textarea id="qsx" placeholder="Yêu cầu đặc biệt, focus vào chủ đề gì..."></textarea></div>
+    <div id="out-qs"></div>
+  </div>
+
   </div>
 </main>
 </div>
 <script>
 var apiKey = '';
 var sheetURL = '';
-var T = {home:'AVTalent Content Pipeline',s1:'Kế hoạch nội dung tháng',s2:'Generate Topics',s3:'Title & Hook',s4:'Content Brief',s5:'Review Brief',s6:'Viết Full Content',s7:'Edit & Polish',s8:'Convert by Channel',s9:'Image Prompts',qp:'Kế hoạch tháng',qt:'Generate Topics',qw:'Viết bài ngay',qi:'Image Prompts',qc:'Convert kênh'};
-var S = {s1:'Bước 1/9',s2:'Bước 2/9',s3:'Bước 3/9',s4:'Bước 4/9',s5:'Bước 5/9',s6:'Bước 6/9',s7:'Bước 7/9',s8:'Bước 8/9',s9:'Bước 9/9',qp:'Nhanh',qt:'Nhanh',qw:'Nhanh',qi:'Nhanh',qc:'Nhanh',home:''};
+var T = {home:'AVTalent Content Pipeline',s1:'Kế hoạch nội dung tháng',s2:'Generate Topics',s3:'Title & Hook',s4:'Content Brief',s5:'Review Brief',s6:'Viết Full Content',s7:'Edit & Polish',s8:'Convert by Channel',s9:'Image Prompts',qp:'Kế hoạch tháng',qt:'Generate Topics',qw:'Viết bài ngay',qi:'Image Prompts',qc:'Convert kênh',qs:'Topics từ Sheet'};
+var S = {s1:'Bước 1/9',s2:'Bước 2/9',s3:'Bước 3/9',s4:'Bước 4/9',s5:'Bước 5/9',s6:'Bước 6/9',s7:'Bước 7/9',s8:'Bước 8/9',s9:'Bước 9/9',qp:'Nhanh',qt:'Nhanh',qw:'Nhanh',qi:'Nhanh',qc:'Nhanh',qs:'Nhanh',home:''};
 
 function setKey(v) {
   apiKey = v ? v.trim() : '';
