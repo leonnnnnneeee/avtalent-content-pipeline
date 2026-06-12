@@ -305,9 +305,9 @@ function gc(id) {
 
 function addSheet() {
   var url = gv('s1u');
-  if (!url) { alert('Nhap link Google Sheet!'); return; }
+  if (!url) { alert('Nhập link Google Sheet!'); return; }
   var m = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-  if (!m) { alert('Link khong hop le!'); return; }
+  if (!m) { alert('Link không hợp lệ!'); return; }
   var gm = url.match(/gid=([0-9]+)/);
   var gid = gm ? gm[1] : '0';
   var emb = 'https://docs.google.com/spreadsheets/d/' + m[1] + '/preview?gid=' + gid + '&rm=minimal';
@@ -353,9 +353,9 @@ function mkP(id) {
 }
 
 async function run(id) {
-  if (!apiKey) { alert('Nhap Anthropic API Key truoc!'); return; }
+  if (!apiKey) { alert('Nhập Anthropic API Key trước!'); return; }
   var p = mkP(id);
-  if (!p.replace(/\s/g, '')) { alert('Dien thong tin!'); return; }
+  if (!p.replace(/\s/g, '')) { alert('Điền thông tin!'); return; }
   var btn = document.getElementById('b' + id);
   var out = document.getElementById('o' + id);
   btn.disabled = true;
@@ -386,14 +386,14 @@ async function run(id) {
             try {
               var j = JSON.parse(d);
               if (j.text) { full += j.text; ob.textContent = full; }
-              if (j.error) { ob.textContent = 'Loi: ' + j.error; }
+              if (j.error) { ob.textContent = 'Lỗi: ' + j.error; }
             } catch(e2) {}
           }
         }
       }
     }
   } catch(e) {
-    ob.textContent = 'Loi ket noi: ' + e.message;
+    ob.textContent = 'Lỗi kết nối: ' + e.message;
   }
   btn.disabled = false;
   btn.textContent = 'Tạo lại';
