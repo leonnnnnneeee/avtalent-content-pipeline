@@ -316,7 +316,21 @@ const T={home:'AVTalent Content Pipeline',s1:'Kế hoạch nội dung tháng',s2
 const S={s1:'Bước 1/9',s2:'Bước 2/9',s3:'Bước 3/9',s4:'Bước 4/9',s5:'Bước 5/9',s6:'Bước 6/9',s7:'Bước 7/9',s8:'Bước 8/9',s9:'Bước 9/9',qp:'Nhanh',qt:'Nhanh',qw:'Nhanh',qi:'Nhanh',qc:'Nhanh',home:''};
 let apiKey='',sheetURL='';
 
-function setKey(v){apiKey=v.trim();const ok=apiKey.startsWith('sk-')&&apiKey.length>20;document.getElementById('dot').className='dot'+(ok?' on':'');document.getElementById('albl').textContent=ok?'API đã kết nối':'Chưa kết nối API';}
+function setKey(v){apiKey=v.trim();const ok=apiKey.startsWith('sk-')&&apiKey.length>20;document.getElementById('dot').className='dot'+(ok?' on':'');document.getElementById('albl').textContent=ok?'API đã kết nối':'Chưa kết nối API';if(ok)localStorage.setItem('avt_key',apiKey);}
+
+function addSheet(){
+  const url=gv('s1u');if(!url){alert('Nhập link Google Sheet!');return;}
+  const m=url.match(/\/d\/([a-zA-Z0-9_-]+)/);if(!m){alert('Link không hợp lệ!');return;}
+  const gid=(url.match(/gid=(\d+)/)||[])[1]||'0';
+  const emb='https://docs.google.com/spreadsheets/d/'+m[1]+'/preview?gid='+gid+'&rm=minimal';
+  document.getElementById('s1f').src=emb;
+  document.getElementById('s1a').href=url;
+  document.getElementById('s1lbl').textContent='📊 '+m[1].slice(0,14)+'...';
+  document.getElementById('s1e').style.display='block';
+  sheetURL=url;
+  localStorage.setItem('avt_sheet',url);
+}
+function removeSheet(){document.getElementById('s1f').src='';document.getElementById('s1e').style.display='none';document.getElementById('s1u').value='';sheetURL='';localStorage.removeItem('avt_sheet');}
 
 function go(id){
   document.querySelectorAll('[id^="v-"]').forEach(e=>e.style.display='none');
@@ -409,6 +423,12 @@ async function run(id){
 
 function cpText(btn){navigator.clipboard.writeText(btn.dataset.t);btn.textContent='✅ Đã copy!';setTimeout(()=>btn.textContent='📋 Copy',1500);}
 
+// Restore saved API key
+const savedKey = localStorage.getItem('avt_key');
+if(savedKey){document.getElementById('akey').value=savedKey;setKey(savedKey);}
+// Restore saved Sheet URL
+const savedSheet = localStorage.getItem('avt_sheet');
+if(savedSheet){document.getElementById('s1u').value=savedSheet;addSheet();}
 go('home');
 </script>
 </body>
