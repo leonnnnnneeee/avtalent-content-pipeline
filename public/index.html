@@ -85,178 +85,178 @@ body{font-family:Arial,sans-serif;background:#0f1117;color:#e8eaf6;height:100vh;
 <aside class="sb">
   <div class="logo">AVTalent<span>Content Pipeline</span></div>
   <nav class="nav">
-    <div class="nl">Bat dau nhanh</div>
-    <button class="ni" data-v="qp" onclick="go('qp')">&#128197; Ke hoach thang</button>
+    <div class="nl">Bắt đầu nhanh</div>
+    <button class="ni" data-v="qp" onclick="go('qp')">&#128197; Kế hoạch tháng</button>
     <button class="ni" data-v="qt" onclick="go('qt')">&#128161; Generate Topics</button>
-    <button class="ni" data-v="qw" onclick="go('qw')">&#9997; Viet bai ngay</button>
+    <button class="ni" data-v="qw" onclick="go('qw')">&#9997; Viết bài ngay</button>
     <button class="ni" data-v="qi" onclick="go('qi')">&#128444; Image Prompts</button>
-    <button class="ni" data-v="qc" onclick="go('qc')">&#128241; Convert kenh</button>
-    <div class="nl" style="margin-top:10px">9 Buoc Pipeline</div>
-    <button class="ni" data-v="s1" onclick="go('s1')"><span class="nn">1</span>Ke hoach thang</button>
+    <button class="ni" data-v="qc" onclick="go('qc')">&#128241; Convert kênh</button>
+    <div class="nl" style="margin-top:10px">9 Bước Pipeline</div>
+    <button class="ni" data-v="s1" onclick="go('s1')"><span class="nn">1</span>Kế hoạch tháng</button>
     <button class="ni" data-v="s2" onclick="go('s2')"><span class="nn">2</span>Generate Topics</button>
     <button class="ni" data-v="s3" onclick="go('s3')"><span class="nn">3</span>Title &amp; Hook</button>
     <button class="ni" data-v="s4" onclick="go('s4')"><span class="nn">4</span>Content Brief</button>
     <button class="ni" data-v="s5" onclick="go('s5')"><span class="nn">5</span>Review Brief</button>
-    <button class="ni" data-v="s6" onclick="go('s6')"><span class="nn">6</span>Viet Full Content</button>
+    <button class="ni" data-v="s6" onclick="go('s6')"><span class="nn">6</span>Viết Full Content</button>
     <button class="ni" data-v="s7" onclick="go('s7')"><span class="nn">7</span>Edit &amp; Polish</button>
     <button class="ni" data-v="s8" onclick="go('s8')"><span class="nn">8</span>Convert Channel</button>
     <button class="ni" data-v="s9" onclick="go('s9')"><span class="nn">9</span>Image Prompts</button>
   </nav>
   <div class="api">
-    <div class="api-r"><div class="dot" id="dot"></div><span id="albl">Chua ket noi API</span></div>
+    <div class="api-r"><div class="dot" id="dot"></div><span id="albl">Chưa kết nối API</span></div>
     <input class="api-in" type="password" id="akey" placeholder="Anthropic API Key..." oninput="setKey(this.value)"/>
   </div>
 </aside>
 <main class="main">
   <div class="topbar">
-    <div><div class="tbt" id="tbt">AVTalent Content Pipeline</div><div class="tbs" id="tbs">Chon buoc de bat dau</div></div>
+    <div><div class="tbt" id="tbt">AVTalent Content Pipeline</div><div class="tbs" id="tbs">Chọn bước để bắt đầu</div></div>
     <div style="display:flex;align-items:center;gap:8px">
-      <div id="sheet-badge" style="display:none;background:rgba(79,110,247,.15);border:1px solid rgba(79,110,247,.4);border-radius:6px;padding:4px 10px;font-size:11px;color:#4f6ef7;cursor:pointer" onclick="go('s1')">📊 Sheet da luu</div>
+      <div id="sheet-badge" style="display:none;background:rgba(79,110,247,.15);border:1px solid rgba(79,110,247,.4);border-radius:6px;padding:4px 10px;font-size:11px;color:#4f6ef7;cursor:pointer" onclick="go('s1')">📊 Sheet đã lưu</div>
       <button class="btn-h" onclick="go('home')">Home</button>
     </div>
   </div>
   <div class="ct" id="ct">
 
   <div id="v-home">
-    <p style="font-size:13px;color:#7b82a8;margin-bottom:16px">Cong cu san xuat noi dung 9 buoc cho AVTalent. Nhap API key goc trai.</p>
-    <div class="slb">Bat dau nhanh</div>
+    <p style="font-size:13px;color:#7b82a8;margin-bottom:16px">Công cụ sản xuất nội dung 9 bước cho AVTalent. Nhập API key góc trái.</p>
+    <div class="slb">Bắt đầu nhanh</div>
     <div class="hg">
-      <div class="hc" onclick="go('qp')"><div class="ic">&#128197;</div><div class="lb">Ke hoach thang</div></div>
+      <div class="hc" onclick="go('qp')"><div class="ic">&#128197;</div><div class="lb">Kế hoạch tháng</div></div>
       <div class="hc" onclick="go('qt')"><div class="ic">&#128161;</div><div class="lb">Generate Topics</div></div>
-      <div class="hc" onclick="go('qw')"><div class="ic">&#9997;</div><div class="lb">Viet bai ngay</div></div>
+      <div class="hc" onclick="go('qw')"><div class="ic">&#9997;</div><div class="lb">Viết bài ngay</div></div>
       <div class="hc" onclick="go('qi')"><div class="ic">&#128444;</div><div class="lb">Image Prompts</div></div>
-      <div class="hc" onclick="go('qc')"><div class="ic">&#128241;</div><div class="lb">Convert kenh</div></div>
+      <div class="hc" onclick="go('qc')"><div class="ic">&#128241;</div><div class="lb">Convert kênh</div></div>
     </div>
-    <div class="slb">Pipeline day du</div>
+    <div class="slb">Pipeline đầy đủ</div>
     <div class="sg">
-      <div class="sc" onclick="go('s1')"><div class="sn">Buoc 1</div><div class="st">Ke hoach noi dung thang</div><div class="sd">Campaign, pillars, lich dang + Google Sheet</div></div>
-      <div class="sc" onclick="go('s2')"><div class="sn">Buoc 2</div><div class="st">Generate Topics</div><div class="sd">5-8 topics voi angle, audience va CTA</div></div>
-      <div class="sc" onclick="go('s3')"><div class="sn">Buoc 3</div><div class="st">Title &amp; Hook</div><div class="sd">3 titles + 4 hooks manh</div></div>
-      <div class="sc" onclick="go('s4')"><div class="sn">Buoc 4</div><div class="st">Content Brief</div><div class="sd">Brief day du SEO, outline, keywords</div></div>
-      <div class="sc" onclick="go('s5')"><div class="sn">Buoc 5</div><div class="st">Review Brief</div><div class="sd">Checklist 7 tieu chi + cai thien</div></div>
-      <div class="sc" onclick="go('s6')"><div class="sn">Buoc 6</div><div class="st">Viet Full Content</div><div class="sd">Bai hoan chinh publish-ready</div></div>
-      <div class="sc" onclick="go('s7')"><div class="sn">Buoc 7</div><div class="st">Edit &amp; Polish</div><div class="sd">Flow, tone, SEO, CTA</div></div>
-      <div class="sc" onclick="go('s8')"><div class="sn">Buoc 8</div><div class="st">Convert by Channel</div><div class="sd">Website Facebook LinkedIn</div></div>
-      <div class="sc" onclick="go('s9')"><div class="sn">Buoc 9</div><div class="st">Image Ideas &amp; Prompts</div><div class="sd">3 concepts + AI image prompts</div></div>
+      <div class="sc" onclick="go('s1')"><div class="sn">Bước 1</div><div class="st">Kế hoạch nội dung tháng</div><div class="sd">Campaign, pillars, lịch đăng + Google Sheet</div></div>
+      <div class="sc" onclick="go('s2')"><div class="sn">Bước 2</div><div class="st">Generate Topics</div><div class="sd">5-8 topics với angle, audience và CTA</div></div>
+      <div class="sc" onclick="go('s3')"><div class="sn">Bước 3</div><div class="st">Title &amp; Hook</div><div class="sd">3 titles + 4 hooks mạnh</div></div>
+      <div class="sc" onclick="go('s4')"><div class="sn">Bước 4</div><div class="st">Content Brief</div><div class="sd">Brief đầy đủ SEO, outline, keywords</div></div>
+      <div class="sc" onclick="go('s5')"><div class="sn">Bước 5</div><div class="st">Review Brief</div><div class="sd">Checklist 7 tiêu chí + cải thiện</div></div>
+      <div class="sc" onclick="go('s6')"><div class="sn">Bước 6</div><div class="st">Viết Full Content</div><div class="sd">Bài hoàn chỉnh publish-ready</div></div>
+      <div class="sc" onclick="go('s7')"><div class="sn">Bước 7</div><div class="st">Edit &amp; Polish</div><div class="sd">Flow, tone, SEO, CTA</div></div>
+      <div class="sc" onclick="go('s8')"><div class="sn">Bước 8</div><div class="st">Convert by Channel</div><div class="sd">Website · Facebook · LinkedIn</div></div>
+      <div class="sc" onclick="go('s9')"><div class="sn">Bước 9</div><div class="st">Image Ideas &amp; Prompts</div><div class="sd">3 concepts + AI image prompts</div></div>
     </div>
   </div>
 
   <div id="v-s1" class="sv" style="display:none">
-    <h2>Buoc 1 - Ke hoach noi dung thang</h2><p class="dsc">Import Google Sheet thang truoc + tao ke hoach thang moi</p>
-    <div class="fg"><label class="fl">Google Sheet ke hoach thang truoc</label>
-      <div class="sr"><input type="text" id="s1u" placeholder="Paste link Google Sheet..."/><button class="btn-sh" onclick="addSheet()">+ Them</button></div>
+    <h2>Bước 1 — Kế hoạch nội dung tháng</h2><p class="dsc">Import Google Sheet tháng trước + tạo kế hoạch tháng mới</p>
+    <div class="fg"><label class="fl">Google Sheet kế hoạch tháng trước</label>
+      <div class="sr"><input type="text" id="s1u" placeholder="Paste link Google Sheet..."/><button class="btn-sh" onclick="addSheet()">+ Thêm</button></div>
       <div id="s1e" style="display:none" class="emb">
-        <div class="emb-top"><span id="s1lbl">Google Sheet</span><div style="display:flex;gap:6px;align-items:center"><a id="s1a" href="#" target="_blank">Mo full</a><button class="xb" onclick="removeSheet()">x</button></div></div>
+        <div class="emb-top"><span id="s1lbl">Google Sheet</span><div style="display:flex;gap:6px;align-items:center"><a id="s1a" href="#" target="_blank">Mở full ↗</a><button class="xb" onclick="removeSheet()">x</button></div></div>
         <iframe id="s1f" src=""></iframe>
       </div>
     </div>
     <div class="sep"></div>
     <div class="fr">
-      <div class="fg"><label class="fl">Thang</label><select id="s1m"><option>Thang 7/2026</option><option>Thang 8/2026</option><option>Thang 9/2026</option><option>Thang 10/2026</option><option>Thang 11/2026</option><option>Thang 12/2026</option></select></div>
-      <div class="fg"><label class="fl">Muc tieu</label><select id="s1g"><option>Brand Awareness + Lead Gen</option><option>Brand Awareness</option><option>Lead Generation</option><option>Engagement</option></select></div>
+      <div class="fg"><label class="fl">Thang</label><select id="s1m"><option>Tháng 7/2026</option><option>Tháng 8/2026</option><option>Tháng 9/2026</option><option>Tháng 10/2026</option><option>Tháng 11/2026</option><option>Tháng 12/2026</option></select></div>
+      <div class="fg"><label class="fl">Mục tiêu</label><select id="s1g"><option>Brand Awareness + Lead Gen</option><option>Brand Awareness</option><option>Lead Generation</option><option>Engagement</option></select></div>
     </div>
-    <div class="fg"><label class="fl">Chien dich / Chu de</label><input type="text" id="s1c" placeholder="VD: Mua he ky nang + Scale team SMEs..."/></div>
+    <div class="fg"><label class="fl">Chiến dịch / Chủ đề</label><input type="text" id="s1c" placeholder="VD: Mùa hè kỹ năng + Scale team SMEs..."/></div>
     <div class="fg"><label class="fl">Kenh</label><div class="cks" id="cks1"><span class="ck on" onclick="this.classList.toggle('on')">LinkedIn</span><span class="ck on" onclick="this.classList.toggle('on')">Facebook</span><span class="ck on" onclick="this.classList.toggle('on')">Website</span><span class="ck" onclick="this.classList.toggle('on')">Email</span></div></div>
-    <div class="fg"><label class="fl">Ghi chu</label><textarea id="s1n" placeholder="Su kien dac biet, target audience..."></textarea></div>
-    <button class="btn-g" id="bs1" onclick="run('s1')">Tao ke hoach thang</button>
+    <div class="fg"><label class="fl">Ghi chú</label><textarea id="s1n" placeholder="Sự kiện đặc biệt, target audience..."></textarea></div>
+    <button class="btn-g" id="bs1" onclick="run('s1')">Tạo kế hoạch tháng</button>
     <div id="os1"></div>
-    <div id="ns1" style="display:none" class="nb"><div class="nb-t">Xong! Buoc tiep theo:</div><div class="nbs"><button class="nbtn" onclick="go('s2')">Topics</button><button class="nbtn" onclick="go('s3')">Title &amp; Hook</button><button class="nbtn" onclick="go('s6')">Viet bai</button><button class="nbtn" onclick="go('s9')">Images</button></div></div>
+    <div id="ns1" style="display:none" class="nb"><div class="nb-t">Xong! Bước tiếp theo:</div><div class="nbs"><button class="nbtn" onclick="go('s2')">Topics</button><button class="nbtn" onclick="go('s3')">Title &amp; Hook</button><button class="nbtn" onclick="go('s6')">Viet bai</button><button class="nbtn" onclick="go('s9')">Images</button></div></div>
   </div>
 
   <div id="v-s2" class="sv" style="display:none">
-    <h2>Buoc 2 - Generate Topics</h2><p class="dsc">5-8 topics voi content angle, audience va CTA</p>
-    <div class="fr"><div class="fg"><label class="fl">Chien dich</label><input type="text" id="s2c" placeholder="VD: Dao tao nhan su thang 7..."/></div><div class="fg"><label class="fl">So topics</label><select id="s2n"><option>5</option><option>6</option><option selected>8</option><option>10</option></select></div></div>
-    <div class="fg"><label class="fl">Content Pillars</label><div class="cks" id="cks2"><span class="ck on" onclick="this.classList.toggle('on')">Uy tin &amp; Chuyen sau</span><span class="ck on" onclick="this.classList.toggle('on')">Ky nang &amp; Phat trien</span><span class="ck on" onclick="this.classList.toggle('on')">Networking</span><span class="ck" onclick="this.classList.toggle('on')">Insight &amp; Xu huong</span></div></div>
-    <div class="fg"><label class="fl">Context them</label><textarea id="s2x" placeholder="Paste ke hoach thang hoac context..."></textarea></div>
+    <h2>Bước 2 — Generate Topics</h2><p class="dsc">5-8 topics với content angle, audience và CTA</p>
+    <div class="fr"><div class="fg"><label class="fl">Chien dich</label><input type="text" id="s2c" placeholder="VD: Đào tạo nhân sự tháng 7..."/></div><div class="fg"><label class="fl">Số topics</label><select id="s2n"><option>5</option><option>6</option><option selected>8</option><option>10</option></select></div></div>
+    <div class="fg"><label class="fl">Content Pillars</label><div class="cks" id="cks2"><span class="ck on" onclick="this.classList.toggle('on')">Uy tín &amp; Chuyên sâu</span><span class="ck on" onclick="this.classList.toggle('on')">Kỹ năng &amp; Phát triển</span><span class="ck on" onclick="this.classList.toggle('on')">Networking</span><span class="ck" onclick="this.classList.toggle('on')">Insight &amp; Xu hướng</span></div></div>
+    <div class="fg"><label class="fl">Context thêm</label><textarea id="s2x" placeholder="Paste kế hoạch tháng hoặc context..."></textarea></div>
     <button class="btn-g" id="bs2" onclick="run('s2')">Generate Topics</button><div id="os2"></div>
   </div>
 
   <div id="v-s3" class="sv" style="display:none">
-    <h2>Buoc 3 - Title &amp; Hook</h2><p class="dsc">3 title options + 4 hooks manh</p>
-    <div class="fg"><label class="fl">Topic</label><input type="text" id="s3t" placeholder="VD: Tai sao 70% chuong trinh dao tao that bai?"/></div>
-    <div class="fr"><div class="fg"><label class="fl">Pillar</label><select id="s3p"><option>Uy tin &amp; Chuyen sau</option><option>Ky nang &amp; Phat trien</option><option>Networking</option></select></div><div class="fg"><label class="fl">Kenh</label><select id="s3h"><option>LinkedIn</option><option>Facebook</option><option>Website</option></select></div></div>
+    <h2>Bước 3 — Title &amp; Hook</h2><p class="dsc">3 title options + 4 hooks mạnh</p>
+    <div class="fg"><label class="fl">Topic</label><input type="text" id="s3t" placeholder="VD: Tại sao 70% chương trình đào tạo thất bại?"/></div>
+    <div class="fr"><div class="fg"><label class="fl">Pillar</label><select id="s3p"><option>Uy tín &amp; Chuyên sâu</option><option>Kỹ năng &amp; Phát triển</option><option>Networking</option></select></div><div class="fg"><label class="fl">Kenh</label><select id="s3h"><option>LinkedIn</option><option>Facebook</option><option>Website</option></select></div></div>
     <div class="fg"><label class="fl">Target audience</label><input type="text" id="s3a" placeholder="VD: HR Manager, L&D Manager..."/></div>
-    <button class="btn-g" id="bs3" onclick="run('s3')">Tao Title &amp; Hook</button><div id="os3"></div>
+    <button class="btn-g" id="bs3" onclick="run('s3')">Tạo Title &amp; Hook</button><div id="os3"></div>
   </div>
 
   <div id="v-s4" class="sv" style="display:none">
-    <h2>Buoc 4 - Content Brief</h2><p class="dsc">Brief day du SEO, outline, keywords, meta, slug</p>
-    <div class="fg"><label class="fl">Title</label><input type="text" id="s4t" placeholder="Tieu de bai viet..."/></div>
-    <div class="fg"><label class="fl">Hook</label><textarea id="s4h" style="min-height:58px" placeholder="Dan hook tu buoc 3..."></textarea></div>
-    <div class="fr"><div class="fg"><label class="fl">Kenh</label><select id="s4c"><option>LinkedIn</option><option>Facebook</option><option>Website</option></select></div><div class="fg"><label class="fl">Keyword chinh</label><input type="text" id="s4k" placeholder="VD: dao tao nhan su doanh nghiep"/></div></div>
-    <div class="fg"><label class="fl">Context them</label><textarea id="s4x" placeholder="Key points, san pham AVTalent..."></textarea></div>
-    <button class="btn-g" id="bs4" onclick="run('s4')">Tao Content Brief</button><div id="os4"></div>
+    <h2>Bước 4 — Content Brief</h2><p class="dsc">Brief đầy đủ SEO, outline, keywords, meta, slug</p>
+    <div class="fg"><label class="fl">Title</label><input type="text" id="s4t" placeholder="Tiêu đề bài viết..."/></div>
+    <div class="fg"><label class="fl">Hook</label><textarea id="s4h" style="min-height:58px" placeholder="Dán hook từ bước 3..."></textarea></div>
+    <div class="fr"><div class="fg"><label class="fl">Kenh</label><select id="s4c"><option>LinkedIn</option><option>Facebook</option><option>Website</option></select></div><div class="fg"><label class="fl">Keyword chính</label><input type="text" id="s4k" placeholder="VD: đào tạo nhân sự doanh nghiệp"/></div></div>
+    <div class="fg"><label class="fl">Context thêm</label><textarea id="s4x" placeholder="Key points, sản phẩm AVTalent..."></textarea></div>
+    <button class="btn-g" id="bs4" onclick="run('s4')">Tạo Content Brief</button><div id="os4"></div>
   </div>
 
   <div id="v-s5" class="sv" style="display:none">
-    <h2>Buoc 5 - Review Brief</h2><p class="dsc">Checklist 7 tieu chi + revised brief</p>
-    <div class="fg"><label class="fl">Paste brief can review</label><textarea id="s5b" style="min-height:180px" placeholder="Dan brief tu buoc 4..."></textarea></div>
-    <button class="btn-g" id="bs5" onclick="run('s5')">Review &amp; Cai thien</button><div id="os5"></div>
+    <h2>Bước 5 — Review Brief</h2><p class="dsc">Checklist 7 tiêu chí + revised brief</p>
+    <div class="fg"><label class="fl">Paste brief cần review</label><textarea id="s5b" style="min-height:180px" placeholder="Dán brief từ bước 4..."></textarea></div>
+    <button class="btn-g" id="bs5" onclick="run('s5')">Review &amp; Cải thiện</button><div id="os5"></div>
   </div>
 
   <div id="v-s6" class="sv" style="display:none">
-    <h2>Buoc 6 - Viet Full Content</h2><p class="dsc">Bai viet hoan chinh, publish-ready</p>
-    <div class="fg"><label class="fl">Title</label><input type="text" id="s6t" placeholder="Tieu de bai viet..."/></div>
-    <div class="fg"><label class="fl">Brief / Key points</label><textarea id="s6b" style="min-height:110px" placeholder="Dan brief hoac outline..."></textarea></div>
-    <div class="fr"><div class="fg"><label class="fl">Kenh</label><select id="s6c"><option>LinkedIn (VI+EN)</option><option>Facebook</option><option>Website / Blog</option></select></div><div class="fg"><label class="fl">Do dai</label><select id="s6l"><option>600 tu</option><option selected>1000 tu</option><option>1500 tu</option><option>2000 tu</option></select></div></div>
-    <div class="fg"><label class="fl">Keyword SEO</label><input type="text" id="s6k" placeholder="VD: giai phap dao tao nhan su"/></div>
-    <button class="btn-g" id="bs6" onclick="run('s6')">Viet bai hoan chinh</button><div id="os6"></div>
+    <h2>Bước 6 — Viết Full Content</h2><p class="dsc">Bài viết hoàn chỉnh, publish-ready</p>
+    <div class="fg"><label class="fl">Title</label><input type="text" id="s6t" placeholder="Tiêu đề bài viết..."/></div>
+    <div class="fg"><label class="fl">Brief / Key points</label><textarea id="s6b" style="min-height:110px" placeholder="Dán brief hoặc outline..."></textarea></div>
+    <div class="fr"><div class="fg"><label class="fl">Kenh</label><select id="s6c"><option>LinkedIn (VI+EN)</option><option>Facebook</option><option>Website / Blog</option></select></div><div class="fg"><label class="fl">Độ dài</label><select id="s6l"><option>~600 từ</option><option selected>~1000 từ</option><option>~1500 từ</option><option>~2000 từ</option></select></div></div>
+    <div class="fg"><label class="fl">Keyword SEO</label><input type="text" id="s6k" placeholder="VD: giải pháp đào tạo nhân sự"/></div>
+    <button class="btn-g" id="bs6" onclick="run('s6')">Viết bài hoàn chỉnh</button><div id="os6"></div>
   </div>
 
   <div id="v-s7" class="sv" style="display:none">
-    <h2>Buoc 7 - Edit &amp; Polish</h2><p class="dsc">Cai thien intro, flow, readability, SEO, CTA</p>
-    <div class="fg"><label class="fl">Bai viet can edit</label><textarea id="s7t" style="min-height:150px" placeholder="Dan draft bai viet..."></textarea></div>
-    <div class="fg"><label class="fl">Tap trung</label><div class="cks" id="cks7"><span class="ck on" onclick="this.classList.toggle('on')">Intro manh hon</span><span class="ck on" onclick="this.classList.toggle('on')">Flow</span><span class="ck on" onclick="this.classList.toggle('on')">Readability</span><span class="ck" onclick="this.classList.toggle('on')">SEO</span><span class="ck" onclick="this.classList.toggle('on')">Softer CTA</span></div></div>
+    <h2>Bước 7 — Edit &amp; Polish</h2><p class="dsc">Cải thiện intro, flow, readability, SEO, CTA</p>
+    <div class="fg"><label class="fl">Bài viết cần edit</label><textarea id="s7t" style="min-height:150px" placeholder="Dán draft bài viết..."></textarea></div>
+    <div class="fg"><label class="fl">Tập trung</label><div class="cks" id="cks7"><span class="ck on" onclick="this.classList.toggle('on')">Intro mạnh hơn</span><span class="ck on" onclick="this.classList.toggle('on')">Flow</span><span class="ck on" onclick="this.classList.toggle('on')">Readability</span><span class="ck" onclick="this.classList.toggle('on')">SEO</span><span class="ck" onclick="this.classList.toggle('on')">Softer CTA</span></div></div>
     <button class="btn-g" id="bs7" onclick="run('s7')">Edit &amp; Polish</button><div id="os7"></div>
   </div>
 
   <div id="v-s8" class="sv" style="display:none">
-    <h2>Buoc 8 - Convert by Channel</h2><p class="dsc">Chuyen doi noi dung giua cac kenh</p>
-    <div class="fg"><label class="fl">Noi dung goc</label><textarea id="s8t" style="min-height:130px" placeholder="Dan bai viet can chuyen..."></textarea></div>
-    <div class="fr"><div class="fg"><label class="fl">Tu kenh</label><select id="s8f"><option>Website</option><option>LinkedIn</option><option>Facebook</option></select></div><div class="fg"><label class="fl">Sang kenh</label><select id="s8o"><option>Facebook</option><option>LinkedIn</option><option>Website</option></select></div></div>
-    <button class="btn-g" id="bs8" onclick="run('s8')">Convert noi dung</button><div id="os8"></div>
+    <h2>Bước 8 — Convert by Channel</h2><p class="dsc">Chuyển đổi nội dung giữa các kênh</p>
+    <div class="fg"><label class="fl">Nội dung gốc</label><textarea id="s8t" style="min-height:130px" placeholder="Dán bài viết cần chuyển..."></textarea></div>
+    <div class="fr"><div class="fg"><label class="fl">Từ kênh</label><select id="s8f"><option>Website</option><option>LinkedIn</option><option>Facebook</option></select></div><div class="fg"><label class="fl">Sang kênh</label><select id="s8o"><option>Facebook</option><option>LinkedIn</option><option>Website</option></select></div></div>
+    <button class="btn-g" id="bs8" onclick="run('s8')">Convert nội dung</button><div id="os8"></div>
   </div>
 
   <div id="v-s9" class="sv" style="display:none">
-    <h2>Buoc 9 - Image Ideas &amp; Prompts</h2><p class="dsc">3 concepts + AI image prompts day du</p>
-    <div class="fg"><label class="fl">Title bai viet</label><input type="text" id="s9t" placeholder="VD: 5 bai toan SMEs khi scale team"/></div>
-    <div class="fg"><label class="fl">Tom tat noi dung</label><textarea id="s9s" style="min-height:65px" placeholder="Mo ta ngan de AI tao hinh dung huong..."></textarea></div>
-    <div class="fr"><div class="fg"><label class="fl">Kenh</label><select id="s9c"><option>Website 852x568px</option><option>Facebook</option><option>Ca hai</option></select></div><div class="fg"><label class="fl">Phong cach</label><select id="s9y"><option>Modern Corporate</option><option>Minimalist</option><option>Bold</option></select></div></div>
-    <button class="btn-g" id="bs9" onclick="run('s9')">Tao Image Prompts</button><div id="os9"></div>
+    <h2>Bước 9 — Image Ideas &amp; Prompts</h2><p class="dsc">3 concepts + AI image prompts đầy đủ</p>
+    <div class="fg"><label class="fl">Title bài viết</label><input type="text" id="s9t" placeholder="VD: 5 bài toán SMEs khi scale team"/></div>
+    <div class="fg"><label class="fl">Tóm tắt nội dung</label><textarea id="s9s" style="min-height:65px" placeholder="Mô tả ngắn để AI tạo hình đúng hướng..."></textarea></div>
+    <div class="fr"><div class="fg"><label class="fl">Kenh</label><select id="s9c"><option>Website (852×568px)</option><option>Facebook</option><option>Ca hai</option></select></div><div class="fg"><label class="fl">Phong cách</label><select id="s9y"><option>Modern Corporate</option><option>Minimalist</option><option>Bold</option></select></div></div>
+    <button class="btn-g" id="bs9" onclick="run('s9')">Tạo Image Prompts</button><div id="os9"></div>
   </div>
 
   <div id="v-qp" class="sv" style="display:none">
-    <h2>Ke hoach noi dung thang</h2><p class="dsc">Tao nhanh content plan va lich dang bai</p>
-    <div class="fr"><div class="fg"><label class="fl">Thang</label><select id="qpm"><option>Thang 7/2026</option><option>Thang 8/2026</option><option>Thang 9/2026</option></select></div><div class="fg"><label class="fl">Muc tieu</label><select id="qpg"><option>Brand Awareness + Lead Gen</option><option>Brand Awareness</option><option>Lead Generation</option></select></div></div>
-    <div class="fg"><label class="fl">Chien dich</label><input type="text" id="qpc" placeholder="VD: Ky nang mua he + Scale SMEs"/></div>
-    <button class="btn-g" id="bqp" onclick="run('qp')">Tao ke hoach</button><div id="oqp"></div>
+    <h2>Kế hoạch nội dung tháng</h2><p class="dsc">Tạo nhanh content plan và lịch đăng bài</p>
+    <div class="fr"><div class="fg"><label class="fl">Thang</label><select id="qpm"><option>Tháng 7/2026</option><option>Tháng 8/2026</option><option>Tháng 9/2026</option></select></div><div class="fg"><label class="fl">Mục tiêu</label><select id="qpg"><option>Brand Awareness + Lead Gen</option><option>Brand Awareness</option><option>Lead Generation</option></select></div></div>
+    <div class="fg"><label class="fl">Chien dich</label><input type="text" id="qpc" placeholder="VD: Kỹ năng mùa hè + Scale SMEs"/></div>
+    <button class="btn-g" id="bqp" onclick="run('qp')">Tạo kế hoạch</button><div id="oqp"></div>
   </div>
 
   <div id="v-qt" class="sv" style="display:none">
-    <h2>Generate Topics nhanh</h2><p class="dsc">Nhap chu de, nhan ngay 8 topics</p>
-    <div class="fg"><label class="fl">Chu de</label><input type="text" id="qtt" placeholder="VD: Dao tao nhan su thang 7..."/></div>
+    <h2>Generate Topics nhanh</h2><p class="dsc">Nhập chủ đề, nhận ngay 8 topics</p>
+    <div class="fg"><label class="fl">Chu de</label><input type="text" id="qtt" placeholder="VD: Đào tạo nhân sự tháng 7..."/></div>
     <div class="fg"><label class="fl">Kenh</label><div class="cks" id="cksqt"><span class="ck on" onclick="this.classList.toggle('on')">LinkedIn</span><span class="ck on" onclick="this.classList.toggle('on')">Facebook</span><span class="ck" onclick="this.classList.toggle('on')">Website</span></div></div>
     <button class="btn-g" id="bqt" onclick="run('qt')">Generate Topics</button><div id="oqt"></div>
   </div>
 
   <div id="v-qw" class="sv" style="display:none">
-    <h2>Viet bai ngay</h2><p class="dsc">Nhap topic, nhan bai hoan chinh</p>
-    <div class="fg"><label class="fl">Topic / Y tuong</label><textarea id="qwt" placeholder="VD: Viet ve tailor-made training cua AVTalent..."></textarea></div>
-    <div class="fr"><div class="fg"><label class="fl">Kenh</label><select id="qwc"><option>LinkedIn (VI+EN)</option><option>Facebook</option><option>Website</option></select></div><div class="fg"><label class="fl">Do dai</label><select id="qwl"><option>600 tu</option><option selected>1000 tu</option><option>1800 tu</option></select></div></div>
-    <button class="btn-g" id="bqw" onclick="run('qw')">Viet bai ngay</button><div id="oqw"></div>
+    <h2>Viết bài ngay</h2><p class="dsc">Nhập topic, nhận bài hoàn chỉnh</p>
+    <div class="fg"><label class="fl">Topic / Y tuong</label><textarea id="qwt" placeholder="VD: Viết về tailor-made training của AVTalent..."></textarea></div>
+    <div class="fr"><div class="fg"><label class="fl">Kenh</label><select id="qwc"><option>LinkedIn (VI+EN)</option><option>Facebook</option><option>Website</option></select></div><div class="fg"><label class="fl">Độ dài</label><select id="qwl"><option>~600 từ</option><option selected>~1000 từ</option><option>~1800 từ</option></select></div></div>
+    <button class="btn-g" id="bqw" onclick="run('qw')">Viết bài ngay</button><div id="oqw"></div>
   </div>
 
   <div id="v-qi" class="sv" style="display:none">
-    <h2>Image Prompts nhanh</h2><p class="dsc">Nhap title, nhan 3 concepts + AI prompts</p>
-    <div class="fg"><label class="fl">Title bai viet</label><input type="text" id="qit" placeholder="VD: Mo hinh uy thac van hanh..."/></div>
-    <div class="fg"><label class="fl">Kenh</label><div class="cks" id="cksqi"><span class="ck on" onclick="this.classList.toggle('on')">Website 852x568px</span><span class="ck on" onclick="this.classList.toggle('on')">Facebook</span></div></div>
-    <button class="btn-g" id="bqi" onclick="run('qi')">Tao Image Prompts</button><div id="oqi"></div>
+    <h2>Image Prompts nhanh</h2><p class="dsc">Nhập title, nhận 3 concepts + AI prompts</p>
+    <div class="fg"><label class="fl">Title bài viết</label><input type="text" id="qit" placeholder="VD: Mô hình ủy thác vận hành..."/></div>
+    <div class="fg"><label class="fl">Kenh</label><div class="cks" id="cksqi"><span class="ck on" onclick="this.classList.toggle('on')">Website (852×568px)</span><span class="ck on" onclick="this.classList.toggle('on')">Facebook</span></div></div>
+    <button class="btn-g" id="bqi" onclick="run('qi')">Tạo Image Prompts</button><div id="oqi"></div>
   </div>
 
   <div id="v-qc" class="sv" style="display:none">
-    <h2>Convert kenh nhanh</h2><p class="dsc">Chuyen noi dung giua Website Facebook LinkedIn</p>
-    <div class="fg"><label class="fl">Noi dung goc</label><textarea id="qct" style="min-height:130px" placeholder="Dan bai viet can chuyen..."></textarea></div>
-    <div class="fr"><div class="fg"><label class="fl">Tu kenh</label><select id="qcf"><option>Website</option><option>LinkedIn</option><option>Facebook</option></select></div><div class="fg"><label class="fl">Sang kenh</label><select id="qco"><option>Facebook</option><option>LinkedIn</option><option>Website</option></select></div></div>
+    <h2>Convert kênh nhanh</h2><p class="dsc">Chuyen noi dung giua Website · Facebook · LinkedIn</p>
+    <div class="fg"><label class="fl">Nội dung gốc</label><textarea id="qct" style="min-height:130px" placeholder="Dán bài viết cần chuyển..."></textarea></div>
+    <div class="fr"><div class="fg"><label class="fl">Từ kênh</label><select id="qcf"><option>Website</option><option>LinkedIn</option><option>Facebook</option></select></div><div class="fg"><label class="fl">Sang kênh</label><select id="qco"><option>Facebook</option><option>LinkedIn</option><option>Website</option></select></div></div>
     <button class="btn-g" id="bqc" onclick="run('qc')">Convert ngay</button><div id="oqc"></div>
   </div>
 
@@ -266,14 +266,14 @@ body{font-family:Arial,sans-serif;background:#0f1117;color:#e8eaf6;height:100vh;
 <script>
 var apiKey = '';
 var sheetURL = '';
-var T = {home:'AVTalent Content Pipeline',s1:'Ke hoach noi dung thang',s2:'Generate Topics',s3:'Title & Hook',s4:'Content Brief',s5:'Review Brief',s6:'Viet Full Content',s7:'Edit & Polish',s8:'Convert by Channel',s9:'Image Prompts',qp:'Ke hoach thang',qt:'Generate Topics',qw:'Viet bai ngay',qi:'Image Prompts',qc:'Convert kenh'};
-var S = {s1:'Buoc 1/9',s2:'Buoc 2/9',s3:'Buoc 3/9',s4:'Buoc 4/9',s5:'Buoc 5/9',s6:'Buoc 6/9',s7:'Buoc 7/9',s8:'Buoc 8/9',s9:'Buoc 9/9',qp:'Nhanh',qt:'Nhanh',qw:'Nhanh',qi:'Nhanh',qc:'Nhanh',home:''};
+var T = {home:'AVTalent Content Pipeline',s1:'Kế hoạch nội dung tháng',s2:'Generate Topics',s3:'Title & Hook',s4:'Content Brief',s5:'Review Brief',s6:'Viết Full Content',s7:'Edit & Polish',s8:'Convert by Channel',s9:'Image Prompts',qp:'Kế hoạch tháng',qt:'Generate Topics',qw:'Viết bài ngay',qi:'Image Prompts',qc:'Convert kênh'};
+var S = {s1:'Bước 1/9',s2:'Bước 2/9',s3:'Bước 3/9',s4:'Bước 4/9',s5:'Bước 5/9',s6:'Bước 6/9',s7:'Bước 7/9',s8:'Bước 8/9',s9:'Bước 9/9',qp:'Nhanh',qt:'Nhanh',qw:'Nhanh',qi:'Nhanh',qc:'Nhanh',home:''};
 
 function setKey(v) {
   apiKey = v.trim();
   var ok = apiKey.indexOf('sk-') === 0 && apiKey.length > 20;
   document.getElementById('dot').className = ok ? 'dot on' : 'dot';
-  document.getElementById('albl').textContent = ok ? 'API da ket noi' : 'Chua ket noi API';
+  document.getElementById('albl').textContent = ok ? 'API đã kết nối' : 'Chưa kết nối API';
   if (ok) { try { localStorage.setItem('avt_key', apiKey); } catch(e) {} }
 }
 
@@ -334,17 +334,17 @@ function removeSheet() {
 function mkP(id) {
   var sheet = sheetURL ? ' [Du lieu tham chieu tu Google Sheet: ' + sheetURL + '] Hay doc va phan tich noi dung sheet nay de tao output phu hop voi ke hoach hien tai.' : '';
   var p = {
-    s1: 'Tao ke hoach noi dung AVTalent ' + gv('s1m') + '. Muc tieu: ' + gv('s1g') + '. Chien dich: ' + gv('s1c') + '. Kenh: ' + gc('cks1') + '. Ghi chu: ' + gv('s1n') + sheet + '. Output: 1.Tom tat chien luoc 2.Bang content pillars 3.Lich dang bai theo tuan (bang: Ngay, Gio, Pillar, Topic, Kenh) 4.Ghi chu trien khai',
-    s2: 'Generate ' + gv('s2n') + ' topics AVTalent. Chien dich: ' + gv('s2c') + '. Pillars: ' + gc('cks2') + '. Context: ' + gv('s2x') + sheet + '. Moi topic: Ten, Angle, Audience, Muc tieu, Kenh, CTA',
+    s1: 'Tạo kế hoạch noi dung AVTalent ' + gv('s1m') + '. Mục tiêu: ' + gv('s1g') + '. Chien dich: ' + gv('s1c') + '. Kenh: ' + gc('cks1') + '. Ghi chú: ' + gv('s1n') + sheet + '. Output: 1.Tom tat chien luoc 2.Bang content pillars 3.Lich dang bai theo tuan (bang: Ngay, Gio, Pillar, Topic, Kenh) 4.Ghi chú trien khai',
+    s2: 'Generate ' + gv('s2n') + ' topics AVTalent. Chien dich: ' + gv('s2c') + '. Pillars: ' + gc('cks2') + '. Context: ' + gv('s2x') + sheet + '. Moi topic: Ten, Angle, Audience, Mục tiêu, Kenh, CTA',
     s3: 'Tao title va hook AVTalent. Topic: ' + gv('s3t') + '. Pillar: ' + gv('s3p') + '. Kenh: ' + gv('s3h') + '. Audience: ' + gv('s3a') + sheet + '. Output: 3 titles (danh recommended) + 4 hooks (pain, stat, question, bold)',
     s4: 'Content brief AVTalent. Title: ' + gv('s4t') + '. Hook: ' + gv('s4h') + '. Kenh: ' + gv('s4c') + '. Keyword: ' + gv('s4k') + '. Context: ' + gv('s4x') + '. Brief day du: objective, audience, tone, keywords, meta, slug, outline, key points, CTA',
     s5: 'Review brief AVTalent. Brief: ' + gv('s5b') + '. Checklist: Clarity, SEO, Angle, Hook, Structure, CTA, Not promotional. Bang danhgia ok/warn/fail + revised brief',
     s6: 'Viet bai AVTalent. Title: ' + gv('s6t') + '. Brief: ' + gv('s6b') + '. Kenh: ' + gv('s6c') + '. Dai: ' + gv('s6l') + '. KW: ' + gv('s6k') + sheet + (gv('s6c').indexOf('LinkedIn') >= 0 ? '. Them ban EN, [English below], max 3000 ky tu' : ''),
-    s7: 'Edit polish AVTalent. Bai viet: ' + gv('s7t') + '. Tap trung: ' + gc('cks7'),
+    s7: 'Edit polish AVTalent. Bai viet: ' + gv('s7t') + '. Tập trung: ' + gc('cks7'),
     s8: 'Convert AVTalent tu ' + gv('s8f') + ' sang ' + gv('s8o') + '. Noi dung: ' + gv('s8t'),
     s9: 'Image prompts AVTalent. Title: ' + gv('s9t') + '. Tom tat: ' + gv('s9s') + '. Kenh: ' + gv('s9c') + '. Style: ' + gv('s9y') + '. 3 concepts, AI prompt EN day du. Footer bat buoc: avtalent.vn | info@avtalent.vn | 0364 202 992',
-    qp: 'Ke hoach noi dung AVTalent ' + gv('qpm') + '. Muc tieu: ' + gv('qpg') + '. Chien dich: ' + gv('qpc') + sheet + '. Bang pillars + lich tuan.',
-    qt: 'Generate 8 topics AVTalent. Chu de: ' + gv('qtt') + '. Kenh: ' + gc('cksqt') + sheet + '. Moi topic: Ten, Angle, Audience, Muc tieu, Kenh, CTA',
+    qp: 'Ke hoach noi dung AVTalent ' + gv('qpm') + '. Mục tiêu: ' + gv('qpg') + '. Chien dich: ' + gv('qpc') + sheet + '. Bang pillars + lich tuan.',
+    qt: 'Generate 8 topics AVTalent. Chu de: ' + gv('qtt') + '. Kenh: ' + gc('cksqt') + sheet + '. Moi topic: Ten, Angle, Audience, Mục tiêu, Kenh, CTA',
     qw: 'Viet bai AVTalent. Topic: ' + gv('qwt') + '. Kenh: ' + gv('qwc') + '. Dai: ' + gv('qwl') + sheet + (gv('qwc').indexOf('LinkedIn') >= 0 ? '. Them ban EN, [English below]' : ''),
     qi: 'Image prompts AVTalent. Title: ' + gv('qit') + '. Kenh: ' + gc('cksqi') + '. 3 concepts, AI prompt EN. Footer: avtalent.vn | info@avtalent.vn | 0364 202 992',
     qc: 'Convert AVTalent tu ' + gv('qcf') + ' sang ' + gv('qco') + '. Noi dung: ' + gv('qct')
@@ -359,8 +359,8 @@ async function run(id) {
   var btn = document.getElementById('b' + id);
   var out = document.getElementById('o' + id);
   btn.disabled = true;
-  btn.textContent = 'Dang tao...';
-  out.innerHTML = '<div class="out"><div class="out-top"><span class="out-lbl">Ket qua</span><button class="btn-cp" id="cp' + id + '" onclick="cpOut(\'' + id + '\')">Copy</button></div><div class="out-body" id="ob' + id + '"></div></div>';
+  btn.textContent = 'Đang tạo...';
+  out.innerHTML = '<div class="out"><div class="out-top"><span class="out-lbl">Kết quả</span><button class="btn-cp" id="cp' + id + '" onclick="cpOut(\'' + id + '\')">Copy</button></div><div class="out-body" id="ob' + id + '"></div></div>';
   var ob = document.getElementById('ob' + id);
   var full = '';
   try {
@@ -396,7 +396,7 @@ async function run(id) {
     ob.textContent = 'Loi ket noi: ' + e.message;
   }
   btn.disabled = false;
-  btn.textContent = 'Tao lai';
+  btn.textContent = 'Tạo lại';
   document.getElementById('ct').scrollTop = document.getElementById('ct').scrollHeight;
   if (id === 's1') {
     var nb = document.getElementById('ns1');
@@ -409,7 +409,7 @@ function cpOut(id) {
   if (ob) {
     navigator.clipboard.writeText(ob.textContent);
     var btn = document.getElementById('cp' + id);
-    if (btn) { btn.textContent = 'Da copy!'; setTimeout(function() { btn.textContent = 'Copy'; }, 1500); }
+    if (btn) { btn.textContent = 'Đã copy!'; setTimeout(function() { btn.textContent = 'Copy'; }, 1500); }
   }
 }
 
