@@ -109,27 +109,20 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);height:100vh
 .output-body blockquote{border-left:3px solid var(--accent);padding-left:14px;margin:8px 0;color:var(--muted);font-style:italic;}
 .output-body hr{border:none;border-top:1px solid var(--border);margin:12px 0;}
 
-/* SHEET IMPORT */
-.sheet-import-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;}
-.sheet-import-row{display:flex;gap:8px;align-items:center;}
-.btn-load-sheet{display:flex;align-items:center;gap:6px;padding:9px 16px;background:var(--accent);border:none;border-radius:8px;color:white;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);white-space:nowrap;transition:background .15s;flex-shrink:0;}
-.btn-load-sheet:hover{background:#3d5ce6;}
-.btn-load-sheet:disabled{background:var(--surface2);cursor:not-allowed;color:var(--muted);}
-#s1-sheet-status{margin-top:8px;font-size:12px;}
-.status-loading{color:var(--muted);}
-.status-ok{color:var(--green);}
-.status-err{color:var(--red);}
-.sheet-preview-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(79,110,247,.08);border:1px solid rgba(79,110,247,.2);border-radius:8px 8px 0 0;margin-top:12px;}
-.sheet-preview-header span{font-size:13px;font-weight:600;color:var(--accent);}
-.sheet-preview-btn{padding:4px 12px;background:transparent;border:1px solid rgba(79,110,247,.3);border-radius:6px;color:var(--accent);font-size:11px;cursor:pointer;font-family:var(--font);transition:all .15s;}
-.sheet-preview-btn:hover{background:var(--accent-soft);}
-.sheet-preview-btn.danger{border-color:rgba(239,68,68,.3);color:var(--red);}
-.sheet-preview-btn.danger:hover{background:rgba(239,68,68,.1);}
-.sheet-preview-table{border:1px solid rgba(79,110,247,.2);border-top:none;border-radius:0 0 8px 8px;overflow:auto;max-height:220px;background:var(--surface);}
-.sheet-preview-table table{border-collapse:collapse;width:100%;font-size:12px;}
-.sheet-preview-table th{background:var(--surface2);padding:7px 10px;text-align:left;border:1px solid var(--border);color:var(--accent);font-weight:600;white-space:nowrap;position:sticky;top:0;}
-.sheet-preview-table td{padding:6px 10px;border:1px solid var(--border);color:var(--muted);white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis;}
-.sheet-preview-table tr:hover td{background:rgba(79,110,247,.04);color:var(--text);}
+/* SHEET LINK & EMBED */
+.sheet-link-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;}
+.sheet-link-row{display:flex;gap:8px;align-items:center;}
+.btn-add-sheet{display:flex;align-items:center;gap:6px;padding:9px 16px;background:var(--accent);border:none;border-radius:8px;color:white;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);white-space:nowrap;transition:background .15s;flex-shrink:0;}
+.btn-add-sheet:hover{background:#3d5ce6;}
+.sheet-embed-wrap{border:1px solid rgba(79,110,247,.25);border-radius:10px;overflow:hidden;margin-top:12px;}
+.sheet-embed-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(79,110,247,.08);border-bottom:1px solid rgba(79,110,247,.2);}
+#s1-embed-label{font-size:13px;font-weight:600;color:var(--accent);}
+.sheet-embed-open{font-size:12px;color:var(--accent);text-decoration:none;padding:3px 10px;border:1px solid rgba(79,110,247,.3);border-radius:6px;transition:all .15s;}
+.sheet-embed-open:hover{background:var(--accent-soft);}
+.sheet-embed-note{font-size:11px;color:var(--muted);}
+.sheet-embed-close{background:transparent;border:none;color:var(--muted);font-size:14px;cursor:pointer;padding:2px 6px;border-radius:4px;}
+.sheet-embed-close:hover{color:var(--red);}
+.sheet-iframe{width:100%;height:420px;border:none;background:white;}
 .section-sep{height:1px;background:var(--border);margin:18px 0;}
 /* NEXT STEPS */
 .next-steps-bar{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:10px;padding:14px 16px;margin-top:16px;}
@@ -216,31 +209,31 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);height:100vh
       <h2>📅 Bước 1 — Kế hoạch nội dung tháng</h2>
       <p class="desc">Import kế hoạch tháng trước từ Google Sheet để AI phân tích và tạo kế hoạch tháng mới</p>
 
-      <!-- SHEET IMPORT -->
+      <!-- SHEET LINK -->
       <div class="form-group">
-        <label class="form-label">📊 Import từ Google Sheet (kế hoạch tháng trước)</label>
-        <div class="sheet-import-box" id="s1-import-box">
-          <div class="sheet-import-row">
-            <input class="form-input" id="s1-sheet-url" placeholder="Paste link Google Sheet..." style="flex:1"/>
-            <button class="btn-load-sheet" id="btn-load-s1" onclick="loadSheet()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-              Tải sheet
+        <label class="form-label">📊 Kế hoạch tháng trước (Google Sheet)</label>
+        <div class="sheet-link-box" id="s1-link-box">
+          <div class="sheet-link-row">
+            <input class="form-input" id="s1-sheet-url" placeholder="Paste link Google Sheet để xem và dùng làm context..."/>
+            <button class="btn-add-sheet" onclick="addSheetLink()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M12 5v14M5 12h14"/></svg>
+              Add
             </button>
           </div>
-          <div id="s1-sheet-status"></div>
         </div>
       </div>
 
-      <!-- SHEET PREVIEW -->
-      <div id="s1-sheet-preview" style="display:none">
-        <div class="sheet-preview-header">
-          <span id="s1-preview-label">📊 Đã load sheet</span>
-          <div style="display:flex;gap:8px">
-            <button class="sheet-preview-btn" onclick="viewSheet()">Xem sheet ↗</button>
-            <button class="sheet-preview-btn danger" onclick="clearSheet()">✕ Xoá</button>
+      <!-- SHEET EMBED -->
+      <div id="s1-sheet-embed" style="display:none" class="sheet-embed-wrap">
+        <div class="sheet-embed-header">
+          <span id="s1-embed-label">📊 Google Sheet</span>
+          <div style="display:flex;gap:8px;align-items:center">
+            <a id="s1-open-link" href="#" target="_blank" class="sheet-embed-open">Mở full ↗</a>
+            <span class="sheet-embed-note">AI sẽ dùng link này để phân tích kế hoạch cũ</span>
+            <button class="sheet-embed-close" onclick="clearSheetLink()">✕</button>
           </div>
         </div>
-        <div class="sheet-preview-table" id="s1-preview-table"></div>
+        <iframe id="s1-iframe" src="" frameborder="0" class="sheet-iframe" allowfullscreen></iframe>
       </div>
 
       <div class="section-sep"></div>
@@ -647,99 +640,39 @@ function md(t){
 }
 
 
-// ── SHEET IMPORT (Bước 1) ────────────────────────────────
-let sheetCSV = '';
+// ── SHEET LINK & EMBED (Bước 1) ─────────────────────────
 let sheetURL = '';
 
-async function loadSheet() {
+function addSheetLink() {
   const url = document.getElementById('s1-sheet-url').value.trim();
   if (!url) return;
-  const btn = document.getElementById('btn-load-s1');
-  const status = document.getElementById('s1-sheet-status');
-  btn.disabled = true;
-  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="white" style="width:14px;height:14px;animation:spin 1s linear infinite"><path d="M12 2a10 10 0 0 1 10 10"/></svg> Đang tải...';
-  status.innerHTML = '<span class="status-loading">⏳ Đang kết nối Google Sheet...</span>';
 
-  try {
-    const res = await fetch('/api/fetch-sheet', {
-      method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ url })
-    });
-    const data = await res.json();
-    if (data.error) throw new Error(data.error);
+  // Convert to embed URL
+  const idMatch = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+  const gidMatch = url.match(/gid=(\d+)/);
+  if (!idMatch) { alert('Link không hợp lệ. Hãy dùng link Google Sheet dạng: docs.google.com/spreadsheets/d/...'); return; }
 
-    sheetCSV = data.csv;
-    sheetURL = url;
-    status.innerHTML = '<span class="status-ok">✅ Sheet đã tải thành công!</span>';
+  const id = idMatch[1];
+  const gid = gidMatch ? gidMatch[1] : '0';
+  const embedUrl = `https://docs.google.com/spreadsheets/d/${id}/preview?gid=${gid}`;
 
-    // Show preview
-    renderSheetPreview(sheetCSV, url);
-    document.getElementById('s1-sheet-preview').style.display = 'block';
+  sheetURL = url;
 
-    // Auto-fill month from data
-    autoDetectMonth(sheetCSV);
+  // Show embed
+  document.getElementById('s1-iframe').src = embedUrl;
+  document.getElementById('s1-open-link').href = url;
+  document.getElementById('s1-embed-label').textContent = '📊 ' + id.slice(0,12) + '...';
+  document.getElementById('s1-sheet-embed').style.display = 'block';
 
-  } catch(err) {
-    status.innerHTML = '<span class="status-err">❌ Lỗi: ' + err.message + ' — Hãy đảm bảo sheet đã share public.</span>';
-  }
-  btn.disabled = false;
-  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg> Tải lại';
+  // Scroll to iframe
+  setTimeout(() => document.getElementById('s1-sheet-embed').scrollIntoView({behavior:'smooth', block:'nearest'}), 100);
 }
 
-function renderSheetPreview(csv, url) {
-  const lines = csv.trim().split('\n').slice(0, 12);
-  const rows = lines.map(l => {
-    const cells = [];
-    let cur = '', inQ = false;
-    for (let c of l) {
-      if (c === '"') inQ = !inQ;
-      else if (c === ',' && !inQ) { cells.push(cur); cur = ''; }
-      else cur += c;
-    }
-    cells.push(cur);
-    return cells;
-  });
-
-  // Only show first 7 cols to keep it clean
-  const maxCols = 7;
-  let tbl = '<table>';
-  rows.forEach((row, i) => {
-    tbl += i === 0 ? '<thead><tr>' : (i === 1 ? '<tbody><tr>' : '<tr>');
-    row.slice(0, maxCols).forEach(cell => {
-      const tag = i === 0 ? 'th' : 'td';
-      tbl += `<${tag}>${cell.replace(/"/g,'')}</${tag}>`;
-    });
-    tbl += i === 0 ? '</tr></thead>' : '</tr>';
-  });
-  tbl += '</tbody></table>';
-  document.getElementById('s1-preview-table').innerHTML = tbl;
-
-  // Count data rows
-  const dataRows = csv.trim().split('\n').length;
-  const idMatch = url.match(/\/d\/([^/]+)/);
-  const shortId = idMatch ? idMatch[1].slice(0,10) + '...' : 'sheet';
-  document.getElementById('s1-preview-label').textContent = `📊 ${shortId} · ${dataRows} dòng dữ liệu`;
-}
-
-function autoDetectMonth(csv) {
-  // Try detect next month from data
-  const months = ['Tháng 7/2026','Tháng 8/2026','Tháng 9/2026','Tháng 10/2026','Tháng 11/2026','Tháng 12/2026'];
-  const sel = document.getElementById('s1-month');
-  if (csv.includes('JUL') || csv.includes('07/2026') || csv.includes('tháng 7')) sel.value = 'Tháng 7/2026';
-  // Default: next month is 7
-}
-
-function viewSheet() {
-  if (sheetURL) window.open(sheetURL, '_blank');
-}
-
-function clearSheet() {
-  sheetCSV = '';
+function clearSheetLink() {
   sheetURL = '';
   document.getElementById('s1-sheet-url').value = '';
-  document.getElementById('s1-sheet-preview').style.display = 'none';
-  document.getElementById('s1-sheet-status').innerHTML = '';
-  document.getElementById('btn-load-s1').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg> Tải sheet';
+  document.getElementById('s1-iframe').src = '';
+  document.getElementById('s1-sheet-embed').style.display = 'none';
 }
 
 // ── CONTEXT PASSING BETWEEN STEPS ────────────────────────
@@ -778,10 +711,6 @@ const origGen = gen;
 // Patch gen to show next-steps after s1
 const _genOrig = gen;
 gen = async function(id) {
-  // Inject sheet CSV into step1 prompt if available
-  if (id === 's1' && sheetCSV) {
-    window._s1SheetCSV = sheetCSV;
-  }
   await _genOrig(id);
   if (id === 's1') {
     document.getElementById('s1-next-steps').style.display = 'block';
@@ -789,13 +718,12 @@ gen = async function(id) {
   }
 };
 
-// Patch buildPrompt to include sheet in s1
+// Patch buildPrompt to include sheet URL as context in s1
 const _bpOrig = buildPrompt;
 buildPrompt = function(id) {
   let p = _bpOrig(id);
-  if (id === 's1' && window._s1SheetCSV) {
-    p = `[KẾ HOẠCH THÁNG TRƯỚC - GOOGLE SHEET DATA]:\n${window._s1SheetCSV.slice(0,4000)}\n[END SHEET]\n\n` + p;
-    window._s1SheetCSV = null;
+  if (id === 's1' && sheetURL) {
+    p = `[THAM KHẢO KẾ HOẠCH THÁNG TRƯỚC TẠI: ${sheetURL}]\nDựa trên kế hoạch tháng trước (June 2026) với các pillars: Uy tín & Chuyên sâu, Kỹ năng & Phát triển, Networking & Community - hãy tạo kế hoạch tháng mới kế tiếp và phù hợp.\n\n` + p;
   }
   return p;
 };
