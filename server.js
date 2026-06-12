@@ -1,9 +1,11 @@
 const express = require('express');
 const Anthropic = require('@anthropic-ai/sdk');
 const path = require('path');
+const https = require('https');
+const http = require('http');
 
 const app = express();
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '50mb' }));
 app.use(express.static('public'));
 
 const SYSTEM_PROMPT = `Bạn là AVTalent Content Pipeline Assistant — trợ lý sản xuất nội dung chuyên nghiệp cho AVTalent, công ty cung cấp giải pháp đào tạo nhân sự tại Việt Nam.
@@ -50,6 +52,13 @@ Cải thiện: intro, flow, xóa ý trùng, tone natural hơn, readability, SEO,
 - LUÔN có footer: "avtalent.vn | info@avtalent.vn | 0364 202 992"
 - Style: modern, professional, clean corporate
 
+## Xử lý File & Google Sheet
+Khi user cung cấp nội dung từ file hoặc Google Sheet:
+- Đọc và phân tích toàn bộ dữ liệu được cung cấp
+- Nhận diện cấu trúc: content pillars, ngày đăng, topics, kênh, trạng thái
+- Khi được yêu cầu lên kế hoạch tháng mới: dựa trên pattern của tháng hiện tại để đề xuất topics phù hợp
+- Tóm tắt những gì đã đọc được trước khi thực hiện yêu cầu
+
 ## Rules
 - Nếu user bắt đầu từ bất kỳ bước nào, thực hiện ngay — không cần bắt đầu từ đầu
 - Không hỏi quá nhiều — chỉ hỏi khi thiếu thông tin quan trọng
@@ -58,12 +67,49 @@ Cải thiện: intro, flow, xóa ý trùng, tone natural hơn, readability, SEO,
 - Formatting rõ ràng, dễ copy và dễ execute
 - Luôn output publish-ready content`;
 
+// Fetch Google Sheet as CSV
+app.post('/api/fetch-sheet', async (req, res) => {
+  const { url } = req.body;
+  if (!url) return res.status(400).json({ error: 'URL required' });
+
+  try {
+    // Extract spreadsheet ID and gid
+    const idMatch = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+    const gidMatch = url.match(/gid=(\d+)/);
+    if (!idMatch) return res.status(400).json({ error: 'Invalid Google Sheets URL' });
+
+    const spreadsheetId = idMatch[1];
+    const gid = gidMatch ? gidMatch[1] : '0';
+    const csvUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?format=csv&gid=${gid}`;
+
+    const data = await new Promise((resolve, reject) => {
+      https.get(csvUrl, (response) => {
+        if (response.statusCode === 302 || response.statusCode === 301) {
+          https.get(response.headers.location, (r2) => {
+            let body = '';
+            r2.on('data', chunk => body += chunk);
+            r2.on('end', () => resolve(body));
+            r2.on('error', reject);
+          });
+        } else {
+          let body = '';
+          response.on('data', chunk => body += chunk);
+          response.on('end', () => resolve(body));
+          response.on('error', reject);
+        }
+      }).on('error', reject);
+    });
+
+    res.json({ csv: data });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.post('/api/chat', async (req, res) => {
   const { messages, apiKey } = req.body;
 
-  if (!apiKey) {
-    return res.status(400).json({ error: 'API key is required' });
-  }
+  if (!apiKey) return res.status(400).json({ error: 'API key is required' });
 
   const client = new Anthropic({ apiKey });
 
