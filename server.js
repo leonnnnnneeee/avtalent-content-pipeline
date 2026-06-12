@@ -6,11 +6,12 @@ const fs = require('fs');
 const app = express();
 app.use(express.json({ limit: '10mb' }));
 
+// Read fresh every time, no cache, no static middleware
 app.get('/', (req, res) => {
-  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
-  res.setHeader('Pragma', 'no-cache');
+  const html = fs.readFileSync(path.join(__dirname, 'public', 'main.html'), 'utf8');
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
-  res.send(fs.readFileSync(path.join(__dirname, 'public', 'index.html'), 'utf8'));
+  res.setHeader('Cache-Control', 'no-store');
+  res.send(html);
 });
 
 app.post('/api/chat', async (req, res) => {
