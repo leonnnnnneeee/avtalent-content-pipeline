@@ -146,15 +146,15 @@ app.post('/api/generate-image', (req, res) => {
       { text: 'blurry, low quality, text, watermark, ugly, distorted', weight: -1 }
     ],
     cfg_scale: 7,
-    height: 576,
-    width: 896,
+    height: 1024,
+    width: 1024,
     samples: count || 2,
     steps: 30
   });
 
   const options = {
     hostname: 'api.stability.ai',
-    path: '/v1/generation/stable-diffusion-v1-6/text-to-image',
+    path: '/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
