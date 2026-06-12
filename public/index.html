@@ -108,6 +108,35 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);height:100vh
 .output-body tr:hover td{background:rgba(79,110,247,.04);color:var(--text);}
 .output-body blockquote{border-left:3px solid var(--accent);padding-left:14px;margin:8px 0;color:var(--muted);font-style:italic;}
 .output-body hr{border:none;border-top:1px solid var(--border);margin:12px 0;}
+
+/* SHEET IMPORT */
+.sheet-import-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;}
+.sheet-import-row{display:flex;gap:8px;align-items:center;}
+.btn-load-sheet{display:flex;align-items:center;gap:6px;padding:9px 16px;background:var(--accent);border:none;border-radius:8px;color:white;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);white-space:nowrap;transition:background .15s;flex-shrink:0;}
+.btn-load-sheet:hover{background:#3d5ce6;}
+.btn-load-sheet:disabled{background:var(--surface2);cursor:not-allowed;color:var(--muted);}
+#s1-sheet-status{margin-top:8px;font-size:12px;}
+.status-loading{color:var(--muted);}
+.status-ok{color:var(--green);}
+.status-err{color:var(--red);}
+.sheet-preview-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(79,110,247,.08);border:1px solid rgba(79,110,247,.2);border-radius:8px 8px 0 0;margin-top:12px;}
+.sheet-preview-header span{font-size:13px;font-weight:600;color:var(--accent);}
+.sheet-preview-btn{padding:4px 12px;background:transparent;border:1px solid rgba(79,110,247,.3);border-radius:6px;color:var(--accent);font-size:11px;cursor:pointer;font-family:var(--font);transition:all .15s;}
+.sheet-preview-btn:hover{background:var(--accent-soft);}
+.sheet-preview-btn.danger{border-color:rgba(239,68,68,.3);color:var(--red);}
+.sheet-preview-btn.danger:hover{background:rgba(239,68,68,.1);}
+.sheet-preview-table{border:1px solid rgba(79,110,247,.2);border-top:none;border-radius:0 0 8px 8px;overflow:auto;max-height:220px;background:var(--surface);}
+.sheet-preview-table table{border-collapse:collapse;width:100%;font-size:12px;}
+.sheet-preview-table th{background:var(--surface2);padding:7px 10px;text-align:left;border:1px solid var(--border);color:var(--accent);font-weight:600;white-space:nowrap;position:sticky;top:0;}
+.sheet-preview-table td{padding:6px 10px;border:1px solid var(--border);color:var(--muted);white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis;}
+.sheet-preview-table tr:hover td{background:rgba(79,110,247,.04);color:var(--text);}
+.section-sep{height:1px;background:var(--border);margin:18px 0;}
+/* NEXT STEPS */
+.next-steps-bar{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:10px;padding:14px 16px;margin-top:16px;}
+.next-steps-label{font-size:13px;font-weight:600;color:var(--green);margin-bottom:10px;}
+.next-steps-btns{display:flex;gap:8px;flex-wrap:wrap;}
+.next-btn{padding:8px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--font);transition:all .15s;}
+.next-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}
 </style>
 </head>
 <body>
@@ -185,9 +214,39 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);height:100vh
     <!-- S1: KẾ HOẠCH THÁNG -->
     <div id="v-s1" class="step-view" style="display:none">
       <h2>📅 Bước 1 — Kế hoạch nội dung tháng</h2>
-      <p class="desc">Điền thông tin chiến dịch để tạo content plan và lịch đăng bài đầy đủ</p>
+      <p class="desc">Import kế hoạch tháng trước từ Google Sheet để AI phân tích và tạo kế hoạch tháng mới</p>
+
+      <!-- SHEET IMPORT -->
+      <div class="form-group">
+        <label class="form-label">📊 Import từ Google Sheet (kế hoạch tháng trước)</label>
+        <div class="sheet-import-box" id="s1-import-box">
+          <div class="sheet-import-row">
+            <input class="form-input" id="s1-sheet-url" placeholder="Paste link Google Sheet..." style="flex:1"/>
+            <button class="btn-load-sheet" id="btn-load-s1" onclick="loadSheet()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+              Tải sheet
+            </button>
+          </div>
+          <div id="s1-sheet-status"></div>
+        </div>
+      </div>
+
+      <!-- SHEET PREVIEW -->
+      <div id="s1-sheet-preview" style="display:none">
+        <div class="sheet-preview-header">
+          <span id="s1-preview-label">📊 Đã load sheet</span>
+          <div style="display:flex;gap:8px">
+            <button class="sheet-preview-btn" onclick="viewSheet()">Xem sheet ↗</button>
+            <button class="sheet-preview-btn danger" onclick="clearSheet()">✕ Xoá</button>
+          </div>
+        </div>
+        <div class="sheet-preview-table" id="s1-preview-table"></div>
+      </div>
+
+      <div class="section-sep"></div>
+
       <div class="form-row">
-        <div class="form-group"><label class="form-label">Tháng</label>
+        <div class="form-group"><label class="form-label">Tháng cần lập kế hoạch</label>
           <select class="form-select" id="s1-month"><option>Tháng 7/2026</option><option>Tháng 8/2026</option><option>Tháng 9/2026</option><option>Tháng 10/2026</option><option>Tháng 11/2026</option><option>Tháng 12/2026</option></select></div>
         <div class="form-group"><label class="form-label">Mục tiêu</label>
           <select class="form-select" id="s1-goal"><option>Brand Awareness + Lead Gen</option><option>Brand Awareness</option><option>Lead Generation</option><option>Engagement</option></select></div>
@@ -199,7 +258,17 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);height:100vh
       <div class="form-group"><label class="form-label">Ghi chú thêm</label>
         <textarea class="form-textarea" id="s1-notes" placeholder="Sự kiện đặc biệt, target audience cụ thể..."></textarea></div>
       <button class="btn-gen" id="btn-s1" onclick="gen('s1')"><svg viewBox="0 0 24 24" fill="white"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>Tạo kế hoạch tháng</button>
+
+      <!-- OUTPUT + NEXT STEP LINKS -->
       <div id="out-s1"></div>
+      <div id="s1-next-steps" style="display:none" class="next-steps-bar">
+        <div class="next-steps-label">✅ Kế hoạch xong! Bước tiếp theo:</div>
+        <div class="next-steps-btns">
+          <button onclick="goNextWithContext('s2')" class="next-btn">💡 Generate Topics →</button>
+          <button onclick="goNextWithContext('s3')" class="next-btn">🎯 Title & Hook →</button>
+          <button onclick="goNextWithContext('s6')" class="next-btn">✍️ Viết bài ngay →</button>
+        </div>
+      </div>
     </div>
 
     <!-- S2: TOPICS -->
@@ -576,6 +645,160 @@ function md(t){
     .replace(/\n\n/g,'</p><p>')
     .replace(/^(?!<[htupbcl])(.+)$/gm,'$1');
 }
+
+
+// ── SHEET IMPORT (Bước 1) ────────────────────────────────
+let sheetCSV = '';
+let sheetURL = '';
+
+async function loadSheet() {
+  const url = document.getElementById('s1-sheet-url').value.trim();
+  if (!url) return;
+  const btn = document.getElementById('btn-load-s1');
+  const status = document.getElementById('s1-sheet-status');
+  btn.disabled = true;
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="white" style="width:14px;height:14px;animation:spin 1s linear infinite"><path d="M12 2a10 10 0 0 1 10 10"/></svg> Đang tải...';
+  status.innerHTML = '<span class="status-loading">⏳ Đang kết nối Google Sheet...</span>';
+
+  try {
+    const res = await fetch('/api/fetch-sheet', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ url })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+
+    sheetCSV = data.csv;
+    sheetURL = url;
+    status.innerHTML = '<span class="status-ok">✅ Sheet đã tải thành công!</span>';
+
+    // Show preview
+    renderSheetPreview(sheetCSV, url);
+    document.getElementById('s1-sheet-preview').style.display = 'block';
+
+    // Auto-fill month from data
+    autoDetectMonth(sheetCSV);
+
+  } catch(err) {
+    status.innerHTML = '<span class="status-err">❌ Lỗi: ' + err.message + ' — Hãy đảm bảo sheet đã share public.</span>';
+  }
+  btn.disabled = false;
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg> Tải lại';
+}
+
+function renderSheetPreview(csv, url) {
+  const lines = csv.trim().split('\n').slice(0, 12);
+  const rows = lines.map(l => {
+    const cells = [];
+    let cur = '', inQ = false;
+    for (let c of l) {
+      if (c === '"') inQ = !inQ;
+      else if (c === ',' && !inQ) { cells.push(cur); cur = ''; }
+      else cur += c;
+    }
+    cells.push(cur);
+    return cells;
+  });
+
+  // Only show first 7 cols to keep it clean
+  const maxCols = 7;
+  let tbl = '<table>';
+  rows.forEach((row, i) => {
+    tbl += i === 0 ? '<thead><tr>' : (i === 1 ? '<tbody><tr>' : '<tr>');
+    row.slice(0, maxCols).forEach(cell => {
+      const tag = i === 0 ? 'th' : 'td';
+      tbl += `<${tag}>${cell.replace(/"/g,'')}</${tag}>`;
+    });
+    tbl += i === 0 ? '</tr></thead>' : '</tr>';
+  });
+  tbl += '</tbody></table>';
+  document.getElementById('s1-preview-table').innerHTML = tbl;
+
+  // Count data rows
+  const dataRows = csv.trim().split('\n').length;
+  const idMatch = url.match(/\/d\/([^/]+)/);
+  const shortId = idMatch ? idMatch[1].slice(0,10) + '...' : 'sheet';
+  document.getElementById('s1-preview-label').textContent = `📊 ${shortId} · ${dataRows} dòng dữ liệu`;
+}
+
+function autoDetectMonth(csv) {
+  // Try detect next month from data
+  const months = ['Tháng 7/2026','Tháng 8/2026','Tháng 9/2026','Tháng 10/2026','Tháng 11/2026','Tháng 12/2026'];
+  const sel = document.getElementById('s1-month');
+  if (csv.includes('JUL') || csv.includes('07/2026') || csv.includes('tháng 7')) sel.value = 'Tháng 7/2026';
+  // Default: next month is 7
+}
+
+function viewSheet() {
+  if (sheetURL) window.open(sheetURL, '_blank');
+}
+
+function clearSheet() {
+  sheetCSV = '';
+  sheetURL = '';
+  document.getElementById('s1-sheet-url').value = '';
+  document.getElementById('s1-sheet-preview').style.display = 'none';
+  document.getElementById('s1-sheet-status').innerHTML = '';
+  document.getElementById('btn-load-s1').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg> Tải sheet';
+}
+
+// ── CONTEXT PASSING BETWEEN STEPS ────────────────────────
+let globalContext = ''; // carries plan output to next steps
+
+function goNextWithContext(stepId) {
+  // Grab output from step 1 and pre-fill context in next step
+  const out1 = document.getElementById('out-s1');
+  if (out1 && out1.innerText.trim()) {
+    globalContext = out1.innerText.trim();
+  }
+
+  show(stepId);
+
+  // Pre-fill context fields in next steps
+  setTimeout(() => {
+    if (stepId === 's2' && globalContext) {
+      const ctx = document.getElementById('s2-context');
+      if (ctx && !ctx.value) ctx.value = '[Từ kế hoạch tháng 1]:\n' + globalContext.slice(0, 800);
+    }
+    if (stepId === 's3' && globalContext) {
+      // Extract first topic hint
+    }
+    if (stepId === 's6' && globalContext) {
+      const brief = document.getElementById('s6-brief');
+      if (brief && !brief.value) brief.value = '[Context từ kế hoạch tháng]:\n' + globalContext.slice(0, 600);
+    }
+    // Scroll to top
+    document.getElementById('ca').scrollTop = 0;
+  }, 100);
+}
+
+// Show next steps after step 1 generates
+const origGen = gen;
+
+// Patch gen to show next-steps after s1
+const _genOrig = gen;
+gen = async function(id) {
+  // Inject sheet CSV into step1 prompt if available
+  if (id === 's1' && sheetCSV) {
+    window._s1SheetCSV = sheetCSV;
+  }
+  await _genOrig(id);
+  if (id === 's1') {
+    document.getElementById('s1-next-steps').style.display = 'block';
+    document.getElementById('ca').scrollTop = document.getElementById('ca').scrollHeight;
+  }
+};
+
+// Patch buildPrompt to include sheet in s1
+const _bpOrig = buildPrompt;
+buildPrompt = function(id) {
+  let p = _bpOrig(id);
+  if (id === 's1' && window._s1SheetCSV) {
+    p = `[KẾ HOẠCH THÁNG TRƯỚC - GOOGLE SHEET DATA]:\n${window._s1SheetCSV.slice(0,4000)}\n[END SHEET]\n\n` + p;
+    window._s1SheetCSV = null;
+  }
+  return p;
+};
 
 document.addEventListener('DOMContentLoaded',()=>show('home'));
 </script>
