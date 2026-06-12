@@ -188,4 +188,4 @@ app.post('/api/generate-image', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log('AVTalent Groq port ' + PORT));
+app.listen(PORT, () => console.log('AVTalent v2.2 Groq+Stability port ' + PORT));
