@@ -109,27 +109,26 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);height:100vh
 .output-body blockquote{border-left:3px solid var(--accent);padding-left:14px;margin:8px 0;color:var(--muted);font-style:italic;}
 .output-body hr{border:none;border-top:1px solid var(--border);margin:12px 0;}
 
-/* SHEET LINK & EMBED */
-.sheet-link-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;}
-.sheet-link-row{display:flex;gap:8px;align-items:center;}
-.btn-add-sheet{display:flex;align-items:center;gap:6px;padding:9px 16px;background:var(--accent);border:none;border-radius:8px;color:white;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);white-space:nowrap;transition:background .15s;flex-shrink:0;}
+/* ── GOOGLE SHEET IN STEP 1 ── */
+.sheet-input-row{display:flex;gap:8px;margin-bottom:12px;}
+.sheet-input-row .form-input{flex:1;}
+.btn-add-sheet{display:flex;align-items:center;gap:6px;padding:9px 16px;background:var(--accent);border:none;border-radius:8px;color:white;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);white-space:nowrap;flex-shrink:0;transition:background .15s;}
 .btn-add-sheet:hover{background:#3d5ce6;}
-.sheet-embed-wrap{border:1px solid rgba(79,110,247,.25);border-radius:10px;overflow:hidden;margin-top:12px;}
-.sheet-embed-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(79,110,247,.08);border-bottom:1px solid rgba(79,110,247,.2);}
-#s1-embed-label{font-size:13px;font-weight:600;color:var(--accent);}
-.sheet-embed-open{font-size:12px;color:var(--accent);text-decoration:none;padding:3px 10px;border:1px solid rgba(79,110,247,.3);border-radius:6px;transition:all .15s;}
-.sheet-embed-open:hover{background:var(--accent-soft);}
-.sheet-embed-note{font-size:11px;color:var(--muted);}
-.sheet-embed-close{background:transparent;border:none;color:var(--muted);font-size:14px;cursor:pointer;padding:2px 6px;border-radius:4px;}
-.sheet-embed-close:hover{color:var(--red);}
-.sheet-iframe{width:100%;height:420px;border:none;background:white;}
-.section-sep{height:1px;background:var(--border);margin:18px 0;}
-/* NEXT STEPS */
-.next-steps-bar{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:10px;padding:14px 16px;margin-top:16px;}
-.next-steps-label{font-size:13px;font-weight:600;color:var(--green);margin-bottom:10px;}
-.next-steps-btns{display:flex;gap:8px;flex-wrap:wrap;}
-.next-btn{padding:8px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--font);transition:all .15s;}
-.next-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}
+.sheet-embed-box{border:1px solid rgba(79,110,247,.3);border-radius:10px;overflow:hidden;margin-bottom:14px;}
+.sheet-embed-top{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:rgba(79,110,247,.08);border-bottom:1px solid rgba(79,110,247,.2);}
+.sheet-embed-top span{font-size:12px;font-weight:600;color:var(--accent);}
+.sheet-embed-actions{display:flex;gap:6px;align-items:center;}
+.sheet-open-btn{font-size:11px;color:var(--accent);text-decoration:none;padding:3px 10px;border:1px solid rgba(79,110,247,.3);border-radius:5px;}
+.sheet-open-btn:hover{background:var(--accent-soft);}
+.sheet-remove-btn{background:transparent;border:none;color:var(--muted);font-size:14px;cursor:pointer;padding:2px 6px;border-radius:4px;}
+.sheet-remove-btn:hover{color:var(--red);}
+.sheet-embed-box iframe{width:100%;height:380px;border:none;display:block;background:#fff;}
+/* ── NEXT STEPS BAR ── */
+.next-bar{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25);border-radius:10px;padding:14px 16px;margin-top:16px;}
+.next-bar-title{font-size:13px;font-weight:600;color:var(--green);margin-bottom:10px;}
+.next-bar-btns{display:flex;gap:8px;flex-wrap:wrap;}
+.next-step-btn{padding:8px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--font);transition:all .15s;}
+.next-step-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}
 </style>
 </head>
 <body>
@@ -207,39 +206,32 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);height:100vh
     <!-- S1: KẾ HOẠCH THÁNG -->
     <div id="v-s1" class="step-view" style="display:none">
       <h2>📅 Bước 1 — Kế hoạch nội dung tháng</h2>
-      <p class="desc">Import kế hoạch tháng trước từ Google Sheet để AI phân tích và tạo kế hoạch tháng mới</p>
+      <p class="desc">Import kế hoạch tháng trước từ Google Sheet, rồi tạo kế hoạch tháng mới</p>
 
-      <!-- SHEET LINK -->
       <div class="form-group">
-        <label class="form-label">📊 Kế hoạch tháng trước (Google Sheet)</label>
-        <div class="sheet-link-box" id="s1-link-box">
-          <div class="sheet-link-row">
-            <input class="form-input" id="s1-sheet-url" placeholder="Paste link Google Sheet để xem và dùng làm context..."/>
-            <button class="btn-add-sheet" onclick="addSheetLink()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M12 5v14M5 12h14"/></svg>
-              Add
-            </button>
+        <label class="form-label">📊 Google Sheet kế hoạch tháng trước (tuỳ chọn)</label>
+        <div class="sheet-input-row">
+          <input class="form-input" id="s1-sheet-url" placeholder="Paste link Google Sheet..."/>
+          <button class="btn-add-sheet" onclick="addSheet()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px"><path d="M12 5v14M5 12h14"/></svg>
+            Thêm Sheet
+          </button>
+        </div>
+        <div id="s1-embed" style="display:none" class="sheet-embed-box">
+          <div class="sheet-embed-top">
+            <span>📊 Google Sheet đã thêm — AI sẽ dùng để tham chiếu</span>
+            <div class="sheet-embed-actions">
+              <a id="s1-open-link" href="#" target="_blank" class="sheet-open-btn">Mở full ↗</a>
+              <button class="sheet-remove-btn" onclick="removeSheet()">✕</button>
+            </div>
           </div>
+          <iframe id="s1-iframe" src="" frameborder="0" allowfullscreen></iframe>
         </div>
       </div>
 
-      <!-- SHEET EMBED -->
-      <div id="s1-sheet-embed" style="display:none" class="sheet-embed-wrap">
-        <div class="sheet-embed-header">
-          <span id="s1-embed-label">📊 Google Sheet</span>
-          <div style="display:flex;gap:8px;align-items:center">
-            <a id="s1-open-link" href="#" target="_blank" class="sheet-embed-open">Mở full ↗</a>
-            <span class="sheet-embed-note">AI sẽ dùng link này để phân tích kế hoạch cũ</span>
-            <button class="sheet-embed-close" onclick="clearSheetLink()">✕</button>
-          </div>
-        </div>
-        <iframe id="s1-iframe" src="" frameborder="0" class="sheet-iframe" allowfullscreen></iframe>
-      </div>
-
-      <div class="section-sep"></div>
-
+      <div style="height:1px;background:var(--border);margin:6px 0 16px"></div>
       <div class="form-row">
-        <div class="form-group"><label class="form-label">Tháng cần lập kế hoạch</label>
+        <div class="form-group"><label class="form-label">Tháng</label>
           <select class="form-select" id="s1-month"><option>Tháng 7/2026</option><option>Tháng 8/2026</option><option>Tháng 9/2026</option><option>Tháng 10/2026</option><option>Tháng 11/2026</option><option>Tháng 12/2026</option></select></div>
         <div class="form-group"><label class="form-label">Mục tiêu</label>
           <select class="form-select" id="s1-goal"><option>Brand Awareness + Lead Gen</option><option>Brand Awareness</option><option>Lead Generation</option><option>Engagement</option></select></div>
@@ -251,15 +243,14 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);height:100vh
       <div class="form-group"><label class="form-label">Ghi chú thêm</label>
         <textarea class="form-textarea" id="s1-notes" placeholder="Sự kiện đặc biệt, target audience cụ thể..."></textarea></div>
       <button class="btn-gen" id="btn-s1" onclick="gen('s1')"><svg viewBox="0 0 24 24" fill="white"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>Tạo kế hoạch tháng</button>
-
-      <!-- OUTPUT + NEXT STEP LINKS -->
       <div id="out-s1"></div>
-      <div id="s1-next-steps" style="display:none" class="next-steps-bar">
-        <div class="next-steps-label">✅ Kế hoạch xong! Bước tiếp theo:</div>
-        <div class="next-steps-btns">
-          <button onclick="goNextWithContext('s2')" class="next-btn">💡 Generate Topics →</button>
-          <button onclick="goNextWithContext('s3')" class="next-btn">🎯 Title & Hook →</button>
-          <button onclick="goNextWithContext('s6')" class="next-btn">✍️ Viết bài ngay →</button>
+      <div id="s1-next" style="display:none" class="next-bar">
+        <div class="next-bar-title">✅ Kế hoạch xong! Bước tiếp theo:</div>
+        <div class="next-bar-btns">
+          <button class="next-step-btn" onclick="nextStep('s2')">💡 Generate Topics →</button>
+          <button class="next-step-btn" onclick="nextStep('s3')">🎯 Title & Hook →</button>
+          <button class="next-step-btn" onclick="nextStep('s6')">✍️ Viết bài ngay →</button>
+          <button class="next-step-btn" onclick="nextStep('s9')">🖼 Image Prompts →</button>
         </div>
       </div>
     </div>
@@ -640,90 +631,68 @@ function md(t){
 }
 
 
-// ── SHEET LINK & EMBED (Bước 1) ─────────────────────────
-let sheetURL = '';
+// ── GOOGLE SHEET (Bước 1) ────────────────────────────────
+let s1SheetURL = '';
 
-function addSheetLink() {
+function addSheet() {
   const url = document.getElementById('s1-sheet-url').value.trim();
-  if (!url) return;
-
-  // Convert to embed URL
-  const idMatch = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
-  const gidMatch = url.match(/gid=(\d+)/);
-  if (!idMatch) { alert('Link không hợp lệ. Hãy dùng link Google Sheet dạng: docs.google.com/spreadsheets/d/...'); return; }
-
-  const id = idMatch[1];
-  const gid = gidMatch ? gidMatch[1] : '0';
-  const embedUrl = `https://docs.google.com/spreadsheets/d/${id}/preview?gid=${gid}`;
-
-  sheetURL = url;
-
-  // Show embed
+  if (!url) { alert('Vui lòng nhập link Google Sheet!'); return; }
+  const m = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+  if (!m) { alert('Link không hợp lệ. Dùng link dạng: docs.google.com/spreadsheets/d/...'); return; }
+  const id = m[1];
+  const gid = (url.match(/gid=(\d+)/) || [])[1] || '0';
+  const embedUrl = `https://docs.google.com/spreadsheets/d/${id}/preview?gid=${gid}&rm=minimal`;
+  s1SheetURL = url;
   document.getElementById('s1-iframe').src = embedUrl;
   document.getElementById('s1-open-link').href = url;
-  document.getElementById('s1-embed-label').textContent = '📊 ' + id.slice(0,12) + '...';
-  document.getElementById('s1-sheet-embed').style.display = 'block';
-
-  // Scroll to iframe
-  setTimeout(() => document.getElementById('s1-sheet-embed').scrollIntoView({behavior:'smooth', block:'nearest'}), 100);
+  document.getElementById('s1-embed').style.display = 'block';
 }
 
-function clearSheetLink() {
-  sheetURL = '';
+function removeSheet() {
+  s1SheetURL = '';
   document.getElementById('s1-sheet-url').value = '';
   document.getElementById('s1-iframe').src = '';
-  document.getElementById('s1-sheet-embed').style.display = 'none';
+  document.getElementById('s1-embed').style.display = 'none';
 }
 
-// ── CONTEXT PASSING BETWEEN STEPS ────────────────────────
-let globalContext = ''; // carries plan output to next steps
+// ── NEXT STEP LINKING ────────────────────────────────────
+let s1Output = '';
 
-function goNextWithContext(stepId) {
-  // Grab output from step 1 and pre-fill context in next step
-  const out1 = document.getElementById('out-s1');
-  if (out1 && out1.innerText.trim()) {
-    globalContext = out1.innerText.trim();
+function nextStep(stepId) {
+  // Carry output to next step's context field if available
+  if (s1Output) {
+    const ctxMap = { 's2': 's2-context', 's6': 's6-brief' };
+    const ctxId = ctxMap[stepId];
+    if (ctxId) {
+      const el = document.getElementById(ctxId);
+      if (el && !el.value) el.value = '[Context từ Bước 1 - Kế hoạch tháng]:\n' + s1Output.slice(0, 600) + '...';
+    }
   }
-
   show(stepId);
-
-  // Pre-fill context fields in next steps
-  setTimeout(() => {
-    if (stepId === 's2' && globalContext) {
-      const ctx = document.getElementById('s2-context');
-      if (ctx && !ctx.value) ctx.value = '[Từ kế hoạch tháng 1]:\n' + globalContext.slice(0, 800);
-    }
-    if (stepId === 's3' && globalContext) {
-      // Extract first topic hint
-    }
-    if (stepId === 's6' && globalContext) {
-      const brief = document.getElementById('s6-brief');
-      if (brief && !brief.value) brief.value = '[Context từ kế hoạch tháng]:\n' + globalContext.slice(0, 600);
-    }
-    // Scroll to top
-    document.getElementById('ca').scrollTop = 0;
-  }, 100);
 }
 
-// Show next steps after step 1 generates
-const origGen = gen;
-
-// Patch gen to show next-steps after s1
-const _genOrig = gen;
+// ── PATCH GEN FOR STEP 1 ─────────────────────────────────
+const _gen = gen;
 gen = async function(id) {
-  await _genOrig(id);
+  // Inject sheet URL into s1 prompt
+  if (id === 's1') window.__s1sheet = s1SheetURL;
+  await _gen(id);
+  // After s1 finishes, show next steps bar
   if (id === 's1') {
-    document.getElementById('s1-next-steps').style.display = 'block';
+    const outEl = document.getElementById('out-s1');
+    if (outEl) s1Output = outEl.innerText || '';
+    document.getElementById('s1-next').style.display = 'block';
     document.getElementById('ca').scrollTop = document.getElementById('ca').scrollHeight;
   }
 };
 
-// Patch buildPrompt to include sheet URL as context in s1
-const _bpOrig = buildPrompt;
+// ── PATCH BUILDPROMPT FOR STEP 1 ─────────────────────────
+const _bp = buildPrompt;
 buildPrompt = function(id) {
-  let p = _bpOrig(id);
-  if (id === 's1' && sheetURL) {
-    p = `[THAM KHẢO KẾ HOẠCH THÁNG TRƯỚC TẠI: ${sheetURL}]\nDựa trên kế hoạch tháng trước (June 2026) với các pillars: Uy tín & Chuyên sâu, Kỹ năng & Phát triển, Networking & Community - hãy tạo kế hoạch tháng mới kế tiếp và phù hợp.\n\n` + p;
+  let p = _bp(id);
+  if (id === 's1' && window.__s1sheet) {
+    p = `[Tham chiếu kế hoạch tháng trước từ Google Sheet: ${window.__s1sheet}]\nDựa trên cấu trúc và content pillars của kế hoạch tháng 6/2026, hãy tạo kế hoạch mới cho tháng tiếp theo theo đúng format.\n\n` + p;
+    window.__s1sheet = null;
   }
   return p;
 };
