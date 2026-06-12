@@ -336,32 +336,46 @@ app.post('/api/generate-image-pollinations', (req, res) => {
     '?width=896&height=576&seed=' + (seed || Math.floor(Math.random()*99999)) + 
     '&nologo=true&enhance=true&model=flux';
 
-  https.get(url, (response) => {
-    if (response.statusCode === 301 || response.statusCode === 302) {
-      https.get(response.headers.location, (r2) => {
-        const chunks = [];
-        r2.on('data', c => chunks.push(c));
-        r2.on('end', () => {
-          const b64 = Buffer.concat(chunks).toString('base64');
-          const ct = r2.headers['content-type'] || 'image/jpeg';
-          res.json({ image: b64, type: ct });
-        });
-        r2.on('error', e => res.json({ error: e.message }));
-      });
-    } else {
+  console.log('Fetching:', url.slice(0, 100));
+
+  function fetchImage(targetUrl, redirectCount) {
+    if (redirectCount > 5) return res.json({ error: 'Too many redirects' });
+    
+    const req2 = https.get(targetUrl, { timeout: 120000 }, (response) => {
+      console.log('Status:', response.statusCode, 'Content-Type:', response.headers['content-type']);
+      
+      if (response.statusCode === 301 || response.statusCode === 302) {
+        return fetchImage(response.headers.location, redirectCount + 1);
+      }
+      
       const chunks = [];
       response.on('data', c => chunks.push(c));
       response.on('end', () => {
+        const buf = Buffer.concat(chunks);
         const ct = response.headers['content-type'] || 'image/jpeg';
-        if (ct.includes('json') || ct.includes('text')) {
-          return res.json({ error: chunks.join('').slice(0, 200) });
+        if (ct.includes('json') || ct.includes('text') || ct.includes('html')) {
+          return res.json({ error: 'API error: ' + buf.toString().slice(0, 200) });
         }
-        const b64 = Buffer.concat(chunks).toString('base64');
-        res.json({ image: b64, type: ct });
+        if (buf.length < 1000) {
+          return res.json({ error: 'Image too small, likely an error: ' + buf.toString().slice(0, 100) });
+        }
+        res.json({ image: buf.toString('base64'), type: ct });
       });
       response.on('error', e => res.json({ error: e.message }));
-    }
-  }).on('error', e => res.json({ error: e.message }));
+    });
+    
+    req2.on('error', e => {
+      console.log('Request error:', e.message);
+      res.json({ error: 'Connection error: ' + e.message });
+    });
+    
+    req2.on('timeout', () => {
+      req2.destroy();
+      res.json({ error: 'Timeout - Pollinations mat qua nhieu thoi gian. Thu lai sau.' });
+    });
+  }
+
+  fetchImage(url, 0);
 });
 
 const PORT = process.env.PORT || 3000;
