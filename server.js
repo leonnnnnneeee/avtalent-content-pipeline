@@ -187,5 +187,75 @@ app.post('/api/generate-image', (req, res) => {
   apiReq.end();
 });
 
+
+app.post('/api/generate-image-ideogram', (req, res) => {
+  const { prompt, style } = req.body;
+  const key = process.env.IDEOGRAM_API_KEY;
+
+  if (!key) {
+    return res.json({ error: 'IDEOGRAM_API_KEY chua duoc set tren Railway' });
+  }
+
+  const styleMap = {
+    'Modern Corporate': 'DESIGN',
+    'Minimalist Professional': 'DESIGN',
+    'Bold & Dynamic': 'DESIGN',
+    'Warm & Human': 'REALISTIC',
+    'Blue & Gold Premium': 'DESIGN'
+  };
+
+  const aspectMap = {
+    'Website (852x568px)': 'ASPECT_16_9',
+    'Facebook': 'ASPECT_1_1',
+    'Ca hai': 'ASPECT_1_1'
+  };
+
+  const body = JSON.stringify({
+    image_request: {
+      prompt: prompt,
+      aspect_ratio: aspectMap[req.body.channel] || 'ASPECT_1_1',
+      model: 'V_2',
+      style_type: styleMap[style] || 'DESIGN',
+      magic_prompt_option: 'AUTO',
+      num_images: 2
+    }
+  });
+
+  const options = {
+    hostname: 'api.ideogram.ai',
+    path: '/generate',
+    method: 'POST',
+    headers: {
+      'Api-Key': key,
+      'Content-Type': 'application/json',
+      'Content-Length': Buffer.byteLength(body)
+    }
+  };
+
+  const apiReq = https.request(options, (apiRes) => {
+    let raw = '';
+    apiRes.on('data', chunk => raw += chunk.toString());
+    apiRes.on('end', () => {
+      try {
+        console.log('Ideogram status:', apiRes.statusCode, raw.slice(0, 200));
+        const parsed = JSON.parse(raw);
+        if (parsed.error || (parsed.detail && !parsed.data)) {
+          return res.json({ error: JSON.stringify(parsed.detail || parsed.error) });
+        }
+        const images = (parsed.data || []).map(function(img) {
+          return { url: img.url, prompt: img.prompt };
+        });
+        res.json({ images: images });
+      } catch(e) {
+        res.json({ error: 'Parse error: ' + raw.slice(0, 300) });
+      }
+    });
+  });
+
+  apiReq.on('error', (e) => res.json({ error: e.message }));
+  apiReq.write(body);
+  apiReq.end();
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log('AVTalent Groq port ' + PORT));
