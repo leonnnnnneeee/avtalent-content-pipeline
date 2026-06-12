@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AVTalent Content Pipeline</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --border: #2e3350;
+    --accent: #4f6ef7;
+    --accent-soft: rgba(79,110,247,0.12);
+    --accent2: #7c3aed;
+    --text: #e8eaf6;
+    --muted: #7b82a8;
+    --green: #22c55e;
+    --red: #ef4444;
+    --radius: 12px;
+    --font: 'Inter', sans-serif;
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    overflow: hidden;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 280px;
+    flex-shrink: 0;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .logo {
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo-mark {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+
+  .logo-icon {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    color: white;
+  }
+
+  .logo-text {
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--text);
+  }
+
+  .logo-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-left: 42px;
+  }
+
+  .sidebar-section {
+    padding: 16px 12px 8px;
+  }
+
+  .sidebar-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    padding: 0 8px;
+    margin-bottom: 6px;
+  }
+
+  .quick-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-size: 13px;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    transition: all 0.15s;
+    font-family: var(--font);
+  }
+
+  .quick-btn:hover {
+    background: var(--surface2);
+    color: var(--text);
+  }
+
+  .quick-btn .step-num {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: var(--surface2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    flex-shrink: 0;
+    color: var(--accent);
+  }
+
+  .quick-btn:hover .step-num {
+    background: var(--accent-soft);
+  }
+
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .api-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .api-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--red);
+    flex-shrink: 0;
+  }
+
+  .api-dot.connected { background: var(--green); }
+
+  .api-label {
+    font-size: 12px;
+    color: var(--muted);
+    flex: 1;
+  }
+
+  .api-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: var(--text);
+    font-size: 12px;
+    font-family: var(--font);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .api-input:focus { border-color: var(--accent); }
+  .api-input::placeholder { color: var(--muted); }
+
+  /* MAIN */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 0;
+  }
+
+  .topbar {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  .topbar-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .topbar-sub {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .btn-clear {
+    padding: 6px 14px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    color: var(--muted);
+    font-size: 12px;
+    cursor: pointer;
+    font-family: var(--font);
+    transition: all 0.15s;
+  }
+
+  .btn-clear:hover {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  /* MESSAGES */
+  .messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    scroll-behavior: smooth;
+  }
+
+  .messages::-webkit-scrollbar { width: 4px; }
+  .messages::-webkit-scrollbar-track { background: transparent; }
+  .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .welcome {
+    text-align: center;
+    padding: 60px 40px;
+    max-width: 600px;
+    margin: auto;
+  }
+
+  .welcome-icon {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin: 0 auto 20px;
+  }
+
+  .welcome h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .welcome p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 28px;
+  }
+
+  .welcome-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .chip {
+    padding: 8px 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 13px;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .chip:hover {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .msg {
+    display: flex;
+    gap: 12px;
+    max-width: 860px;
+    animation: fadeIn 0.2s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .msg.user { flex-direction: row-reverse; margin-left: auto; }
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+    font-weight: 600;
+  }
+
+  .avatar.ai {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white;
+  }
+
+  .avatar.user {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  .bubble {
+    padding: 14px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.65;
+    max-width: 720px;
+  }
+
+  .msg.ai .bubble {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  .msg.user .bubble {
+    background: var(--accent-soft);
+    border: 1px solid rgba(79,110,247,0.2);
+    color: var(--text);
+  }
+
+  /* Markdown in bubble */
+  .bubble h1, .bubble h2, .bubble h3 {
+    font-weight: 700;
+    margin: 16px 0 8px;
+    color: var(--text);
+  }
+  .bubble h1 { font-size: 18px; }
+  .bubble h2 { font-size: 16px; }
+  .bubble h3 { font-size: 14px; color: var(--accent); }
+
+  .bubble p { margin-bottom: 10px; }
+  .bubble p:last-child { margin-bottom: 0; }
+
+  .bubble ul, .bubble ol {
+    padding-left: 20px;
+    margin-bottom: 10px;
+  }
+  .bubble li { margin-bottom: 4px; }
+
+  .bubble strong { font-weight: 600; color: var(--text); }
+  .bubble em { color: var(--muted); font-style: italic; }
+
+  .bubble code {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-family: 'Menlo', monospace;
+    font-size: 12px;
+    color: #7dd3fc;
+  }
+
+  .bubble pre {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    margin: 10px 0;
+    overflow-x: auto;
+  }
+
+  .bubble pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 13px;
+    color: #e2e8f0;
+  }
+
+  .bubble table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 10px 0;
+    font-size: 13px;
+  }
+
+  .bubble th {
+    background: var(--surface2);
+    padding: 8px 12px;
+    text-align: left;
+    border: 1px solid var(--border);
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .bubble td {
+    padding: 7px 12px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    vertical-align: top;
+  }
+
+  .bubble tr:hover td { background: rgba(79,110,247,0.04); color: var(--text); }
+
+  .bubble blockquote {
+    border-left: 3px solid var(--accent);
+    padding-left: 14px;
+    margin: 10px 0;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .bubble hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 14px 0;
+  }
+
+  .typing-dot {
+    display: inline-flex;
+    gap: 4px;
+    align-items: center;
+    padding: 4px 0;
+  }
+
+  .typing-dot span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--muted);
+    animation: pulse 1.2s ease infinite;
+  }
+
+  .typing-dot span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes pulse {
+    0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+    40% { opacity: 1; transform: scale(1); }
+  }
+
+  /* COPY BUTTON */
+  .msg-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+
+  .msg:hover .msg-actions { opacity: 1; }
+
+  .action-btn {
+    padding: 4px 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--muted);
+    font-size: 11px;
+    cursor: pointer;
+    font-family: var(--font);
+    transition: all 0.15s;
+  }
+
+  .action-btn:hover {
+    color: var(--text);
+    border-color: var(--accent);
+  }
+
+  /* INPUT */
+  .input-area {
+    padding: 16px 24px 20px;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .input-wrapper {
+    display: flex;
+    gap: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    transition: border-color 0.15s;
+  }
+
+  .input-wrapper:focus-within {
+    border-color: var(--accent);
+  }
+
+  #userInput {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-size: 14px;
+    font-family: var(--font);
+    resize: none;
+    min-height: 24px;
+    max-height: 160px;
+    line-height: 1.5;
+  }
+
+  #userInput::placeholder { color: var(--muted); }
+
+  .send-btn {
+    width: 36px;
+    height: 36px;
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+    align-self: flex-end;
+  }
+
+  .send-btn:hover { background: #3d5ce6; }
+  .send-btn:disabled { background: var(--surface2); cursor: not-allowed; }
+
+  .send-btn svg { width: 16px; height: 16px; fill: white; }
+
+  .input-hint {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 8px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-mark">
+      <div class="logo-icon">AV</div>
+      <span class="logo-text">AVTalent</span>
+    </div>
+    <div class="logo-sub">Content Pipeline Assistant</div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">9 Bước Pipeline</div>
+    <button class="quick-btn" onclick="sendQuick('Lên kế hoạch nội dung tháng này cho AVTalent')">
+      <span class="step-num">1</span> Kế hoạch tháng
+    </button>
+    <button class="quick-btn" onclick="sendQuick('Generate topics cho chiến dịch tháng này')">
+      <span class="step-num">2</span> Generate Topics
+    </button>
+    <button class="quick-btn" onclick="sendQuick('Tạo title và hook cho topic')">
+      <span class="step-num">3</span> Title & Hook
+    </button>
+    <button class="quick-btn" onclick="sendQuick('Tạo content brief chi tiết cho bài viết')">
+      <span class="step-num">4</span> Content Brief
+    </button>
+    <button class="quick-btn" onclick="sendQuick('Review và cải thiện brief hiện tại')">
+      <span class="step-num">5</span> Review Brief
+    </button>
+    <button class="quick-btn" onclick="sendQuick('Viết full article dựa trên brief')">
+      <span class="step-num">6</span> Viết Full Content
+    </button>
+    <button class="quick-btn" onclick="sendQuick('Edit và polish bài viết này')">
+      <span class="step-num">7</span> Edit & Polish
+    </button>
+    <button class="quick-btn" onclick="sendQuick('Chuyển bài website thành Facebook post')">
+      <span class="step-num">8</span> Convert Channel
+    </button>
+    <button class="quick-btn" onclick="sendQuick('Tạo image ideas và AI prompts cho bài viết')">
+      <span class="step-num">9</span> Image Prompts
+    </button>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="api-row">
+      <div class="api-dot" id="apiDot"></div>
+      <span class="api-label" id="apiLabel">Chưa kết nối API</span>
+    </div>
+    <input
+      type="password"
+      class="api-input"
+      id="apiKey"
+      placeholder="Nhập Anthropic API Key..."
+      oninput="checkApiKey(this.value)"
+    />
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">Content Pipeline</div>
+      <div class="topbar-sub">AVTalent · Giải pháp đào tạo nhân sự</div>
+    </div>
+    <button class="btn-clear" onclick="clearChat()">Xoá chat</button>
+  </div>
+
+  <div class="messages" id="messages">
+    <div class="welcome" id="welcome">
+      <div class="welcome-icon">✍️</div>
+      <h2>Chào mừng đến AVTalent Content Pipeline</h2>
+      <p>Trợ lý AI hỗ trợ toàn bộ quy trình sản xuất nội dung — từ kế hoạch tháng đến bài viết hoàn chỉnh, image prompts và chuyển đổi kênh.</p>
+      <div class="welcome-chips">
+        <span class="chip" onclick="sendQuick('Lên kế hoạch nội dung tháng 7 cho AVTalent')">🗓 Kế hoạch tháng 7</span>
+        <span class="chip" onclick="sendQuick('Tạo 5 topics về chủ đề đào tạo nhân sự')">💡 Generate topics</span>
+        <span class="chip" onclick="sendQuick('Viết bài về lợi ích của đào tạo nội bộ cho doanh nghiệp')">✍️ Viết bài ngay</span>
+        <span class="chip" onclick="sendQuick('Tạo image prompt cho bài viết về L&D')">🖼 Image prompts</span>
+        <span class="chip" onclick="sendQuick('Chuyển bài website thành Facebook post')">📱 Convert kênh</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="input-area">
+    <div class="input-wrapper">
+      <textarea
+        id="userInput"
+        placeholder="Nhập yêu cầu... (Shift+Enter xuống dòng, Enter gửi)"
+        rows="1"
+        onkeydown="handleKey(event)"
+        oninput="autoResize(this)"
+      ></textarea>
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled>
+        <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+      </button>
+    </div>
+    <div class="input-hint">Nhập API key để bắt đầu · Hỗ trợ Markdown, bảng, code blocks</div>
+  </div>
+</main>
+
+<script>
+let messages = [];
+let apiKey = '';
+let isStreaming = false;
+
+function checkApiKey(val) {
+  apiKey = val.trim();
+  const dot = document.getElementById('apiDot');
+  const label = document.getElementById('apiLabel');
+  const btn = document.getElementById('sendBtn');
+  if (apiKey.startsWith('sk-') && apiKey.length > 20) {
+    dot.classList.add('connected');
+    label.textContent = 'API đã kết nối';
+    btn.disabled = false;
+  } else {
+    dot.classList.remove('connected');
+    label.textContent = 'Chưa kết nối API';
+    btn.disabled = true;
+  }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 160) + 'px';
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    if (!isStreaming) sendMessage();
+  }
+}
+
+function renderMarkdown(text) {
+  return text
+    .replace(/^#{3} (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^#{2} (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^#{1} (.+)$/gm, '<h1>$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/`([^`\n]+)`/g, '<code>$1</code>')
+    .replace(/^```[\w]*\n([\s\S]*?)^```$/gm, '<pre><code>$1</code></pre>')
+    .replace(/^---$/gm, '<hr>')
+    .replace(/^\> (.+)$/gm, '<blockquote>$1</blockquote>')
+    .replace(/^\| (.+) \|$/gm, (match) => {
+      const cells = match.slice(1, -1).split(' | ');
+      return '<tr>' + cells.map(c => {
+        const t = c.trim();
+        return t.match(/^[-:]+$/) ? '' : `<td>${t}</td>`;
+      }).join('') + '</tr>';
+    })
+    .replace(/(<tr>.*?<\/tr>\n?)+/gs, (m) => {
+      const rows = m.trim().split('\n').filter(r => r && r !== '<tr></tr>');
+      if (!rows.length) return m;
+      const header = rows[0].replace(/td>/g, 'th>');
+      const body = rows.slice(2).join('\n');
+      return `<table><thead>${header}</thead><tbody>${body}</tbody></table>`;
+    })
+    .replace(/^\* (.+)$/gm, '<li>$1</li>')
+    .replace(/^\- (.+)$/gm, '<li>$1</li>')
+    .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>\n?)+/g, m => `<ul>${m}</ul>`)
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/^(?!<[huptbcl])(.+)$/gm, '$1')
+    .replace(/(<p>)?(<h[123]>)/g, '$2')
+    .replace(/(<\/h[123]>)(<\/p>)?/g, '$1');
+}
+
+function addMessage(role, content) {
+  const welcome = document.getElementById('welcome');
+  if (welcome) welcome.remove();
+
+  const container = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+
+  const avatar = document.createElement('div');
+  avatar.className = `avatar ${role}`;
+  avatar.textContent = role === 'ai' ? 'AV' : '👤';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+
+  const msgContent = document.createElement('div');
+  msgContent.className = 'msg-content';
+
+  if (role === 'ai') {
+    msgContent.innerHTML = renderMarkdown(content);
+  } else {
+    msgContent.textContent = content;
+  }
+
+  const actions = document.createElement('div');
+  actions.className = 'msg-actions';
+  actions.innerHTML = `<button class="action-btn" onclick="copyText(this, '${encodeURIComponent(content)}')">Copy</button>`;
+
+  bubble.appendChild(msgContent);
+  bubble.appendChild(actions);
+
+  if (role === 'ai') {
+    div.appendChild(avatar);
+    div.appendChild(bubble);
+  } else {
+    div.appendChild(bubble);
+    div.appendChild(avatar);
+  }
+
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+
+  return { bubble, msgContent };
+}
+
+function copyText(btn, encoded) {
+  navigator.clipboard.writeText(decodeURIComponent(encoded));
+  btn.textContent = 'Đã copy!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+}
+
+function addTyping() {
+  const welcome = document.getElementById('welcome');
+  if (welcome) welcome.remove();
+
+  const container = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'msg ai';
+  div.id = 'typing';
+
+  const avatar = document.createElement('div');
+  avatar.className = 'avatar ai';
+  avatar.textContent = 'AV';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  bubble.innerHTML = '<div class="typing-dot"><span></span><span></span><span></span></div>';
+
+  div.appendChild(avatar);
+  div.appendChild(bubble);
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+  return div;
+}
+
+async function sendMessage(text) {
+  const input = document.getElementById('userInput');
+  const userText = text || input.value.trim();
+  if (!userText || isStreaming || !apiKey) return;
+
+  input.value = '';
+  input.style.height = 'auto';
+  isStreaming = true;
+  document.getElementById('sendBtn').disabled = true;
+
+  addMessage('user', userText);
+  messages.push({ role: 'user', content: userText });
+
+  const typing = addTyping();
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages, apiKey })
+    });
+
+    typing.remove();
+
+    const { bubble, msgContent } = addMessage('ai', '');
+    let fullText = '';
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      const chunk = decoder.decode(value);
+      const lines = chunk.split('\n');
+
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          const data = line.slice(6);
+          if (data === '[DONE]') break;
+          try {
+            const parsed = JSON.parse(data);
+            if (parsed.text) {
+              fullText += parsed.text;
+              msgContent.innerHTML = renderMarkdown(fullText);
+              document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+            }
+            if (parsed.error) {
+              msgContent.innerHTML = `<span style="color:var(--red)">Lỗi: ${parsed.error}</span>`;
+            }
+          } catch(e) {}
+        }
+      }
+    }
+
+    // Update copy button with full text
+    const copyBtn = bubble.querySelector('.action-btn');
+    if (copyBtn) {
+      copyBtn.onclick = () => {
+        navigator.clipboard.writeText(fullText);
+        copyBtn.textContent = 'Đã copy!';
+        setTimeout(() => copyBtn.textContent = 'Copy', 1500);
+      };
+    }
+
+    messages.push({ role: 'assistant', content: fullText });
+
+  } catch (err) {
+    typing.remove();
+    addMessage('ai', `❌ Lỗi kết nối: ${err.message}`);
+  }
+
+  isStreaming = false;
+  if (apiKey.startsWith('sk-')) {
+    document.getElementById('sendBtn').disabled = false;
+  }
+}
+
+function sendQuick(text) {
+  sendMessage(text);
+}
+
+function clearChat() {
+  messages = [];
+  const container = document.getElementById('messages');
+  container.innerHTML = `
+    <div class="welcome" id="welcome">
+      <div class="welcome-icon">✍️</div>
+      <h2>Chào mừng đến AVTalent Content Pipeline</h2>
+      <p>Trợ lý AI hỗ trợ toàn bộ quy trình sản xuất nội dung — từ kế hoạch tháng đến bài viết hoàn chỉnh, image prompts và chuyển đổi kênh.</p>
+      <div class="welcome-chips">
+        <span class="chip" onclick="sendQuick('Lên kế hoạch nội dung tháng 7 cho AVTalent')">🗓 Kế hoạch tháng 7</span>
+        <span class="chip" onclick="sendQuick('Tạo 5 topics về chủ đề đào tạo nhân sự')">💡 Generate topics</span>
+        <span class="chip" onclick="sendQuick('Viết bài về lợi ích của đào tạo nội bộ cho doanh nghiệp')">✍️ Viết bài ngay</span>
+        <span class="chip" onclick="sendQuick('Tạo image prompt cho bài viết về L&D')">🖼 Image prompts</span>
+        <span class="chip" onclick="sendQuick('Chuyển bài website thành Facebook post')">📱 Convert kênh</span>
+      </div>
+    </div>
+  `;
+}
+</script>
+</body>
+</html>
