@@ -42,59 +42,65 @@ app.post('/api/fetch-sheet', (req, res) => {
 
 app.post('/api/chat', (req, res) => {
   const { messages } = req.body;
-  const key = process.env.GEMINI_API_KEY;
+  const key = process.env.GROQ_API_KEY;
+
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+
   if (!key) {
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.write('data: ' + JSON.stringify({ error: 'GEMINI_API_KEY chua duoc set tren Railway Variables' }) + '\n\n');
+    res.write('data: ' + JSON.stringify({ error: 'GROQ_API_KEY chua duoc set tren Railway' }) + '\n\n');
     res.write('data: [DONE]\n\n');
     return res.end();
   }
 
   const userMsg = messages[messages.length - 1].content;
-  const prompt = SYSTEM_PROMPT + '\n\n' + userMsg;
 
   const body = JSON.stringify({
-    contents: [{ role: 'user', parts: [{ text: prompt }] }],
-    generationConfig: { maxOutputTokens: 4096, temperature: 0.7 }
+    model: 'llama-3.3-70b-versatile',
+    messages: [
+      { role: 'system', content: SYSTEM_PROMPT },
+      { role: 'user', content: userMsg }
+    ],
+    max_tokens: 4096,
+    temperature: 0.7,
+    stream: false
   });
 
   const options = {
-    hostname: 'generativelanguage.googleapis.com',
-    path: '/v1beta/models/gemini-2.0-flash:generateContent?key=' + key,
+    hostname: 'api.groq.com',
+    path: '/openai/v1/chat/completions',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + key,
       'Content-Length': Buffer.byteLength(body)
     }
   };
-
-  res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
-  res.setHeader('Connection', 'keep-alive');
 
   const apiReq = https.request(options, (apiRes) => {
     let raw = '';
     apiRes.on('data', chunk => raw += chunk.toString());
     apiRes.on('end', () => {
       try {
-        console.log('Gemini raw:', raw.slice(0, 200));
+        console.log('Groq status:', apiRes.statusCode);
         const parsed = JSON.parse(raw);
-        
+
         if (parsed.error) {
           res.write('data: ' + JSON.stringify({ error: parsed.error.message }) + '\n\n');
           res.write('data: [DONE]\n\n');
           return res.end();
         }
 
-        const text = parsed?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        const text = parsed?.choices?.[0]?.message?.content || '';
         if (!text) {
-          res.write('data: ' + JSON.stringify({ error: 'Gemini khong tra ve ket qua. Raw: ' + raw.slice(0, 200) }) + '\n\n');
+          res.write('data: ' + JSON.stringify({ error: 'Khong co ket qua: ' + raw.slice(0, 200) }) + '\n\n');
           res.write('data: [DONE]\n\n');
           return res.end();
         }
 
-        // Stream text in chunks for better UX
-        const chunkSize = 50;
+        // Stream chunks for UX
+        const chunkSize = 80;
         let i = 0;
         const interval = setInterval(() => {
           if (i >= text.length) {
@@ -103,13 +109,12 @@ app.post('/api/chat', (req, res) => {
             res.end();
             return;
           }
-          const chunk = text.slice(i, i + chunkSize);
-          res.write('data: ' + JSON.stringify({ text: chunk }) + '\n\n');
+          res.write('data: ' + JSON.stringify({ text: text.slice(i, i + chunkSize) }) + '\n\n');
           i += chunkSize;
-        }, 20);
+        }, 15);
 
       } catch(e) {
-        res.write('data: ' + JSON.stringify({ error: 'Parse error: ' + e.message + ' | ' + raw.slice(0, 100) }) + '\n\n');
+        res.write('data: ' + JSON.stringify({ error: 'Parse error: ' + raw.slice(0, 200) }) + '\n\n');
         res.write('data: [DONE]\n\n');
         res.end();
       }
@@ -127,4 +132,4 @@ app.post('/api/chat', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log('AVTalent Gemini port ' + PORT));
+app.listen(PORT, () => console.log('AVTalent Groq port ' + PORT));
