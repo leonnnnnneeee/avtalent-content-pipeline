@@ -664,6 +664,82 @@
     transition: all 0.15s;
   }
   .sheet-cancel-btn:hover { color: var(--red); border-color: var(--red); }
+
+  /* SHEET VIEWER PANEL */
+  .sheet-panel {
+    position: fixed;
+    top: 0;
+    right: -52%;
+    width: 50%;
+    height: 100vh;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    transition: right 0.3s cubic-bezier(0.4,0,0.2,1);
+    box-shadow: -8px 0 32px rgba(0,0,0,0.4);
+  }
+
+  .sheet-panel.open {
+    right: 0;
+  }
+
+  body.panel-open #mainArea {
+    margin-right: 50%;
+    transition: margin-right 0.3s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .sheet-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    background: var(--surface2);
+  }
+
+  #sheetPanelTitle {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .sheet-open-btn {
+    font-size: 12px;
+    color: var(--accent);
+    text-decoration: none;
+    padding: 4px 10px;
+    border: 1px solid rgba(79,110,247,0.3);
+    border-radius: 6px;
+    transition: all 0.15s;
+  }
+  .sheet-open-btn:hover { background: var(--accent-soft); }
+
+  .sheet-panel-close {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: all 0.15s;
+  }
+  .sheet-panel-close:hover { color: var(--text); background: var(--surface); }
+
+  .sheet-panel-body {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .sheet-panel-body iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: white;
+  }
 </style>
 </head>
 <body>
@@ -723,7 +799,21 @@
   </div>
 </aside>
 
-<main class="main">
+<!-- SHEET VIEWER PANEL -->
+<div class="sheet-panel" id="sheetPanel">
+  <div class="sheet-panel-header">
+    <span id="sheetPanelTitle">📊 Google Sheet</span>
+    <div style="display:flex;gap:8px;align-items:center">
+      <a id="sheetPanelLink" href="#" target="_blank" class="sheet-open-btn">Mở tab mới ↗</a>
+      <button class="sheet-panel-close" onclick="closeSheetPanel()">✕</button>
+    </div>
+  </div>
+  <div class="sheet-panel-body">
+    <iframe id="sheetIframe" src="" frameborder="0" allowfullscreen></iframe>
+  </div>
+</div>
+
+<main class="main" id="mainArea">
   <div class="topbar">
     <div>
       <div class="topbar-title">Content Pipeline</div>
@@ -942,7 +1032,7 @@ async function loadGoogleSheet() {
 
     attachedContext = `[NỘI DUNG GOOGLE SHEET]\n${data.csv}\n[END SHEET]\n\n`;
     const sheetName = url.match(/\/d\/([^/]+)/)?.[1]?.slice(0, 8) || 'sheet';
-    addFileTag(`Google Sheet (${sheetName}...)`, 'sheet');
+    addFileTag(`Google Sheet (${sheetName}...)`, 'sheet', url);
     document.getElementById('sheetUrl').value = '';
     toggleSheetInput();
   } catch (err) {
@@ -953,12 +1043,37 @@ async function loadGoogleSheet() {
   }
 }
 
-function addFileTag(name, type) {
+let sheetEmbedUrl = '';
+
+function addFileTag(name, type, url) {
   const container = document.getElementById('attachedFiles');
   const tag = document.createElement('div');
   tag.className = 'file-tag';
-  tag.innerHTML = `${type === 'sheet' ? '📊' : '📄'} ${name} <span class="remove-file" onclick="removeAttachment(this)">✕</span>`;
+  tag.style.cursor = type === 'sheet' ? 'pointer' : 'default';
+  tag.dataset.url = url || '';
+  tag.dataset.name = name;
+  tag.dataset.type = type;
+  tag.innerHTML = `${type === 'sheet' ? '📊' : '📄'} ${name} <span class="remove-file" onclick="event.stopPropagation();removeAttachment(this)">✕</span>`;
+  if (type === 'sheet' && url) {
+    tag.onclick = () => openSheetPanel(url, name);
+  }
   container.appendChild(tag);
+}
+
+function openSheetPanel(url, name) {
+  // Convert edit URL to embed URL
+  const embedUrl = url.replace('/edit', '/preview').split('#')[0];
+  document.getElementById('sheetIframe').src = embedUrl;
+  document.getElementById('sheetPanelTitle').textContent = '📊 ' + name;
+  document.getElementById('sheetPanelLink').href = url;
+  document.getElementById('sheetPanel').classList.add('open');
+  document.body.classList.add('panel-open');
+}
+
+function closeSheetPanel() {
+  document.getElementById('sheetPanel').classList.remove('open');
+  document.body.classList.remove('panel-open');
+  setTimeout(() => { document.getElementById('sheetIframe').src = ''; }, 300);
 }
 
 function removeAttachment(el) {
