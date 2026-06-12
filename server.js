@@ -145,6 +145,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// v2.0 - full pipeline UI
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`AVTalent Content Pipeline running on port ${PORT}`);
