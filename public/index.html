@@ -453,75 +453,83 @@ async function generateImage() {
   var imgDiv = document.getElementById('img9');
   var grid = document.getElementById('img9-grid');
   imgDiv.style.display = 'block';
-  grid.innerHTML = '<div style="color:#7b82a8;font-size:13px;padding:20px;text-align:center">FLUX.1 AI đang tạo ảnh chất lượng cao... (30-60 giây)</div>';
+  grid.innerHTML = '<div style="color:#7b82a8;font-size:13px;padding:20px;text-align:center">AI đang tạo ảnh... (10-20 giây)</div>';
 
   var styleGuide = {
-    'Modern Corporate': 'modern flat corporate design, navy blue #1a3a6b and gold #d4a017 colors, clean geometric layout, white background',
-    'Minimalist Professional': 'minimalist design, lots of white space, single blue accent, elegant clean layout',
-    'Bold & Dynamic': 'bold vibrant colors, dynamic energetic composition, strong contrast, eye-catching',
-    'Warm & Human': 'warm orange and yellow tones, friendly approachable, people-focused, soft lighting',
-    'Blue & Gold Premium': 'premium navy blue and gold design, luxury feel, elegant typography, corporate prestige'
+    'Modern Corporate': 'modern flat corporate design, navy blue and gold colors, clean geometric layout, white background, professional',
+    'Minimalist Professional': 'minimalist design, white space, single blue accent, elegant clean layout, professional',
+    'Bold & Dynamic': 'bold vibrant colors, dynamic composition, strong contrast, eye-catching marketing banner',
+    'Warm & Human': 'warm orange tones, friendly approachable, Vietnamese people, soft lighting, human connection',
+    'Blue & Gold Premium': 'premium navy blue and gold, luxury corporate, elegant, prestigious Vietnamese company'
   };
 
   var styleDesc = styleGuide[style] || styleGuide['Modern Corporate'];
-
-  var prompt = 'Professional marketing banner for Vietnamese corporate training company AVTalent. ';
-  prompt += 'Theme: ' + title + '. ';
+  var prompt = 'Professional marketing banner for AVTalent Vietnamese corporate training company. Theme: ' + title + '. ';
   if (summary) prompt += summary + '. ';
-  prompt += styleDesc + '. ';
-  prompt += 'Vietnamese business professionals in modern training environment, ';
-  prompt += 'high quality photography, ultra detailed, 4K resolution, ';
-  prompt += 'professional graphic design composition, suitable for corporate marketing';
+  prompt += styleDesc + '. Vietnamese business professionals, modern training environment, ultra high quality 4K, professional photography';
 
-  try {
-    var res = await fetch('/api/generate-image-hf', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ prompt: prompt })
-    });
-    var data = await res.json();
+  grid.innerHTML = '';
 
-    if (data.error) {
-      // If model loading, show retry message
-      if (data.error.indexOf('loading') >= 0 || data.error.indexOf('currently loading') >= 0) {
-        grid.innerHTML = '<div style="color:#7b82a8;font-size:13px;padding:10px;text-align:center">Model đang khởi động (lần đầu mất 1-2 phút). Nhấn "Tạo ảnh mới" lại sau 30 giây.</div>';
-      } else {
-        grid.innerHTML = '<div style="color:#ef4444;font-size:13px;padding:10px">Lỗi: ' + data.error + '</div>';
-      }
-    } else if (data.images && data.images.length > 0) {
-      grid.innerHTML = '';
-      data.images.forEach(function(img, i) {
-        var wrapper = document.createElement('div');
-        wrapper.style.cssText = 'border-radius:10px;overflow:hidden;border:1px solid #2e3350';
+  // Generate 2 images with different seeds
+  var seeds = [Math.floor(Math.random()*10000), Math.floor(Math.random()*10000)];
 
-        var imgEl = document.createElement('img');
-        imgEl.src = 'data:' + img.type + ';base64,' + img.base64;
-        imgEl.style.cssText = 'width:100%;display:block';
+  seeds.forEach(function(seed, i) {
+    var wrapper = document.createElement('div');
+    wrapper.style.cssText = 'border-radius:10px;overflow:hidden;border:1px solid #2e3350';
 
-        var actions = document.createElement('div');
-        actions.style.cssText = 'padding:8px;background:#22263a;display:flex;gap:6px';
+    var loading = document.createElement('div');
+    loading.style.cssText = 'background:#22263a;padding:60px 20px;text-align:center;color:#7b82a8;font-size:12px';
+    loading.textContent = 'Đang tạo ảnh ' + (i+1) + '...';
+    wrapper.appendChild(loading);
 
-        var dlBtn = document.createElement('button');
+    var encodedPrompt = encodeURIComponent(prompt);
+    var imgUrl = 'https://image.pollinations.ai/prompt/' + encodedPrompt + '?width=896&height=576&seed=' + seed + '&nologo=true&enhance=true&model=flux';
+
+    var imgEl = document.createElement('img');
+    imgEl.style.cssText = 'width:100%;display:none';
+    imgEl.onload = function() {
+      loading.style.display = 'none';
+      this.style.display = 'block';
+    };
+    imgEl.onerror = function() {
+      loading.textContent = 'Lỗi tải ảnh - thử lại';
+      loading.style.color = '#ef4444';
+    };
+    imgEl.src = imgUrl;
+
+    var actions = document.createElement('div');
+    actions.style.cssText = 'padding:8px;background:#22263a;display:flex;gap:6px';
+
+    var openBtn = document.createElement('a');
+    openBtn.href = imgUrl;
+    openBtn.target = '_blank';
+    openBtn.textContent = 'Mở ảnh ↗';
+    openBtn.style.cssText = 'flex:1;padding:7px 10px;background:#22263a;border:1px solid #2e3350;border-radius:6px;color:#4f6ef7;font-size:12px;text-align:center;text-decoration:none';
+
+    var dlBtn = document.createElement('button');
+    dlBtn.textContent = 'Tải xuống';
+    dlBtn.style.cssText = 'flex:1;padding:7px 10px;background:#4f6ef7;border:none;border-radius:6px;color:#fff;font-size:12px;cursor:pointer;font-family:Arial,sans-serif';
+    var url2 = imgUrl;
+    var idx2 = i + 1;
+    dlBtn.onclick = async function() {
+      try {
+        dlBtn.textContent = 'Đang tải...';
+        var r = await fetch(url2);
+        var blob = await r.blob();
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'avtalent-' + idx2 + '.jpg';
+        a.click();
         dlBtn.textContent = 'Tải xuống';
-        dlBtn.style.cssText = 'flex:1;padding:7px 10px;background:#4f6ef7;border:none;border-radius:6px;color:#fff;font-size:12px;cursor:pointer;font-family:Arial,sans-serif';
-        var b64 = img.base64;
-        var mime = img.type;
-        dlBtn.onclick = function() {
-          var a = document.createElement('a');
-          a.href = 'data:' + mime + ';base64,' + b64;
-          a.download = 'avtalent-' + (i+1) + '.jpg';
-          a.click();
-        };
+      } catch(e) { window.open(url2, '_blank'); }
+    };
 
-        actions.appendChild(dlBtn);
-        wrapper.appendChild(imgEl);
-        wrapper.appendChild(actions);
-        grid.appendChild(wrapper);
-      });
-    }
-  } catch(e) {
-    grid.innerHTML = '<div style="color:#ef4444;font-size:13px;padding:10px">Lỗi: ' + e.message + '</div>';
-  }
+    actions.appendChild(openBtn);
+    actions.appendChild(dlBtn);
+    wrapper.appendChild(imgEl);
+    wrapper.appendChild(actions);
+    grid.appendChild(wrapper);
+  });
 
   btn.disabled = false;
   btn.textContent = '🖼 Tạo ảnh mới';
