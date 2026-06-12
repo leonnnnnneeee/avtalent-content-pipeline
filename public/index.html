@@ -103,8 +103,7 @@ body{font-family:Arial,sans-serif;background:#0f1117;color:#e8eaf6;height:100vh;
     <button class="ni" data-v="s9" onclick="go('s9')"><span class="nn">9</span>Image Prompts</button>
   </nav>
   <div class="api">
-    <div class="api-r"><div class="dot" id="dot"></div><span id="albl">Chưa kết nối API</span></div>
-    <input class="api-in" type="password" id="akey" placeholder="Anthropic API Key..." oninput="setKey(this.value)"/>
+    <div class="api-r"><div class="dot on" id="dot"></div><span id="albl">API đã kết nối</span></div>
   </div>
 </aside>
 <main class="main">
@@ -270,11 +269,7 @@ var T = {home:'AVTalent Content Pipeline',s1:'Kế hoạch nội dung tháng',s2
 var S = {s1:'Bước 1/9',s2:'Bước 2/9',s3:'Bước 3/9',s4:'Bước 4/9',s5:'Bước 5/9',s6:'Bước 6/9',s7:'Bước 7/9',s8:'Bước 8/9',s9:'Bước 9/9',qp:'Nhanh',qt:'Nhanh',qw:'Nhanh',qi:'Nhanh',qc:'Nhanh',home:''};
 
 function setKey(v) {
-  apiKey = v.trim();
-  var ok = apiKey.indexOf('sk-') === 0 && apiKey.length > 20;
-  document.getElementById('dot').className = ok ? 'dot on' : 'dot';
-  document.getElementById('albl').textContent = ok ? 'API đã kết nối' : 'Chưa kết nối API';
-  if (ok) { try { localStorage.setItem('avt_key', apiKey); } catch(e) {} }
+  apiKey = v ? v.trim() : '';
 }
 
 function go(id) {
@@ -353,7 +348,7 @@ function mkP(id) {
 }
 
 async function run(id) {
-  if (!apiKey) { alert('Nhập Anthropic API Key trước!'); return; }
+  /* API key handled server-side */
   var p = mkP(id);
   if (!p.replace(/\s/g, '')) { alert('Điền thông tin!'); return; }
   var btn = document.getElementById('b' + id);
