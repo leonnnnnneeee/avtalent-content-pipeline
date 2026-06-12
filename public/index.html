@@ -153,20 +153,20 @@ body{font-family:Arial,sans-serif;background:#0f1117;color:#e8eaf6;height:100vh;
     </div>
     <div class="sep"></div>
     <div class="fr">
-      <div class="fg"><label class="fl">Thang</label><select id="s1m"><option>Tháng 7/2026</option><option>Tháng 8/2026</option><option>Tháng 9/2026</option><option>Tháng 10/2026</option><option>Tháng 11/2026</option><option>Tháng 12/2026</option></select></div>
+      <div class="fg"><label class="fl">Tháng</label><select id="s1m"><option>Tháng 7/2026</option><option>Tháng 8/2026</option><option>Tháng 9/2026</option><option>Tháng 10/2026</option><option>Tháng 11/2026</option><option>Tháng 12/2026</option></select></div>
       <div class="fg"><label class="fl">Mục tiêu</label><select id="s1g"><option>Brand Awareness + Lead Gen</option><option>Brand Awareness</option><option>Lead Generation</option><option>Engagement</option></select></div>
     </div>
     <div class="fg"><label class="fl">Chiến dịch / Chủ đề</label><input type="text" id="s1c" placeholder="VD: Mùa hè kỹ năng + Scale team SMEs..."/></div>
-    <div class="fg"><label class="fl">Kenh</label><div class="cks" id="cks1"><span class="ck on" onclick="this.classList.toggle('on')">LinkedIn</span><span class="ck on" onclick="this.classList.toggle('on')">Facebook</span><span class="ck on" onclick="this.classList.toggle('on')">Website</span><span class="ck" onclick="this.classList.toggle('on')">Email</span></div></div>
+    <div class="fg"><label class="fl">Kênh</label><div class="cks" id="cks1"><span class="ck on" onclick="this.classList.toggle('on')">LinkedIn</span><span class="ck on" onclick="this.classList.toggle('on')">Facebook</span><span class="ck on" onclick="this.classList.toggle('on')">Website</span><span class="ck" onclick="this.classList.toggle('on')">Email</span></div></div>
     <div class="fg"><label class="fl">Ghi chú</label><textarea id="s1n" placeholder="Sự kiện đặc biệt, target audience..."></textarea></div>
     <button class="btn-g" id="bs1" onclick="run('s1')">Tạo kế hoạch tháng</button>
     <div id="os1"></div>
-    <div id="ns1" style="display:none" class="nb"><div class="nb-t">Xong! Bước tiếp theo:</div><div class="nbs"><button class="nbtn" onclick="go('s2')">Topics</button><button class="nbtn" onclick="go('s3')">Title &amp; Hook</button><button class="nbtn" onclick="go('s6')">Viet bai</button><button class="nbtn" onclick="go('s9')">Images</button></div></div>
+    <div id="ns1" style="display:none" class="nb"><div class="nb-t">Xong! Bước tiếp theo:</div><div class="nbs"><button class="nbtn" onclick="go('s2')">Topics</button><button class="nbtn" onclick="go('s3')">Title &amp; Hook</button><button class="nbtn" onclick="go('s6')">Viết bài</button><button class="nbtn" onclick="go('s9')">Images</button></div></div>
   </div>
 
   <div id="v-s2" class="sv" style="display:none">
     <h2>Bước 2 — Generate Topics</h2><p class="dsc">5-8 topics với content angle, audience và CTA</p>
-    <div class="fr"><div class="fg"><label class="fl">Chien dich</label><input type="text" id="s2c" placeholder="VD: Đào tạo nhân sự tháng 7..."/></div><div class="fg"><label class="fl">Số topics</label><select id="s2n"><option>5</option><option>6</option><option selected>8</option><option>10</option></select></div></div>
+    <div class="fr"><div class="fg"><label class="fl">Chiến dịch</label><input type="text" id="s2c" placeholder="VD: Đào tạo nhân sự tháng 7..."/></div><div class="fg"><label class="fl">Số topics</label><select id="s2n"><option>5</option><option>6</option><option selected>8</option><option>10</option></select></div></div>
     <div class="fg"><label class="fl">Content Pillars</label><div class="cks" id="cks2"><span class="ck on" onclick="this.classList.toggle('on')">Uy tín &amp; Chuyên sâu</span><span class="ck on" onclick="this.classList.toggle('on')">Kỹ năng &amp; Phát triển</span><span class="ck on" onclick="this.classList.toggle('on')">Networking</span><span class="ck" onclick="this.classList.toggle('on')">Insight &amp; Xu hướng</span></div></div>
     <div class="fg"><label class="fl">Context thêm</label><textarea id="s2x" placeholder="Paste kế hoạch tháng hoặc context..."></textarea></div>
     <button class="btn-g" id="bs2" onclick="run('s2')">Generate Topics</button><div id="os2"></div>
@@ -175,7 +175,7 @@ body{font-family:Arial,sans-serif;background:#0f1117;color:#e8eaf6;height:100vh;
   <div id="v-s3" class="sv" style="display:none">
     <h2>Bước 3 — Title &amp; Hook</h2><p class="dsc">3 title options + 4 hooks mạnh</p>
     <div class="fg"><label class="fl">Topic</label><input type="text" id="s3t" placeholder="VD: Tại sao 70% chương trình đào tạo thất bại?"/></div>
-    <div class="fr"><div class="fg"><label class="fl">Pillar</label><select id="s3p"><option>Uy tín &amp; Chuyên sâu</option><option>Kỹ năng &amp; Phát triển</option><option>Networking</option></select></div><div class="fg"><label class="fl">Kenh</label><select id="s3h"><option>LinkedIn</option><option>Facebook</option><option>Website</option></select></div></div>
+    <div class="fr"><div class="fg"><label class="fl">Pillar</label><select id="s3p"><option>Uy tín &amp; Chuyên sâu</option><option>Kỹ năng &amp; Phát triển</option><option>Networking</option></select></div><div class="fg"><label class="fl">Kênh</label><select id="s3h"><option>LinkedIn</option><option>Facebook</option><option>Website</option></select></div></div>
     <div class="fg"><label class="fl">Target audience</label><input type="text" id="s3a" placeholder="VD: HR Manager, L&D Manager..."/></div>
     <button class="btn-g" id="bs3" onclick="run('s3')">Tạo Title &amp; Hook</button><div id="os3"></div>
   </div>
@@ -184,7 +184,7 @@ body{font-family:Arial,sans-serif;background:#0f1117;color:#e8eaf6;height:100vh;
     <h2>Bước 4 — Content Brief</h2><p class="dsc">Brief đầy đủ SEO, outline, keywords, meta, slug</p>
     <div class="fg"><label class="fl">Title</label><input type="text" id="s4t" placeholder="Tiêu đề bài viết..."/></div>
     <div class="fg"><label class="fl">Hook</label><textarea id="s4h" style="min-height:58px" placeholder="Dán hook từ bước 3..."></textarea></div>
-    <div class="fr"><div class="fg"><label class="fl">Kenh</label><select id="s4c"><option>LinkedIn</option><option>Facebook</option><option>Website</option></select></div><div class="fg"><label class="fl">Keyword chính</label><input type="text" id="s4k" placeholder="VD: đào tạo nhân sự doanh nghiệp"/></div></div>
+    <div class="fr"><div class="fg"><label class="fl">Kênh</label><select id="s4c"><option>LinkedIn</option><option>Facebook</option><option>Website</option></select></div><div class="fg"><label class="fl">Keyword chính</label><input type="text" id="s4k" placeholder="VD: đào tạo nhân sự doanh nghiệp"/></div></div>
     <div class="fg"><label class="fl">Context thêm</label><textarea id="s4x" placeholder="Key points, sản phẩm AVTalent..."></textarea></div>
     <button class="btn-g" id="bs4" onclick="run('s4')">Tạo Content Brief</button><div id="os4"></div>
   </div>
@@ -199,7 +199,7 @@ body{font-family:Arial,sans-serif;background:#0f1117;color:#e8eaf6;height:100vh;
     <h2>Bước 6 — Viết Full Content</h2><p class="dsc">Bài viết hoàn chỉnh, publish-ready</p>
     <div class="fg"><label class="fl">Title</label><input type="text" id="s6t" placeholder="Tiêu đề bài viết..."/></div>
     <div class="fg"><label class="fl">Brief / Key points</label><textarea id="s6b" style="min-height:110px" placeholder="Dán brief hoặc outline..."></textarea></div>
-    <div class="fr"><div class="fg"><label class="fl">Kenh</label><select id="s6c"><option>LinkedIn (VI+EN)</option><option>Facebook</option><option>Website / Blog</option></select></div><div class="fg"><label class="fl">Độ dài</label><select id="s6l"><option>~600 từ</option><option selected>~1000 từ</option><option>~1500 từ</option><option>~2000 từ</option></select></div></div>
+    <div class="fr"><div class="fg"><label class="fl">Kênh</label><select id="s6c"><option>LinkedIn (VI+EN)</option><option>Facebook</option><option>Website / Blog</option></select></div><div class="fg"><label class="fl">Độ dài</label><select id="s6l"><option>~600 từ</option><option selected>~1000 từ</option><option>~1500 từ</option><option>~2000 từ</option></select></div></div>
     <div class="fg"><label class="fl">Keyword SEO</label><input type="text" id="s6k" placeholder="VD: giải pháp đào tạo nhân sự"/></div>
     <button class="btn-g" id="bs6" onclick="run('s6')">Viết bài hoàn chỉnh</button><div id="os6"></div>
   </div>
@@ -222,7 +222,7 @@ body{font-family:Arial,sans-serif;background:#0f1117;color:#e8eaf6;height:100vh;
     <h2>Bước 9 — Image Ideas &amp; Prompts</h2><p class="dsc">3 concepts + AI image prompts đầy đủ</p>
     <div class="fg"><label class="fl">Title bài viết</label><input type="text" id="s9t" placeholder="VD: 5 bài toán SMEs khi scale team"/></div>
     <div class="fg"><label class="fl">Tóm tắt nội dung</label><textarea id="s9s" style="min-height:65px" placeholder="Mô tả ngắn để AI tạo hình đúng hướng..."></textarea></div>
-    <div class="fr"><div class="fg"><label class="fl">Kenh</label><select id="s9c"><option>Website (852×568px)</option><option>Facebook</option><option>Ca hai</option></select></div><div class="fg"><label class="fl">Phong cách</label><select id="s9y"><option>Modern Corporate</option><option>Minimalist</option><option>Bold</option></select></div></div>
+    <div class="fr"><div class="fg"><label class="fl">Kênh</label><select id="s9c"><option>Website (852×568px)</option><option>Facebook</option><option>Cả hai</option></select></div><div class="fg"><label class="fl">Phong cách</label><select id="s9y"><option>Modern Corporate</option><option>Minimalist</option><option>Bold</option></select></div></div>
     <button class="btn-g" id="bs9" onclick="run('s9')">Tạo Image Prompts</button>
     <button class="btn-g" id="bimg9" onclick="generateImage()" style="margin-left:8px;background:#7c3aed">&#128444; Tạo ảnh AI</button>
     <div id="os9"></div>
@@ -234,34 +234,34 @@ body{font-family:Arial,sans-serif;background:#0f1117;color:#e8eaf6;height:100vh;
 
   <div id="v-qp" class="sv" style="display:none">
     <h2>Kế hoạch nội dung tháng</h2><p class="dsc">Tạo nhanh content plan và lịch đăng bài</p>
-    <div class="fr"><div class="fg"><label class="fl">Thang</label><select id="qpm"><option>Tháng 7/2026</option><option>Tháng 8/2026</option><option>Tháng 9/2026</option></select></div><div class="fg"><label class="fl">Mục tiêu</label><select id="qpg"><option>Brand Awareness + Lead Gen</option><option>Brand Awareness</option><option>Lead Generation</option></select></div></div>
-    <div class="fg"><label class="fl">Chien dich</label><input type="text" id="qpc" placeholder="VD: Kỹ năng mùa hè + Scale SMEs"/></div>
+    <div class="fr"><div class="fg"><label class="fl">Tháng</label><select id="qpm"><option>Tháng 7/2026</option><option>Tháng 8/2026</option><option>Tháng 9/2026</option></select></div><div class="fg"><label class="fl">Mục tiêu</label><select id="qpg"><option>Brand Awareness + Lead Gen</option><option>Brand Awareness</option><option>Lead Generation</option></select></div></div>
+    <div class="fg"><label class="fl">Chiến dịch</label><input type="text" id="qpc" placeholder="VD: Kỹ năng mùa hè + Scale SMEs"/></div>
     <button class="btn-g" id="bqp" onclick="run('qp')">Tạo kế hoạch</button><div id="oqp"></div>
   </div>
 
   <div id="v-qt" class="sv" style="display:none">
     <h2>Generate Topics nhanh</h2><p class="dsc">Nhập chủ đề, nhận ngay 8 topics</p>
-    <div class="fg"><label class="fl">Chu de</label><input type="text" id="qtt" placeholder="VD: Đào tạo nhân sự tháng 7..."/></div>
-    <div class="fg"><label class="fl">Kenh</label><div class="cks" id="cksqt"><span class="ck on" onclick="this.classList.toggle('on')">LinkedIn</span><span class="ck on" onclick="this.classList.toggle('on')">Facebook</span><span class="ck" onclick="this.classList.toggle('on')">Website</span></div></div>
+    <div class="fg"><label class="fl">Chủ đề</label><input type="text" id="qtt" placeholder="VD: Đào tạo nhân sự tháng 7..."/></div>
+    <div class="fg"><label class="fl">Kênh</label><div class="cks" id="cksqt"><span class="ck on" onclick="this.classList.toggle('on')">LinkedIn</span><span class="ck on" onclick="this.classList.toggle('on')">Facebook</span><span class="ck" onclick="this.classList.toggle('on')">Website</span></div></div>
     <button class="btn-g" id="bqt" onclick="run('qt')">Generate Topics</button><div id="oqt"></div>
   </div>
 
   <div id="v-qw" class="sv" style="display:none">
     <h2>Viết bài ngay</h2><p class="dsc">Nhập topic, nhận bài hoàn chỉnh</p>
-    <div class="fg"><label class="fl">Topic / Y tuong</label><textarea id="qwt" placeholder="VD: Viết về tailor-made training của AVTalent..."></textarea></div>
-    <div class="fr"><div class="fg"><label class="fl">Kenh</label><select id="qwc"><option>LinkedIn (VI+EN)</option><option>Facebook</option><option>Website</option></select></div><div class="fg"><label class="fl">Độ dài</label><select id="qwl"><option>~600 từ</option><option selected>~1000 từ</option><option>~1800 từ</option></select></div></div>
+    <div class="fg"><label class="fl">Topic / Ý tưởng</label><textarea id="qwt" placeholder="VD: Viết về tailor-made training của AVTalent..."></textarea></div>
+    <div class="fr"><div class="fg"><label class="fl">Kênh</label><select id="qwc"><option>LinkedIn (VI+EN)</option><option>Facebook</option><option>Website</option></select></div><div class="fg"><label class="fl">Độ dài</label><select id="qwl"><option>~600 từ</option><option selected>~1000 từ</option><option>~1800 từ</option></select></div></div>
     <button class="btn-g" id="bqw" onclick="run('qw')">Viết bài ngay</button><div id="oqw"></div>
   </div>
 
   <div id="v-qi" class="sv" style="display:none">
     <h2>Image Prompts nhanh</h2><p class="dsc">Nhập title, nhận 3 concepts + AI prompts</p>
     <div class="fg"><label class="fl">Title bài viết</label><input type="text" id="qit" placeholder="VD: Mô hình ủy thác vận hành..."/></div>
-    <div class="fg"><label class="fl">Kenh</label><div class="cks" id="cksqi"><span class="ck on" onclick="this.classList.toggle('on')">Website (852×568px)</span><span class="ck on" onclick="this.classList.toggle('on')">Facebook</span></div></div>
+    <div class="fg"><label class="fl">Kênh</label><div class="cks" id="cksqi"><span class="ck on" onclick="this.classList.toggle('on')">Website (852×568px)</span><span class="ck on" onclick="this.classList.toggle('on')">Facebook</span></div></div>
     <button class="btn-g" id="bqi" onclick="run('qi')">Tạo Image Prompts</button><div id="oqi"></div>
   </div>
 
   <div id="v-qc" class="sv" style="display:none">
-    <h2>Convert kênh nhanh</h2><p class="dsc">Chuyen noi dung giua Website · Facebook · LinkedIn</p>
+    <h2>Convert kênh nhanh</h2><p class="dsc">Chuyển nội dung giữa Website · Facebook · LinkedIn</p>
     <div class="fg"><label class="fl">Nội dung gốc</label><textarea id="qct" style="min-height:130px" placeholder="Dán bài viết cần chuyển..."></textarea></div>
     <div class="fr"><div class="fg"><label class="fl">Từ kênh</label><select id="qcf"><option>Website</option><option>LinkedIn</option><option>Facebook</option></select></div><div class="fg"><label class="fl">Sang kênh</label><select id="qco"><option>Facebook</option><option>LinkedIn</option><option>Website</option></select></div></div>
     <button class="btn-g" id="bqc" onclick="run('qc')">Convert ngay</button><div id="oqc"></div>
@@ -472,7 +472,7 @@ async function generateImage() {
         img.src = 'data:image/png;base64,' + imgData;
         img.style.cssText = 'width:100%;display:block';
         var dlBtn = document.createElement('button');
-        dlBtn.textContent = 'Tai xuong';
+        dlBtn.textContent = 'Tải xuống';
         dlBtn.style.cssText = 'position:absolute;bottom:8px;right:8px;padding:4px 10px;background:rgba(0,0,0,.7);border:none;border-radius:5px;color:#fff;font-size:11px;cursor:pointer';
         var d2 = imgData;
         var n2 = i + 1;
@@ -493,7 +493,7 @@ async function generateImage() {
     grid.innerHTML = '<div style="color:#ef4444;font-size:13px;padding:10px">Loi: ' + e.message + '</div>';
   }
   btn.disabled = false;
-  btn.textContent = 'Tao lai anh';
+  btn.textContent = 'Tạo lại ảnh';
 }
 
 go('home');
