@@ -223,7 +223,13 @@ body{font-family:Arial,sans-serif;background:#0f1117;color:#e8eaf6;height:100vh;
     <div class="fg"><label class="fl">Title bài viết</label><input type="text" id="s9t" placeholder="VD: 5 bài toán SMEs khi scale team"/></div>
     <div class="fg"><label class="fl">Tóm tắt nội dung</label><textarea id="s9s" style="min-height:65px" placeholder="Mô tả ngắn để AI tạo hình đúng hướng..."></textarea></div>
     <div class="fr"><div class="fg"><label class="fl">Kenh</label><select id="s9c"><option>Website (852×568px)</option><option>Facebook</option><option>Ca hai</option></select></div><div class="fg"><label class="fl">Phong cách</label><select id="s9y"><option>Modern Corporate</option><option>Minimalist</option><option>Bold</option></select></div></div>
-    <button class="btn-g" id="bs9" onclick="run('s9')">Tạo Image Prompts</button><div id="os9"></div>
+    <button class="btn-g" id="bs9" onclick="run('s9')">Tạo Image Prompts</button>
+    <button class="btn-g" id="bimg9" onclick="generateImage()" style="margin-left:8px;background:#7c3aed">&#128444; Tạo ảnh AI</button>
+    <div id="os9"></div>
+    <div id="img9" style="margin-top:14px;display:none">
+      <div style="font-size:11px;font-weight:bold;color:#7b82a8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Ảnh AI Generated</div>
+      <div id="img9-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px"></div>
+    </div>
   </div>
 
   <div id="v-qp" class="sv" style="display:none">
