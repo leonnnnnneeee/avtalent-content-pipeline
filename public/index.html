@@ -453,7 +453,7 @@ async function generateImage() {
   var imgDiv = document.getElementById('img9');
   var grid = document.getElementById('img9-grid');
   imgDiv.style.display = 'block';
-  grid.innerHTML = '<div style="color:#7b82a8;font-size:13px;padding:20px;text-align:center">AI đang tạo ảnh... (10-20 giây)</div>';
+  grid.innerHTML = '<div style="color:#7b82a8;font-size:13px;padding:20px;text-align:center">FLUX AI đang tạo ảnh... (20-40 giây)</div>';
 
   var styleGuide = {
     'Modern Corporate': 'modern flat corporate design, navy blue and gold colors, clean geometric layout, white background, professional',
@@ -470,66 +470,59 @@ async function generateImage() {
 
   grid.innerHTML = '';
 
-  // Generate 2 images with different seeds
-  var seeds = [Math.floor(Math.random()*10000), Math.floor(Math.random()*10000)];
-
-  seeds.forEach(function(seed, i) {
+  // Generate 2 images sequentially
+  for (var i = 0; i < 2; i++) {
+    var seed = Math.floor(Math.random() * 99999);
     var wrapper = document.createElement('div');
-    wrapper.style.cssText = 'border-radius:10px;overflow:hidden;border:1px solid #2e3350';
-
+    wrapper.style.cssText = 'border-radius:10px;overflow:hidden;border:1px solid #2e3350;margin-bottom:8px';
     var loading = document.createElement('div');
-    loading.style.cssText = 'background:#22263a;padding:60px 20px;text-align:center;color:#7b82a8;font-size:12px';
-    loading.textContent = 'Đang tạo ảnh ' + (i+1) + '...';
+    loading.style.cssText = 'background:#22263a;padding:40px 20px;text-align:center;color:#7b82a8;font-size:12px';
+    loading.textContent = 'Đang tạo ảnh ' + (i+1) + '/2...';
     wrapper.appendChild(loading);
-
-    var encodedPrompt = encodeURIComponent(prompt);
-    var imgUrl = 'https://image.pollinations.ai/prompt/' + encodedPrompt + '?width=896&height=576&seed=' + seed + '&nologo=true&enhance=true&model=flux';
-
-    var imgEl = document.createElement('img');
-    imgEl.style.cssText = 'width:100%;display:none';
-    imgEl.onload = function() {
-      loading.style.display = 'none';
-      this.style.display = 'block';
-    };
-    imgEl.onerror = function() {
-      loading.textContent = 'Lỗi tải ảnh - thử lại';
-      loading.style.color = '#ef4444';
-    };
-    imgEl.src = imgUrl;
-
-    var actions = document.createElement('div');
-    actions.style.cssText = 'padding:8px;background:#22263a;display:flex;gap:6px';
-
-    var openBtn = document.createElement('a');
-    openBtn.href = imgUrl;
-    openBtn.target = '_blank';
-    openBtn.textContent = 'Mở ảnh ↗';
-    openBtn.style.cssText = 'flex:1;padding:7px 10px;background:#22263a;border:1px solid #2e3350;border-radius:6px;color:#4f6ef7;font-size:12px;text-align:center;text-decoration:none';
-
-    var dlBtn = document.createElement('button');
-    dlBtn.textContent = 'Tải xuống';
-    dlBtn.style.cssText = 'flex:1;padding:7px 10px;background:#4f6ef7;border:none;border-radius:6px;color:#fff;font-size:12px;cursor:pointer;font-family:Arial,sans-serif';
-    var url2 = imgUrl;
-    var idx2 = i + 1;
-    dlBtn.onclick = async function() {
-      try {
-        dlBtn.textContent = 'Đang tải...';
-        var r = await fetch(url2);
-        var blob = await r.blob();
-        var a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'avtalent-' + idx2 + '.jpg';
-        a.click();
-        dlBtn.textContent = 'Tải xuống';
-      } catch(e) { window.open(url2, '_blank'); }
-    };
-
-    actions.appendChild(openBtn);
-    actions.appendChild(dlBtn);
-    wrapper.appendChild(imgEl);
-    wrapper.appendChild(actions);
     grid.appendChild(wrapper);
-  });
+
+    try {
+      var res = await fetch('/api/generate-image-pollinations', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ prompt: prompt, seed: seed })
+      });
+      var data = await res.json();
+
+      if (data.error) {
+        loading.textContent = 'Lỗi ảnh ' + (i+1) + ': ' + data.error;
+        loading.style.color = '#ef4444';
+      } else if (data.image) {
+        loading.style.display = 'none';
+        var imgEl = document.createElement('img');
+        imgEl.src = 'data:' + (data.type || 'image/jpeg') + ';base64,' + data.image;
+        imgEl.style.cssText = 'width:100%;display:block';
+
+        var actions = document.createElement('div');
+        actions.style.cssText = 'padding:8px;background:#22263a;display:flex;gap:6px';
+
+        var dlBtn = document.createElement('button');
+        dlBtn.textContent = 'Tải xuống';
+        dlBtn.style.cssText = 'flex:1;padding:7px 10px;background:#4f6ef7;border:none;border-radius:6px;color:#fff;font-size:12px;cursor:pointer;font-family:Arial,sans-serif';
+        var b64 = data.image;
+        var mime = data.type || 'image/jpeg';
+        var idx = i + 1;
+        dlBtn.onclick = function() {
+          var a = document.createElement('a');
+          a.href = 'data:' + mime + ';base64,' + b64;
+          a.download = 'avtalent-' + idx + '.jpg';
+          a.click();
+        };
+
+        actions.appendChild(dlBtn);
+        wrapper.appendChild(imgEl);
+        wrapper.appendChild(actions);
+      }
+    } catch(e) {
+      loading.textContent = 'Lỗi: ' + e.message;
+      loading.style.color = '#ef4444';
+    }
+  }
 
   btn.disabled = false;
   btn.textContent = '🖼 Tạo ảnh mới';
