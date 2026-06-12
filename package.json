@@ -1,6 +1,6 @@
 {
   "name": "avtalent-content-pipeline",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "AVTalent Monthly Content Planning & SEO Production Pipeline",
   "main": "server.js",
   "scripts": {
