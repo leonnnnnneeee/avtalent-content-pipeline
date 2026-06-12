@@ -131,5 +131,61 @@ app.post('/api/chat', (req, res) => {
   apiReq.end();
 });
 
+
+app.post('/api/generate-image', (req, res) => {
+  const { prompt, count } = req.body;
+  const key = process.env.STABILITY_API_KEY;
+
+  if (!key) {
+    return res.json({ error: 'STABILITY_API_KEY chua duoc set tren Railway' });
+  }
+
+  const body = JSON.stringify({
+    text_prompts: [
+      { text: prompt, weight: 1 },
+      { text: 'blurry, low quality, text, watermark, ugly, distorted', weight: -1 }
+    ],
+    cfg_scale: 7,
+    height: 568,
+    width: 896,
+    samples: count || 2,
+    steps: 30
+  });
+
+  const options = {
+    hostname: 'api.stability.ai',
+    path: '/v1/generation/stable-diffusion-v1-6/text-to-image',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + key,
+      'Accept': 'application/json',
+      'Content-Length': Buffer.byteLength(body)
+    }
+  };
+
+  const apiReq = https.request(options, (apiRes) => {
+    let raw = '';
+    apiRes.on('data', chunk => raw += chunk.toString());
+    apiRes.on('end', () => {
+      try {
+        console.log('Stability status:', apiRes.statusCode, raw.slice(0, 100));
+        const parsed = JSON.parse(raw);
+        if (parsed.message || parsed.name) {
+          return res.json({ error: parsed.message || parsed.name });
+        }
+        const images = (parsed.artifacts || []).map(function(a) { return a.base64; });
+        res.json({ images: images });
+      } catch(e) {
+        res.json({ error: 'Parse error: ' + raw.slice(0, 200) });
+      }
+    });
+  });
+
+  apiReq.on('error', (e) => res.json({ error: e.message }));
+  apiReq.write(body);
+  apiReq.end();
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log('AVTalent Groq port ' + PORT));
