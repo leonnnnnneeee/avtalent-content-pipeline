@@ -276,5 +276,57 @@ app.post('/api/generate-image-ideogram', (req, res) => {
   apiReq.end();
 });
 
+
+app.post('/api/generate-image-hf', async (req, res) => {
+  const { prompt } = req.body;
+  const key = process.env.HF_API_KEY;
+
+  if (!key) {
+    return res.json({ error: 'HF_API_KEY chua duoc set tren Railway' });
+  }
+
+  const body = JSON.stringify({ inputs: prompt });
+
+  const options = {
+    hostname: 'api-inference.huggingface.co',
+    path: '/models/black-forest-labs/FLUX.1-dev',
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + key,
+      'Content-Type': 'application/json',
+      'Content-Length': Buffer.byteLength(body)
+    }
+  };
+
+  const apiReq = https.request(options, (apiRes) => {
+    const chunks = [];
+    apiRes.on('data', chunk => chunks.push(chunk));
+    apiRes.on('end', () => {
+      const raw = Buffer.concat(chunks);
+      console.log('HF status:', apiRes.statusCode, 'size:', raw.length);
+      
+      // Check if response is JSON (error) or binary (image)
+      const contentType = apiRes.headers['content-type'] || '';
+      if (contentType.includes('application/json') || contentType.includes('text')) {
+        try {
+          const parsed = JSON.parse(raw.toString());
+          if (parsed.error) return res.json({ error: parsed.error });
+          return res.json({ error: 'Unknown response: ' + raw.toString().slice(0, 200) });
+        } catch(e) {
+          return res.json({ error: raw.toString().slice(0, 200) });
+        }
+      }
+      
+      // Binary image response - convert to base64
+      const base64 = raw.toString('base64');
+      res.json({ images: [{ base64: base64, type: 'image/jpeg' }] });
+    });
+  });
+
+  apiReq.on('error', (e) => res.json({ error: e.message }));
+  apiReq.write(body);
+  apiReq.end();
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log('AVTalent Groq port ' + PORT));
