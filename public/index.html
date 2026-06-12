@@ -110,7 +110,10 @@ body{font-family:Arial,sans-serif;background:#0f1117;color:#e8eaf6;height:100vh;
 <main class="main">
   <div class="topbar">
     <div><div class="tbt" id="tbt">AVTalent Content Pipeline</div><div class="tbs" id="tbs">Chon buoc de bat dau</div></div>
-    <button class="btn-h" onclick="go('home')">Home</button>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div id="sheet-badge" style="display:none;background:rgba(79,110,247,.15);border:1px solid rgba(79,110,247,.4);border-radius:6px;padding:4px 10px;font-size:11px;color:#4f6ef7;cursor:pointer" onclick="go('s1')">📊 Sheet da luu</div>
+      <button class="btn-h" onclick="go('home')">Home</button>
+    </div>
   </div>
   <div class="ct" id="ct">
 
@@ -314,6 +317,8 @@ function addSheet() {
   document.getElementById('s1e').style.display = 'block';
   sheetURL = url;
   try { localStorage.setItem('avt_sheet', url); } catch(e) {}
+  var badge = document.getElementById('sheet-badge');
+  if (badge) { badge.style.display = 'flex'; badge.textContent = '📊 ' + m[1].slice(0,10) + '...'; }
 }
 
 function removeSheet() {
@@ -322,23 +327,25 @@ function removeSheet() {
   document.getElementById('s1u').value = '';
   sheetURL = '';
   try { localStorage.removeItem('avt_sheet'); } catch(e) {}
+  var badge = document.getElementById('sheet-badge');
+  if (badge) { badge.style.display = 'none'; }
 }
 
 function mkP(id) {
-  var sheet = sheetURL ? ' Tham chieu ke hoach thang truoc: ' + sheetURL : '';
+  var sheet = sheetURL ? ' [Du lieu tham chieu tu Google Sheet: ' + sheetURL + '] Hay doc va phan tich noi dung sheet nay de tao output phu hop voi ke hoach hien tai.' : '';
   var p = {
     s1: 'Tao ke hoach noi dung AVTalent ' + gv('s1m') + '. Muc tieu: ' + gv('s1g') + '. Chien dich: ' + gv('s1c') + '. Kenh: ' + gc('cks1') + '. Ghi chu: ' + gv('s1n') + sheet + '. Output: 1.Tom tat chien luoc 2.Bang content pillars 3.Lich dang bai theo tuan (bang: Ngay, Gio, Pillar, Topic, Kenh) 4.Ghi chu trien khai',
-    s2: 'Generate ' + gv('s2n') + ' topics AVTalent. Chien dich: ' + gv('s2c') + '. Pillars: ' + gc('cks2') + '. Context: ' + gv('s2x') + '. Moi topic: Ten, Angle, Audience, Muc tieu, Kenh, CTA',
-    s3: 'Tao title va hook AVTalent. Topic: ' + gv('s3t') + '. Pillar: ' + gv('s3p') + '. Kenh: ' + gv('s3h') + '. Audience: ' + gv('s3a') + '. Output: 3 titles (danh recommended) + 4 hooks (pain, stat, question, bold)',
+    s2: 'Generate ' + gv('s2n') + ' topics AVTalent. Chien dich: ' + gv('s2c') + '. Pillars: ' + gc('cks2') + '. Context: ' + gv('s2x') + sheet + '. Moi topic: Ten, Angle, Audience, Muc tieu, Kenh, CTA',
+    s3: 'Tao title va hook AVTalent. Topic: ' + gv('s3t') + '. Pillar: ' + gv('s3p') + '. Kenh: ' + gv('s3h') + '. Audience: ' + gv('s3a') + sheet + '. Output: 3 titles (danh recommended) + 4 hooks (pain, stat, question, bold)',
     s4: 'Content brief AVTalent. Title: ' + gv('s4t') + '. Hook: ' + gv('s4h') + '. Kenh: ' + gv('s4c') + '. Keyword: ' + gv('s4k') + '. Context: ' + gv('s4x') + '. Brief day du: objective, audience, tone, keywords, meta, slug, outline, key points, CTA',
     s5: 'Review brief AVTalent. Brief: ' + gv('s5b') + '. Checklist: Clarity, SEO, Angle, Hook, Structure, CTA, Not promotional. Bang danhgia ok/warn/fail + revised brief',
-    s6: 'Viet bai AVTalent. Title: ' + gv('s6t') + '. Brief: ' + gv('s6b') + '. Kenh: ' + gv('s6c') + '. Dai: ' + gv('s6l') + '. KW: ' + gv('s6k') + (gv('s6c').indexOf('LinkedIn') >= 0 ? '. Them ban EN, [English below], max 3000 ky tu' : ''),
+    s6: 'Viet bai AVTalent. Title: ' + gv('s6t') + '. Brief: ' + gv('s6b') + '. Kenh: ' + gv('s6c') + '. Dai: ' + gv('s6l') + '. KW: ' + gv('s6k') + sheet + (gv('s6c').indexOf('LinkedIn') >= 0 ? '. Them ban EN, [English below], max 3000 ky tu' : ''),
     s7: 'Edit polish AVTalent. Bai viet: ' + gv('s7t') + '. Tap trung: ' + gc('cks7'),
     s8: 'Convert AVTalent tu ' + gv('s8f') + ' sang ' + gv('s8o') + '. Noi dung: ' + gv('s8t'),
     s9: 'Image prompts AVTalent. Title: ' + gv('s9t') + '. Tom tat: ' + gv('s9s') + '. Kenh: ' + gv('s9c') + '. Style: ' + gv('s9y') + '. 3 concepts, AI prompt EN day du. Footer bat buoc: avtalent.vn | info@avtalent.vn | 0364 202 992',
-    qp: 'Ke hoach noi dung AVTalent ' + gv('qpm') + '. Muc tieu: ' + gv('qpg') + '. Chien dich: ' + gv('qpc') + '. Bang pillars + lich tuan.',
-    qt: 'Generate 8 topics AVTalent. Chu de: ' + gv('qtt') + '. Kenh: ' + gc('cksqt') + '. Moi topic: Ten, Angle, Audience, Muc tieu, Kenh, CTA',
-    qw: 'Viet bai AVTalent. Topic: ' + gv('qwt') + '. Kenh: ' + gv('qwc') + '. Dai: ' + gv('qwl') + (gv('qwc').indexOf('LinkedIn') >= 0 ? '. Them ban EN, [English below]' : ''),
+    qp: 'Ke hoach noi dung AVTalent ' + gv('qpm') + '. Muc tieu: ' + gv('qpg') + '. Chien dich: ' + gv('qpc') + sheet + '. Bang pillars + lich tuan.',
+    qt: 'Generate 8 topics AVTalent. Chu de: ' + gv('qtt') + '. Kenh: ' + gc('cksqt') + sheet + '. Moi topic: Ten, Angle, Audience, Muc tieu, Kenh, CTA',
+    qw: 'Viet bai AVTalent. Topic: ' + gv('qwt') + '. Kenh: ' + gv('qwc') + '. Dai: ' + gv('qwl') + sheet + (gv('qwc').indexOf('LinkedIn') >= 0 ? '. Them ban EN, [English below]' : ''),
     qi: 'Image prompts AVTalent. Title: ' + gv('qit') + '. Kenh: ' + gc('cksqi') + '. 3 concepts, AI prompt EN. Footer: avtalent.vn | info@avtalent.vn | 0364 202 992',
     qc: 'Convert AVTalent tu ' + gv('qcf') + ' sang ' + gv('qco') + '. Noi dung: ' + gv('qct')
   };
