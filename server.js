@@ -7,32 +7,16 @@ const app = express();
 app.use(express.json({ limit: '10mb' }));
 
 const HTML = fs.readFileSync(path.join(__dirname, 'public', 'index.html'), 'utf8');
-console.log('Loaded index.html:', HTML.length, 'bytes');
+console.log('Loaded:', HTML.length, 'bytes');
 
-const SYSTEM_PROMPT = `Ban la AVTalent Content Pipeline Assistant - tro ly san xuat noi dung chuyen nghiep cho AVTalent.
+const SYSTEM_PROMPT = 'Ban la AVTalent Content Pipeline Assistant. AVTalent la cong ty chuyen cung cap dich vu dao tao va giai phap nhan su tai Viet Nam (avtalent.vn). Dich vu: dao tao ky nang ban hang, phong thai doanh nhan, thuyet trinh & pitching, cham soc khach hang, Power BI, tuyen dung. Target: HR Manager, L&D Manager, C-level. Tone: professional, practical. Viet tieng Viet co dau day du. Contact: avtalent.vn | info@avtalent.vn | 0364 202 992';
 
-Ve AVTalent:
-- Ten: AVTalent (avtalent.vn) - Don vi dao tao va giai phap nhan su chuyen sau
-- Slogan: Doi tac phat trien nguon nang luc cho doanh nghiep toan cau
-- Dich vu: Dao tao ky nang ban hang, phong thai doanh nhan, thuyet trinh & pitching, cham soc khach hang qua chat, Power BI, tuyen dung nhan su, chuong trinh dao tao tailor-made
-- Target: Doanh nghiep vua lon, HR Manager, L&D Manager, Training Manager, C-level
-- Contact: avtalent.vn | info@avtalent.vn | 0364 202 992
-
-Quy tac:
-- Viet tieng Viet co dau day du
-- Tone professional, practical, khong promotional
-- LinkedIn: them ban EN phia duoi, [English below], max 3000 ky tu
-- Image website: 852x568px, footer bat buoc: avtalent.vn | info@avtalent.vn | 0364 202 992
-- Educational-first, solution-oriented`;
-
-// Serve homepage
 app.get('/', (req, res) => {
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', 'no-store');
   res.send(HTML);
 });
 
-// Fetch Google Sheet as CSV
 app.post('/api/fetch-sheet', (req, res) => {
   const { url } = req.body;
   if (!url) return res.status(400).json({ error: 'URL required' });
@@ -45,76 +29,102 @@ app.post('/api/fetch-sheet', (req, res) => {
     if (response.statusCode === 302 || response.statusCode === 301) {
       https.get(response.headers.location, (r2) => {
         let body = '';
-        r2.on('data', chunk => body += chunk);
+        r2.on('data', c => body += c);
         r2.on('end', () => res.json({ csv: body }));
-        r2.on('error', e => res.status(500).json({ error: e.message }));
       });
     } else {
       let body = '';
-      response.on('data', chunk => body += chunk);
+      response.on('data', c => body += c);
       response.on('end', () => res.json({ csv: body }));
-      response.on('error', e => res.status(500).json({ error: e.message }));
     }
   }).on('error', e => res.status(500).json({ error: e.message }));
 });
 
-// Gemini API streaming
-app.post('/api/chat', async (req, res) => {
+app.post('/api/chat', (req, res) => {
   const { messages } = req.body;
   const key = process.env.GEMINI_API_KEY;
-  if (!key) return res.status(400).json({ error: 'GEMINI_API_KEY not set' });
+  if (!key) {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.write('data: ' + JSON.stringify({ error: 'GEMINI_API_KEY chua duoc set tren Railway Variables' }) + '\n\n');
+    res.write('data: [DONE]\n\n');
+    return res.end();
+  }
+
+  const userMsg = messages[messages.length - 1].content;
+  const prompt = SYSTEM_PROMPT + '\n\n' + userMsg;
+
+  const body = JSON.stringify({
+    contents: [{ role: 'user', parts: [{ text: prompt }] }],
+    generationConfig: { maxOutputTokens: 4096, temperature: 0.7 }
+  });
+
+  const options = {
+    hostname: 'generativelanguage.googleapis.com',
+    path: '/v1beta/models/gemini-2.0-flash:generateContent?key=' + key,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Content-Length': Buffer.byteLength(body)
+    }
+  };
 
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
 
-  try {
-    // Build Gemini request
-    const userMsg = messages[messages.length - 1].content;
-    const fullPrompt = SYSTEM_PROMPT + '\n\nYeu cau: ' + userMsg;
-
-    const geminiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent?alt=sse&key=' + key;
-    const body = JSON.stringify({
-      contents: [{ role: 'user', parts: [{ text: fullPrompt }] }],
-      generationConfig: { maxOutputTokens: 4096, temperature: 0.7 }
-    });
-
-    const urlObj = new URL(geminiUrl);
-    const options = {
-      hostname: urlObj.hostname,
-      path: urlObj.pathname + urlObj.search,
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) }
-    };
-
-    const apiReq = https.request(options, (apiRes) => {
-      apiRes.on('data', (chunk) => {
-        const lines = chunk.toString().split('\n');
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            const data = line.slice(6).trim();
-            if (data === '[DONE]') { res.write('data: [DONE]\n\n'); return; }
-            try {
-              const parsed = JSON.parse(data);
-              const text = parsed?.candidates?.[0]?.content?.parts?.[0]?.text;
-              if (text) res.write('data: ' + JSON.stringify({ text }) + '\n\n');
-            } catch(e) {}
-          }
+  const apiReq = https.request(options, (apiRes) => {
+    let raw = '';
+    apiRes.on('data', chunk => raw += chunk.toString());
+    apiRes.on('end', () => {
+      try {
+        console.log('Gemini raw:', raw.slice(0, 200));
+        const parsed = JSON.parse(raw);
+        
+        if (parsed.error) {
+          res.write('data: ' + JSON.stringify({ error: parsed.error.message }) + '\n\n');
+          res.write('data: [DONE]\n\n');
+          return res.end();
         }
-      });
-      apiRes.on('end', () => { res.write('data: [DONE]\n\n'); res.end(); });
-      apiRes.on('error', (e) => { res.write('data: ' + JSON.stringify({ error: e.message }) + '\n\n'); res.end(); });
+
+        const text = parsed?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        if (!text) {
+          res.write('data: ' + JSON.stringify({ error: 'Gemini khong tra ve ket qua. Raw: ' + raw.slice(0, 200) }) + '\n\n');
+          res.write('data: [DONE]\n\n');
+          return res.end();
+        }
+
+        // Stream text in chunks for better UX
+        const chunkSize = 50;
+        let i = 0;
+        const interval = setInterval(() => {
+          if (i >= text.length) {
+            clearInterval(interval);
+            res.write('data: [DONE]\n\n');
+            res.end();
+            return;
+          }
+          const chunk = text.slice(i, i + chunkSize);
+          res.write('data: ' + JSON.stringify({ text: chunk }) + '\n\n');
+          i += chunkSize;
+        }, 20);
+
+      } catch(e) {
+        res.write('data: ' + JSON.stringify({ error: 'Parse error: ' + e.message + ' | ' + raw.slice(0, 100) }) + '\n\n');
+        res.write('data: [DONE]\n\n');
+        res.end();
+      }
     });
+  });
 
-    apiReq.on('error', (e) => { res.write('data: ' + JSON.stringify({ error: e.message }) + '\n\n'); res.end(); });
-    apiReq.write(body);
-    apiReq.end();
-
-  } catch (e) {
+  apiReq.on('error', (e) => {
     res.write('data: ' + JSON.stringify({ error: e.message }) + '\n\n');
+    res.write('data: [DONE]\n\n');
     res.end();
-  }
+  });
+
+  apiReq.write(body);
+  apiReq.end();
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log('AVTalent port ' + PORT));
+app.listen(PORT, () => console.log('AVTalent Gemini port ' + PORT));
