@@ -6,19 +6,27 @@ const fs = require('fs');
 const app = express();
 app.use(express.json({ limit: '10mb' }));
 
-const HTML = fs.readFileSync(path.join(__dirname, 'public', 'index.html'), 'utf8');
-console.log('Loaded index.html:', HTML.length, 'bytes');
+const HTML_FILE = path.join(__dirname, 'public', 'index.html');
+let HTML_CONTENT = '';
+try {
+  HTML_CONTENT = fs.readFileSync(HTML_FILE, 'utf8');
+  console.log('HTML loaded:', HTML_CONTENT.length, 'bytes');
+} catch (e) {
+  console.error('ERROR loading HTML:', e.message);
+  HTML_CONTENT = '<h1>Error: ' + e.message + '</h1>';
+}
 
 app.get('/', (req, res) => {
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
-  res.setHeader('Cache-Control', 'no-store');
-  res.send(HTML);
+  res.setHeader('Cache-Control', 'no-store, no-cache');
+  res.send(HTML_CONTENT);
 });
 
 app.post('/api/chat', async (req, res) => {
   const { messages, apiKey } = req.body;
-  if (!apiKey) return res.status(400).json({ error: 'API key required' });
-  const client = new Anthropic({ apiKey });
+  const key = process.env.ANTHROPIC_API_KEY || apiKey;
+  if (!key) return res.status(400).json({ error: 'API key required' });
+  const client = new Anthropic({ apiKey: key });
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
@@ -26,13 +34,12 @@ app.post('/api/chat', async (req, res) => {
     const stream = await client.messages.stream({
       model: 'claude-sonnet-4-6',
       max_tokens: 4096,
-      system: 'Ban la AVTalent Content Pipeline Assistant. AVTalent la cong ty giai phap dao tao nhan su Viet Nam. Tone: professional, practical. Tieng Viet. Contact: avtalent.vn | info@avtalent.vn | 0364 202 992',
+      system: 'Ban la AVTalent Content Pipeline Assistant. AVTalent la cong ty giai phap dao tao nhan su VN. Tone: professional, practical. Tieng Viet. Contact: avtalent.vn | info@avtalent.vn | 0364 202 992',
       messages
     });
     for await (const chunk of stream) {
-      if (chunk.type === 'content_block_delta' && chunk.delta.type === 'text_delta') {
+      if (chunk.type === 'content_block_delta' && chunk.delta.type === 'text_delta')
         res.write('data: ' + JSON.stringify({ text: chunk.delta.text }) + '\n\n');
-      }
     }
     res.write('data: [DONE]\n\n');
     res.end();
@@ -43,4 +50,4 @@ app.post('/api/chat', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log('AVTalent port ' + PORT));
+app.listen(PORT, () => console.log('AVTalent v6 port ' + PORT));
