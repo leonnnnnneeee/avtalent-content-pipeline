@@ -100,7 +100,7 @@ app.post('/api/chat', async (req, res) => {
 
 app.get('/', (req, res) => {
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'app.html'));
 });
 
 // v2.0 - full pipeline UI
