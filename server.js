@@ -146,7 +146,7 @@ app.post('/api/generate-image', (req, res) => {
       { text: 'blurry, low quality, text, watermark, ugly, distorted', weight: -1 }
     ],
     cfg_scale: 7,
-    height: 568,
+    height: 576,
     width: 896,
     samples: count || 2,
     steps: 30
@@ -188,4 +188,4 @@ app.post('/api/generate-image', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log('AVTalent v2.2 Groq+Stability port ' + PORT));
+app.listen(PORT, () => console.log('AVTalent Groq port ' + PORT));
