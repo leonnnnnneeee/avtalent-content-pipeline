@@ -451,9 +451,19 @@ async function generateImage() {
   var grid = document.getElementById('img9-grid');
   imgDiv.style.display = 'block';
   grid.innerHTML = '<div style="color:#7b82a8;font-size:13px;padding:20px">Dang tao anh, vui long cho 10-20 giay...</div>';
-  var prompt = 'Professional corporate business training image for AVTalent Vietnam. Theme: ' + title + '. ';
+  var styleMap = {
+    'Modern Corporate': 'modern flat design, navy blue and gold, geometric shapes, clean white space',
+    'Minimalist': 'minimalist white background, single accent color, lots of white space, elegant typography layout',
+    'Bold': 'bold vibrant colors, strong contrast, dynamic composition, energetic'
+  };
+  var styleDesc = styleMap[style] || styleMap['Modern Corporate'];
+  var prompt = 'Vietnamese corporate training marketing banner background for AVTalent. ';
+  prompt += 'Topic: ' + title + '. ';
   if (summary) prompt += summary + '. ';
-  prompt += 'Style: ' + style + ', clean modern design, navy blue and gold colors, professional HR company. No text, high quality photorealistic';
+  prompt += styleDesc + '. ';
+  prompt += 'Professional Vietnamese business people in training workshop, modern office environment, ';
+  prompt += 'inspired by modern Vietnamese education company branding like AVTalent with navy blue and gold palette. ';
+  prompt += 'Photorealistic, ultra detailed, 4K, professional photography, no text overlay';
   try {
     var res = await fetch('/api/generate-image', {
       method: 'POST',
