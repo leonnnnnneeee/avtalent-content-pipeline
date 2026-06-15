@@ -350,22 +350,147 @@ function removeSheet() {
 }
 
 function mkP(id) {
-  var sheet = sheetURL ? ' [Dữ liệu tham chiếu từ Google Sheet: ' + sheetURL + '] Hãy đọc và phân tích nội dung sheet này để tạo output phù hợp với kế hoạch hiện tại.' : '';
+  var sheet = sheetURL ? ' [Tham chiếu Google Sheet kế hoạch hiện tại: ' + sheetURL + ']' : '';
   var p = {
-    s1: 'Tạo kế hoạch noi dung AVTalent ' + gv('s1m') + '. Mục tiêu: ' + gv('s1g') + '. Chiến dịch: ' + gv('s1c') + '. Kênh: ' + gc('cks1') + '. Ghi chú: ' + gv('s1n') + sheet + '. Output: 1.Tom tat chien luoc 2.Bang content pillars 3.Lich dang bai theo tuan (bang: Ngay, Gio, Pillar, Topic, Kenh) 4.Ghi chú trien khai',
-    s2: 'Generate ' + gv('s2n') + ' topics AVTalent. Chiến dịch: ' + gv('s2c') + '. Pillars: ' + gc('cks2') + '. Context: ' + gv('s2x') + sheet + '. Moi topic: Ten, Angle, Audience, Mục tiêu, Kenh, CTA',
-    s3: 'Tao title va hook AVTalent. Topic: ' + gv('s3t') + '. Pillar: ' + gv('s3p') + '. Kênh: ' + gv('s3h') + '. Audience: ' + gv('s3a') + sheet + '. Output: 3 titles (danh recommended) + 4 hooks (pain, stat, question, bold)',
-    s4: 'Content brief AVTalent. Title: ' + gv('s4t') + '. Hook: ' + gv('s4h') + '. Kênh: ' + gv('s4c') + '. Keyword: ' + gv('s4k') + '. Context: ' + gv('s4x') + '. Brief day du: objective, audience, tone, keywords, meta, slug, outline, key points, CTA',
-    s5: 'Review brief AVTalent. Brief: ' + gv('s5b') + '. Checklist: Clarity, SEO, Angle, Hook, Structure, CTA, Not promotional. Bang danhgia ok/warn/fail + revised brief',
-    s6: 'Viet bai AVTalent. Title: ' + gv('s6t') + '. Brief: ' + gv('s6b') + '. Kênh: ' + gv('s6c') + '. Độ dài: ' + gv('s6l') + '. KW: ' + gv('s6k') + sheet + (gv('s6c').indexOf('LinkedIn') >= 0 ? '. Thêm bản EN, [English below], max 3000 ký tự' : ''),
-    s7: 'Edit & Polish AVTalent. Bài viết: ' + gv('s7t') + '. Tập trung: ' + gc('cks7'),
-    s8: 'Convert AVTalent từ ' + gv('s8f') + ' sang ' + gv('s8o') + '. Nội dung: ' + gv('s8t'),
-    s9: 'Image prompts AVTalent. Title: ' + gv('s9t') + '. Tóm tắt: ' + gv('s9s') + '. Kênh: ' + gv('s9c') + '. Style: ' + gv('s9y') + '. 3 concepts, AI prompt EN day du. Footer bat buoc: avtalent.vn | info@avtalent.vn | 0364 202 992',
-    qp: 'Kế hoạch nội dung AVTalent ' + gv('qpm') + '. Mục tiêu: ' + gv('qpg') + '. Chiến dịch: ' + gv('qpc') + sheet + '. Bảng pillars + lịch tuần.',
-    qt: 'Generate 8 topics AVTalent. Chủ đề: ' + gv('qtt') + '. Kênh: ' + gc('cksqt') + sheet + '. Moi topic: Ten, Angle, Audience, Mục tiêu, Kenh, CTA',
-    qw: 'Viết bài AVTalent. Topic: ' + gv('qwt') + '. Kênh: ' + gv('qwc') + '. Độ dài: ' + gv('qwl') + sheet + (gv('qwc').indexOf('LinkedIn') >= 0 ? '. Thêm bản EN, [English below]' : ''),
-    qi: 'Image prompts AVTalent. Title: ' + gv('qit') + '. Kênh: ' + gc('cksqi') + '. 3 concepts, AI prompt EN. Footer: avtalent.vn | info@avtalent.vn | 0364 202 992',
-    qc: 'Convert AVTalent từ ' + gv('qcf') + ' sang ' + gv('qco') + '. Nội dung: ' + gv('qct')
+    s1: `Tạo kế hoạch nội dung tháng cho AVTalent với thông tin sau:
+- Tháng: ${gv('s1m')}
+- Mục tiêu: ${gv('s1g')}  
+- Chiến dịch/chủ đề: ${gv('s1c')}
+- Kênh: ${gc('cks1')}
+- Ghi chú: ${gv('s1n')}${sheet}
+
+Yêu cầu output:
+1. Tóm tắt định hướng nội dung tháng (3-4 câu, có insight)
+2. Bảng content pillars với thông điệp cốt lõi cho từng pillar
+3. Lịch đăng bài theo tuần — bảng gồm: Ngày | Giờ | Pillar | Chủ đề bài | Kênh | Người phụ trách
+4. Lưu ý triển khai quan trọng`,
+
+    s2: `Generate ${gv('s2n')} content topics chất lượng cao cho AVTalent.
+Chiến dịch: ${gv('s2c')}
+Content pillars: ${gc('cks2')}
+Context thêm: ${gv('s2x')}${sheet}
+
+Yêu cầu mỗi topic:
+- Tên topic: cụ thể, có hook
+- Content angle: góc tiếp cận độc đáo, không nhàm chán
+- Target audience: ai sẽ đọc và tại sao họ quan tâm
+- Insight cốt lõi: 1 câu nắm bắt giá trị
+- Kênh phù hợp nhất
+- Soft CTA tự nhiên`,
+
+    s3: `Tạo title và hook cho topic sau của AVTalent:
+Topic: ${gv('s3t')}
+Content Pillar: ${gv('s3p')}
+Kênh: ${gv('s3h')}
+Target audience: ${gv('s3a')}
+
+Output:
+**3 Title Options** (đánh dấu ← RECOMMENDED cho cái tốt nhất):
+- Mỗi title phải rõ value proposition, không clickbait rẻ tiền
+
+**4 Hooks** (viết đầy đủ 2-3 câu, không chỉ ý tưởng):
+1. Pain point hook: bắt đầu bằng vấn đề thực tế
+2. Data/statistic hook: con số gây chú ý
+3. Question hook: câu hỏi khiến người đọc tự hỏi bản thân
+4. Bold statement hook: tuyên bố táo bạo hoặc counter-intuitive`,
+
+    s4: `Tạo content brief đầy đủ cho AVTalent:
+Title: ${gv('s4t')}
+Hook: ${gv('s4h')}
+Kênh: ${gv('s4c')}
+Keyword chính: ${gv('s4k')}
+Context: ${gv('s4x')}
+
+Brief bao gồm:
+- Mục tiêu bài viết (cụ thể, đo lường được)
+- Target reader persona
+- Tone of voice
+- Main keyword + 5 supporting keywords
+- Meta description (155 ký tự)
+- Slug URL
+- Outline chi tiết (H2, H3, key points mỗi section)
+- Key messages không được bỏ qua
+- CTA phù hợp
+- Độ dài đề xuất
+- SEO notes`,
+
+    s5: `Review và cải thiện content brief sau cho AVTalent:
+${gv('s5b')}
+
+Đánh giá theo 7 tiêu chí (✅ Tốt / ⚠️ Cần cải thiện / ❌ Có vấn đề):
+1. Clarity — mục tiêu và angle có rõ không?
+2. SEO potential — keyword strategy có ổn không?
+3. Content angle — có khác biệt, không nhàm không?
+4. Hook strength — có đủ mạnh để stop scroll không?
+5. Logical structure — outline có flow tốt không?
+6. CTA quality — có tự nhiên và phù hợp không?
+7. Not promotional — có quá salesy không?
+
+Sau bảng đánh giá: output revised brief hoàn chỉnh với các cải tiến cụ thể.`,
+
+    s6: 'Viết bài hoàn chỉnh cho AVTalent.' +
+      ' Title: ' + gv('s6t') +
+      '. Brief: ' + gv('s6b') +
+      '. Kênh: ' + gv('s6c') +
+      '. Độ dài: ' + gv('s6l') +
+      '. Keyword SEO: ' + gv('s6k') +
+      '. Yêu cầu: viết tự nhiên, không văn mẫu, câu mở đầu hook mạnh, dùng ví dụ thực tế, kết nối pain point HR/L&D, keyword tự nhiên, CTA nhẹ nhàng.' +
+      (gv('s6c').indexOf('LinkedIn') >= 0 ? ' Phiên bản VI trước, EN sau với [English below].' : '') +
+      ' Output: SEO Title | Meta description | Slug | Nội dung đầy đủ',
+
+    s7: `Edit và polish bài viết sau cho AVTalent, tập trung vào: ${gc('cks7')}
+
+--- BÀI GỐC ---
+${gv('s7t')}
+--- HẾT BÀI GỐC ---
+
+Cải thiện theo thứ tự:
+1. Intro: nếu chưa hook đủ mạnh trong 3 dòng đầu — viết lại
+2. Flow: câu chuyển tiếp giữa các section có mượt không
+3. Giọng văn: xóa các cụm sáo rỗng, viết lại bằng ngôn ngữ tự nhiên hơn
+4. CTA: softer và tự nhiên hơn
+
+Output: bài đã chỉnh + tóm tắt những gì đã thay đổi và tại sao`,
+
+    s8: 'Chuyển đổi nội dung AVTalent từ ' + gv('s8f') + ' sang ' + gv('s8o') + '. Nội dung gốc: ' + gv('s8t') + '. Tối ưu hoàn toàn cho kênh đích ' + gv('s8o') + ': đúng format, đúng tone, đúng độ dài. Giữ nguyên thông điệp cốt lõi của AVTalent.',
+
+    s9: `Tạo image ideas và AI prompts cho bài viết AVTalent:
+Title: ${gv('s9t')}
+Tóm tắt: ${gv('s9s')}
+Kênh: ${gv('s9c')}
+Phong cách: ${gv('s9y')}
+
+Tạo 3 concepts khác nhau. Mỗi concept gồm:
+- Tên concept
+- Visual direction: mô tả hình ảnh chính
+- Text overlay: copy ngắn trên ảnh
+- Layout: bố cục tổng thể
+- Color/style: màu sắc, phong cách
+- Format: kích thước phù hợp kênh
+
+**AI Image Prompt (tiếng Anh, đầy đủ chi tiết):**
+[Prompt hoàn chỉnh để paste vào Midjourney/DALL-E/Ideogram]
+Lưu ý: footer "avtalent.vn | info@avtalent.vn | 0364 202 992" bắt buộc`,
+
+    qp: `Tạo kế hoạch nội dung AVTalent ${gv('qpm')}.
+Mục tiêu: ${gv('qpg')}. Chiến dịch: ${gv('qpc')}${sheet}
+Output: định hướng tháng + bảng content pillars + lịch đăng theo tuần`,
+
+    qt: `Generate ${gv('s2n') || '8'} content topics chất lượng cao cho AVTalent.
+Chủ đề: ${gv('qtt')}. Kênh: ${gc('cksqt')}${sheet}
+Mỗi topic: Tên | Angle độc đáo | Target reader | Insight cốt lõi | Kênh | CTA`,
+
+    qw: `Viết bài hoàn chỉnh cho AVTalent — giọng văn tự nhiên, không máy móc:
+${gv('qwt')}
+Kênh: ${gv('qwc')} | Độ dài: ${gv('qwl')}
+${gv('qwc').indexOf('LinkedIn') >= 0 ? 'Phiên bản VI trước, EN sau với [English below]' : ''}`,
+
+    qi: `Tạo 3 image concepts + AI prompts đầy đủ cho AVTalent:
+Title: ${gv('qit')}. Kênh: ${gc('cksqi')}
+Footer bắt buộc trong mọi prompt: avtalent.vn | info@avtalent.vn | 0364 202 992`,
+
+    qc: `Chuyển nội dung AVTalent từ ${gv('qcf')} sang ${gv('qco')} — giữ nguyên thông điệp cốt lõi nhưng tối ưu cho kênh đích:
+${gv('qct')}`
   };
   return p[id] || '';
 }
