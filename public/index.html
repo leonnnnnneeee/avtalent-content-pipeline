@@ -105,6 +105,10 @@ body{font-family:Arial,sans-serif;background:#0f1117;color:#e8eaf6;height:100vh;
   </nav>
   <div class="api">
     <div class="api-r"><div class="dot on" id="dot"></div><span id="albl">API đã kết nối</span></div>
+    <div style="margin-top:8px;display:flex;gap:6px">
+      <button onclick="go('history')" style="flex:1;padding:6px 8px;background:#22263a;border:1px solid #2e3350;border-radius:7px;color:#7b82a8;font-size:11px;cursor:pointer;font-family:Arial,sans-serif">📋 Lịch sử</button>
+      <button onclick="clearHistory()" style="padding:6px 8px;background:#22263a;border:1px solid #2e3350;border-radius:7px;color:#7b82a8;font-size:11px;cursor:pointer;font-family:Arial,sans-serif">🗑</button>
+    </div>
   </div>
 </aside>
 <main class="main">
@@ -282,14 +286,20 @@ body{font-family:Arial,sans-serif;background:#0f1117;color:#e8eaf6;height:100vh;
     <div id="out-qs"></div>
   </div>
 
+  <div id="v-history" class="sv" style="display:none">
+    <h2>📋 Lịch sử kết quả</h2>
+    <p class="dsc">Các kết quả đã tạo được lưu tự động — tồn tại qua các lần reload</p>
+    <div id="history-list"></div>
+  </div>
+
   </div>
 </main>
 </div>
 <script>
 var apiKey = '';
 var sheetURL = '';
-var T = {home:'AVTalent Content Pipeline',s1:'Kế hoạch nội dung tháng',s2:'Generate Topics',s3:'Title & Hook',s4:'Content Brief',s5:'Review Brief',s6:'Viết Full Content',s7:'Edit & Polish',s8:'Convert by Channel',s9:'Image Prompts',qp:'Kế hoạch tháng',qt:'Generate Topics',qw:'Viết bài ngay',qi:'Image Prompts',qc:'Convert kênh',qs:'Topics từ Sheet'};
-var S = {s1:'Bước 1/9',s2:'Bước 2/9',s3:'Bước 3/9',s4:'Bước 4/9',s5:'Bước 5/9',s6:'Bước 6/9',s7:'Bước 7/9',s8:'Bước 8/9',s9:'Bước 9/9',qp:'Nhanh',qt:'Nhanh',qw:'Nhanh',qi:'Nhanh',qc:'Nhanh',qs:'Nhanh',home:''};
+var T = {home:'AVTalent Content Pipeline',s1:'Kế hoạch nội dung tháng',s2:'Generate Topics',s3:'Title & Hook',s4:'Content Brief',s5:'Review Brief',s6:'Viết Full Content',s7:'Edit & Polish',s8:'Convert by Channel',s9:'Image Prompts',qp:'Kế hoạch tháng',qt:'Generate Topics',qw:'Viết bài ngay',qi:'Image Prompts',qc:'Convert kênh',qs:'Topics từ Sheet',history:'Lịch sử kết quả'};
+var S = {s1:'Bước 1/9',s2:'Bước 2/9',s3:'Bước 3/9',s4:'Bước 4/9',s5:'Bước 5/9',s6:'Bước 6/9',s7:'Bước 7/9',s8:'Bước 8/9',s9:'Bước 9/9',qp:'Nhanh',qt:'Nhanh',qw:'Nhanh',qi:'Nhanh',qc:'Nhanh',qs:'Nhanh',history:'',home:''};
 
 function setKey(v) {
   apiKey = v ? v.trim() : '';
@@ -300,6 +310,7 @@ function go(id) {
   for (var i = 0; i < views.length; i++) { views[i].style.display = 'none'; }
   var el = document.getElementById('v-' + id);
   if (el) { el.style.display = ''; }
+  if (id === 'history') { renderHistory(); }
   var btns = document.querySelectorAll('.ni');
   for (var i = 0; i < btns.length; i++) {
     btns[i].classList.toggle('on', btns[i].getAttribute('data-v') === id);
@@ -540,6 +551,8 @@ async function run(id) {
   }
   btn.disabled = false;
   btn.textContent = 'Tạo lại';
+  // Save to history
+  if (full) { saveToHistory(id, p.slice(0, 80), full); }
   document.getElementById('ct').scrollTop = document.getElementById('ct').scrollHeight;
   if (id === 's1') {
     var nb = document.getElementById('ns1');
