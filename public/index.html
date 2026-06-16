@@ -92,6 +92,7 @@ body{font-family:Arial,sans-serif;background:#0f1117;color:#e8eaf6;height:100vh;
     <button class="ni" data-v="qi" onclick="go('qi')">&#128444; Image Prompts</button>
     <button class="ni" data-v="qc" onclick="go('qc')">&#128241; Convert kênh</button>
     <button class="ni" data-v="qs" onclick="go('qs')">&#128202; Topics từ Sheet</button>
+    <button class="ni" data-v="trans" onclick="go('trans')">&#127760; Dịch VI ↔ EN</button>
     <div class="nl" style="margin-top:10px">9 Bước Pipeline</div>
     <button class="ni" data-v="s1" onclick="go('s1')"><span class="nn">1</span>Kế hoạch tháng</button>
     <button class="ni" data-v="s2" onclick="go('s2')"><span class="nn">2</span>Generate Topics</button>
@@ -286,7 +287,34 @@ body{font-family:Arial,sans-serif;background:#0f1117;color:#e8eaf6;height:100vh;
     <div id="out-qs"></div>
   </div>
 
-  <div id="v-history" class="sv" style="display:none">
+  <div id="v-trans" class="sv" style="display:none">
+    <h2>&#127760; Dịch Tiếng Việt ↔ English</h2>
+    <p class="dsc">Dịch nội dung marketing, bài viết LinkedIn, email chuyên nghiệp</p>
+    <div class="fr" style="margin-bottom:12px">
+      <div class="fg">
+        <label class="fl">Ngôn ngữ nguồn</label>
+        <select id="trans-from"><option value="vi">Tiếng Việt → English</option><option value="en">English → Tiếng Việt</option></select>
+      </div>
+      <div class="fg">
+        <label class="fl">Phong cách dịch</label>
+        <select id="trans-style">
+          <option>Chuyên nghiệp - Business</option>
+          <option>Marketing - Hấp dẫn</option>
+          <option>LinkedIn - Personal voice</option>
+          <option>Email - Formal</option>
+          <option>Tự nhiên - Conversational</option>
+        </select>
+      </div>
+    </div>
+    <div class="fg">
+      <label class="fl">Nội dung cần dịch</label>
+      <textarea id="trans-input" style="min-height:160px" placeholder="Nhập nội dung cần dịch..."></textarea>
+    </div>
+    <button class="btn-g" id="btrans" onclick="runTranslate()">&#127760; Dịch ngay</button>
+    <div id="out-trans" style="margin-top:14px"></div>
+  </div>
+
+    <div id="v-history" class="sv" style="display:none">
     <h2>📋 Lịch sử kết quả</h2>
     <p class="dsc">Các kết quả đã tạo được lưu tự động — tồn tại qua các lần reload</p>
     <div id="history-list"></div>
@@ -298,8 +326,8 @@ body{font-family:Arial,sans-serif;background:#0f1117;color:#e8eaf6;height:100vh;
 <script>
 var apiKey = '';
 var sheetURL = '';
-var T = {home:'AVTalent Content Pipeline',s1:'Kế hoạch nội dung tháng',s2:'Generate Topics',s3:'Title & Hook',s4:'Content Brief',s5:'Review Brief',s6:'Viết Full Content',s7:'Edit & Polish',s8:'Convert by Channel',s9:'Image Prompts',qp:'Kế hoạch tháng',qt:'Generate Topics',qw:'Viết bài ngay',qi:'Image Prompts',qc:'Convert kênh',qs:'Topics từ Sheet',history:'Lịch sử kết quả'};
-var S = {s1:'Bước 1/9',s2:'Bước 2/9',s3:'Bước 3/9',s4:'Bước 4/9',s5:'Bước 5/9',s6:'Bước 6/9',s7:'Bước 7/9',s8:'Bước 8/9',s9:'Bước 9/9',qp:'Nhanh',qt:'Nhanh',qw:'Nhanh',qi:'Nhanh',qc:'Nhanh',qs:'Nhanh',history:'',home:''};
+var T = {home:'AVTalent Content Pipeline',s1:'Kế hoạch nội dung tháng',s2:'Generate Topics',s3:'Title & Hook',s4:'Content Brief',s5:'Review Brief',s6:'Viết Full Content',s7:'Edit & Polish',s8:'Convert by Channel',s9:'Image Prompts',qp:'Kế hoạch tháng',qt:'Generate Topics',qw:'Viết bài ngay',qi:'Image Prompts',qc:'Convert kênh',qs:'Topics từ Sheet',trans:'Dịch Tiếng Việt ↔ English',history:'Lịch sử kết quả'};
+var S = {s1:'Bước 1/9',s2:'Bước 2/9',s3:'Bước 3/9',s4:'Bước 4/9',s5:'Bước 5/9',s6:'Bước 6/9',s7:'Bước 7/9',s8:'Bước 8/9',s9:'Bước 9/9',qp:'Nhanh',qt:'Nhanh',qw:'Nhanh',qi:'Nhanh',qc:'Nhanh',qs:'Nhanh',trans:'Công cụ dịch',history:'',home:''};
 
 function setKey(v) {
   apiKey = v ? v.trim() : '';
@@ -674,7 +702,7 @@ function saveToHistory(stepId, preview, result) {
       s4:'Content Brief',s5:'Review Brief',s6:'Viết Full Content',
       s7:'Edit & Polish',s8:'Convert Channel',s9:'Image Prompts',
       qp:'Kế hoạch tháng',qt:'Generate Topics',qw:'Viết bài ngay',
-      qi:'Image Prompts',qc:'Convert kênh',qs:'Topics từ Sheet'
+      qi:'Image Prompts',qc:'Convert kênh',qs:'Topics từ Sheet',trans:'Dịch VI ↔ EN'
     };
     var history = [];
     try { history = JSON.parse(localStorage.getItem('avt_history') || '[]'); } catch(e) {}
@@ -752,6 +780,65 @@ function clearHistory() {
     try { localStorage.removeItem('avt_history'); } catch(e) {}
     renderHistory();
   }
+}
+
+
+async function runTranslate() {
+  var text = document.getElementById('trans-input').value.trim();
+  var dir = document.getElementById('trans-from').value;
+  var style = document.getElementById('trans-style').value;
+  if (!text) { alert('Nhập nội dung cần dịch!'); return; }
+
+  var btn = document.getElementById('btrans');
+  var out = document.getElementById('out-trans');
+  btn.disabled = true;
+  btn.textContent = 'Đang dịch...';
+
+  var fromLang = dir === 'vi' ? 'Tiếng Việt' : 'English';
+  var toLang = dir === 'vi' ? 'English' : 'Tiếng Việt';
+
+  var prompt = 'Hay dich noi dung sau tu ' + fromLang + ' sang ' + toLang + '. Phong cach: ' + style + '. Linh vuc marketing dao tao nhan su. Dich tu nhien, giu tone, thuat ngu chinh xac, giu emoji neu co. Chi tra ve ban dich: ' + text;
+
+  out.innerHTML = '<div class="out"><div class="out-top"><span class="out-lbl">Bản dịch</span><button class="btn-cp" id="cp-trans">Copy</button></div><div class="out-body" id="ob-trans"></div></div>';
+  var ob = document.getElementById('ob-trans');
+  var full = '';
+
+  try {
+    var res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ apiKey: apiKey, messages: [{ role: 'user', content: prompt }] })
+    });
+    var reader = res.body.getReader();
+    var dec = new TextDecoder();
+    var done = false;
+    while (!done) {
+      var rd = await reader.read();
+      done = rd.done;
+      if (rd.value) {
+        var lines = dec.decode(rd.value).split('\n');
+        for (var i = 0; i < lines.length; i++) {
+          if (lines[i].slice(0,6) === 'data: ') {
+            var d = lines[i].slice(6);
+            if (d === '[DONE]') { done = true; break; }
+            try { var j = JSON.parse(d); if (j.text) { full += j.text; ob.textContent = full; } } catch(e2) {}
+          }
+        }
+      }
+    }
+    document.getElementById('cp-trans').onclick = function() {
+      navigator.clipboard.writeText(full);
+      this.textContent = 'Đã copy!';
+      var self = this;
+      setTimeout(function() { self.textContent = 'Copy'; }, 1500);
+    };
+    if (full) saveToHistory('trans', text.slice(0, 80), full);
+  } catch(e) {
+    ob.textContent = 'Lỗi: ' + e.message;
+  }
+
+  btn.disabled = false;
+  btn.textContent = '&#127760; Dịch lại';
 }
 
 go('home');
