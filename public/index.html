@@ -666,6 +666,94 @@ async function generateImage() {
   btn.textContent = '🖼 Tạo ảnh mới';
 }
 
+
+function saveToHistory(stepId, preview, result) {
+  try {
+    var stepNames = {
+      s1:'Kế hoạch tháng',s2:'Generate Topics',s3:'Title & Hook',
+      s4:'Content Brief',s5:'Review Brief',s6:'Viết Full Content',
+      s7:'Edit & Polish',s8:'Convert Channel',s9:'Image Prompts',
+      qp:'Kế hoạch tháng',qt:'Generate Topics',qw:'Viết bài ngay',
+      qi:'Image Prompts',qc:'Convert kênh',qs:'Topics từ Sheet'
+    };
+    var history = [];
+    try { history = JSON.parse(localStorage.getItem('avt_history') || '[]'); } catch(e) {}
+    history.unshift({
+      id: Date.now(),
+      step: stepId,
+      stepName: stepNames[stepId] || stepId,
+      preview: preview,
+      result: result,
+      time: new Date().toLocaleString('vi-VN')
+    });
+    if (history.length > 50) history = history.slice(0, 50);
+    localStorage.setItem('avt_history', JSON.stringify(history));
+  } catch(e) { console.error('saveToHistory error:', e); }
+}
+
+function renderHistory() {
+  var list = document.getElementById('history-list');
+  if (!list) return;
+  var history = [];
+  try { history = JSON.parse(localStorage.getItem('avt_history') || '[]'); } catch(e) {}
+  if (history.length === 0) {
+    list.innerHTML = '<div style="color:#7b82a8;font-size:13px;padding:30px;text-align:center">Chưa có lịch sử. Generate nội dung đầu tiên để lưu ở đây!</div>';
+    return;
+  }
+  var out = '';
+  for (var i = 0; i < history.length; i++) {
+    var item = history[i];
+    var preview = (item.result || '').slice(0, 200).replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    out += '<div style="border:1px solid #2e3350;border-radius:9px;margin-bottom:12px;overflow:hidden">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#22263a">' +
+        '<div>' +
+          '<span style="font-size:11px;font-weight:bold;color:#4f6ef7;text-transform:uppercase;letter-spacing:.05em">' + (item.stepName||'') + '</span>' +
+          '<div style="font-size:11px;color:#7b82a8;margin-top:2px">' + (item.time||'') + '</div>' +
+          '<div style="font-size:12px;color:#7b82a8;margin-top:3px;font-style:italic">' + (item.preview||'').replace(/</g,'&lt;').slice(0,60) + '...</div>' +
+        '</div>' +
+        '<div style="display:flex;gap:6px;flex-shrink:0;margin-left:10px">' +
+          '<button onclick="copyHist(' + item.id + ')" style="padding:5px 12px;background:transparent;border:1px solid #2e3350;border-radius:6px;color:#7b82a8;font-size:11px;cursor:pointer;font-family:Arial,sans-serif">Copy</button>' +
+          '<button onclick="delHist(' + item.id + ')" style="padding:5px 8px;background:transparent;border:1px solid #2e3350;border-radius:6px;color:#7b82a8;font-size:11px;cursor:pointer;font-family:Arial,sans-serif">✕</button>' +
+        '</div>' +
+      '</div>' +
+      '<div style="padding:14px;font-size:13px;line-height:1.7;max-height:250px;overflow-y:auto;white-space:pre-wrap;word-break:break-word">' + preview + (item.result && item.result.length > 200 ? '...' : '') + '</div>' +
+      '<div style="padding:8px 14px;border-top:1px solid #2e3350;display:flex;gap:6px">' +
+        '<button onclick="copyHist(' + item.id + ')" style="flex:1;padding:7px;background:#4f6ef7;border:none;border-radius:7px;color:#fff;font-size:12px;cursor:pointer;font-family:Arial,sans-serif">📋 Copy toàn bộ</button>' +
+      '</div>' +
+    '</div>';
+  }
+  list.innerHTML = out;
+}
+
+function copyHist(id) {
+  try {
+    var history = JSON.parse(localStorage.getItem('avt_history') || '[]');
+    for (var i = 0; i < history.length; i++) {
+      if (history[i].id === id) {
+        navigator.clipboard.writeText(history[i].result);
+        alert('Đã copy kết quả!');
+        return;
+      }
+    }
+  } catch(e) {}
+}
+
+function delHist(id) {
+  try {
+    var history = JSON.parse(localStorage.getItem('avt_history') || '[]');
+    history = history.filter(function(h) { return h.id !== id; });
+    localStorage.setItem('avt_history', JSON.stringify(history));
+    renderHistory();
+  } catch(e) {}
+}
+
+function clearHistory() {
+  if (confirm('Xóa toàn bộ lịch sử?')) {
+    try { localStorage.removeItem('avt_history'); } catch(e) {}
+    renderHistory();
+  }
+}
+
 go('home');
 </script>
 </body>
