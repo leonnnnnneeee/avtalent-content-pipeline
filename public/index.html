@@ -391,31 +391,18 @@ function removeSheet() {
 function mkP(id) {
   var sheet = sheetURL ? ' [Tham chiếu Google Sheet kế hoạch hiện tại: ' + sheetURL + ']' : '';
   var p = {
-    s1: `Tạo kế hoạch nội dung tháng cho AVTalent với thông tin sau:
-- Tháng: ${gv('s1m')}
-- Mục tiêu: ${gv('s1g')}  
-- Chiến dịch/chủ đề: ${gv('s1c')}
-- Kênh: ${gc('cks1')}
-- Ghi chú: ${gv('s1n')}${sheet}
+    s1: 'Tạo kế hoạch nội dung tháng cho AVTalent.' +
+      ' Tháng: ' + gv('s1m') + '. Mục tiêu: ' + gv('s1g') + '. Chiến dịch: ' + gv('s1c') +
+      '. Kênh: ' + gc('cks1') + '. Ghi chú: ' + gv('s1n') + sheet +
+      '. QUAN TRỌNG - Kế hoạch phải đa dạng theo 8 pillar: (1)Educational/How-to, (2)Insight/Xu hướng, (3)Storytelling/Câu chuyện, (4)Practical Tools/Checklist, (5)Debate/Quan điểm, (6)Trending/Thời sự, (7)Community/Tương tác, (8)Conversion tối đa 20%.' +
+      ' Không được dồn vào 1-2 loại. Mix đều các format: bài viết dài, tip list, câu hỏi, case study, infographic concept.' +
+      ' Output: (1)Định hướng tháng có insight thực tế (2)Bảng content mix với % mỗi pillar (3)Lịch đăng chi tiết: Ngày|Giờ|Pillar|Chủ đề cụ thể|Format|Kênh (4)Ghi chú triển khai',
 
-Yêu cầu output:
-1. Tóm tắt định hướng nội dung tháng (3-4 câu, có insight)
-2. Bảng content pillars với thông điệp cốt lõi cho từng pillar
-3. Lịch đăng bài theo tuần — bảng gồm: Ngày | Giờ | Pillar | Chủ đề bài | Kênh | Người phụ trách
-4. Lưu ý triển khai quan trọng`,
-
-    s2: `Generate ${gv('s2n')} content topics chất lượng cao cho AVTalent.
-Chiến dịch: ${gv('s2c')}
-Content pillars: ${gc('cks2')}
-Context thêm: ${gv('s2x')}${sheet}
-
-Yêu cầu mỗi topic:
-- Tên topic: cụ thể, có hook
-- Content angle: góc tiếp cận độc đáo, không nhàm chán
-- Target audience: ai sẽ đọc và tại sao họ quan tâm
-- Insight cốt lõi: 1 câu nắm bắt giá trị
-- Kênh phù hợp nhất
-- Soft CTA tự nhiên`,
+    s2: 'Generate ' + gv('s2n') + ' content topics ĐA DẠNG cho AVTalent.' +
+      ' Chiến dịch: ' + gv('s2c') + '. Pillars: ' + gc('cks2') + '. Context: ' + gv('s2x') + sheet +
+      '. BẮT BUỘC: Topics phải đa dạng về (1)Loại content: mix educational, storytelling, debate, practical tool, trending, community (2)Góc độ: không topic nào giống nhau về angle (3)Format: article, tip list, case study, poll, checklist, opinion piece (4)Audience focus: HR manager, L&D, C-level, team leader - không chỉ 1 đối tượng.' +
+      ' Tránh các topic chung chung như "Tầm quan trọng của X" hay "Lợi ích của Y".' +
+      ' Mỗi topic cần: Tên topic cụ thể có hook | Loại content | Angle độc đáo | Target reader cụ thể | Insight cốt lõi 1 câu | Format đề xuất | Kênh tốt nhất | CTA tự nhiên',
 
     s3: `Tạo title và hook cho topic sau của AVTalent:
 Topic: ${gv('s3t')}
