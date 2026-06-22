@@ -217,5 +217,22 @@ app.post('/api/generate-image-pollinations', (req, res) => {
   fetchImage(url, 0);
 });
 
+
+app.get('/debug', (req, res) => {
+  const keys = [
+    process.env.GROQ_API_KEY,
+    process.env.GROQ_API_KEY_2,
+    process.env.GROQ_API_KEY_3
+  ];
+  res.json({
+    keys_loaded: keys.filter(Boolean).length,
+    key1: keys[0] ? keys[0].slice(0,8)+'...' : 'MISSING',
+    key2: keys[1] ? keys[1].slice(0,8)+'...' : 'MISSING',
+    key3: keys[2] ? keys[2].slice(0,8)+'...' : 'MISSING',
+    models: MODELS,
+    groq_keys_count: GROQ_KEYS.length
+  });
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => { console.log('AVTalent v3 port ' + PORT); console.log('Groq keys loaded:', GROQ_KEYS.length); });
