@@ -7,7 +7,6 @@ const app = express();
 app.use(express.json({ limit: '10mb' }));
 
 const HTML = fs.readFileSync(path.join(__dirname, 'public', 'index.html'), 'utf8');
-console.log('Loaded:', HTML.length, 'bytes');
 
 const SYSTEM_PROMPT = `Ban la chuyen gia san xuat noi dung cao cap cho AVTalent - thuong hieu dao tao nhan su hang dau Viet Nam.
 
@@ -16,29 +15,30 @@ Dinh vi: Doi tac phat trien nguon nang luc cho doanh nghiep toan cau
 Dich vu: Dao tao ky nang ban hang, phong thai doanh nhan, thuyet trinh & pitching, cham soc khach hang, Power BI, tuyen dung, tailor-made
 Khach hang: HR Manager, L&D Manager, Training Manager, C-level, truong phong
 
-NGUYEN TAC VIET NOI DUNG:
-- Giong van: chuyen nghiep nhung gan gui, nhu co van kinh nghiem noi chuyen truc tiep
-- Dung "ban" thay vi "quy khach"
-- Cau ngan, mach lac - tranh cau long vong
-- Cam xuc that, insight thuc te - khong rap khuon
-- TRANH: "trong boi canh hien nay", "khong the phu nhan", "dong vai tro quan trong", "hon bao gio het"
-
-8 CONTENT PILLARS (phai mix du):
-1. Educational/How-to: huong dan thuc te, step-by-step, framework
-2. Insight/Xu huong: data, research, phan tich xu huong HR/L&D
-3. Storytelling: cau chuyen hoc vien, behind the scenes, hanh trinh
-4. Practical Tools: checklist, template, framework dung ngay
-5. Debate/Quan diem: phan bien quan niem sai, unpopular opinion
-6. Trending: AI trong dao tao, xu huong kinh doanh, chinh sach moi
-7. Community: poll, cau hoi tuong tac, chia se cong dong
-8. Conversion (toi da 20%): gioi thieu chuong trinh, testimonial
-
-VIET TIENG VIET CO DAU DAY DU trong tat ca output.`;
+NGUYEN TAC:
+- Giong van: chuyen nghiep, gan gui, nhu co van kinh nghiem noi truc tiep
+- Dung "ban" thay "quy khach". Cau ngan, mach lac.
+- TRANH: "trong boi canh hien nay", "khong the phu nhan", "dong vai tro quan trong"
+- 8 Content Pillars: Educational, Insight, Storytelling, Practical Tools, Debate, Trending, Community, Conversion(<=20%)
+- VIET TIENG VIET CO DAU DAY DU`;
 
 app.get('/', (req, res) => {
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', 'no-store');
   res.send(HTML);
+});
+
+app.get('/debug', (req, res) => {
+  const k1 = process.env.GROQ_API_KEY;
+  const k2 = process.env.GROQ_API_KEY_2;
+  const k3 = process.env.GROQ_API_KEY_3;
+  res.json({
+    keys: [k1,k2,k3].filter(Boolean).length,
+    k1: k1 ? k1.slice(0,8)+'...' : 'missing',
+    k2: k2 ? k2.slice(0,8)+'...' : 'missing',
+    k3: k3 ? k3.slice(0,8)+'...' : 'missing',
+    models: ['openai/gpt-oss-120b','openai/gpt-oss-20b','qwen/qwen3.6-27b','qwen/qwen3-32b']
+  });
 });
 
 app.post('/api/fetch-sheet', (req, res) => {
@@ -64,48 +64,9 @@ app.post('/api/fetch-sheet', (req, res) => {
   }).on('error', e => res.status(500).json({ error: e.message }));
 });
 
-const GROQ_KEYS = [
-  process.env.GROQ_API_KEY,
-  process.env.GROQ_API_KEY_2,
-  process.env.GROQ_API_KEY_3
-].filter(Boolean);
-
-const MODELS = [
-  'openai/gpt-oss-120b',
-  'openai/gpt-oss-20b',
-  'qwen/qwen3.6-27b',
-  'qwen/qwen3-32b'
-];
-
-app.post('/api/chat', (req, res) => {
-  const { messages } = req.body;
-  res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
-  res.setHeader('Connection', 'keep-alive');
-
-  if (GROQ_KEYS.length === 0) {
-    res.write('data: ' + JSON.stringify({ error: 'Chua set GROQ_API_KEY tren Railway' }) + '\n\n');
-    res.write('data: [DONE]\n\n');
-    return res.end();
-  }
-
-  const userMsg = messages[messages.length - 1].content;
-
-  // Try each key x each model = max 9 combinations
-  function tryCombo(keyIdx, modelIdx) {
-    if (keyIdx >= GROQ_KEYS.length) {
-      res.write('data: ' + JSON.stringify({ error: 'Tat ca API keys deu bi rate limit hom nay. Thu lai ngay mai hoac them key moi tai console.groq.com/keys' }) + '\n\n');
-      res.write('data: [DONE]\n\n');
-      return res.end();
-    }
-    if (modelIdx >= MODELS.length) {
-      return tryCombo(keyIdx + 1, 0); // next key, reset model
-    }
-
-    const key = GROQ_KEYS[keyIdx];
-    const model = MODELS[modelIdx];
-    console.log('Trying key', keyIdx + 1, 'model:', model);
-
+// Call Groq with one specific key + model
+function callGroq(key, model, userMsg) {
+  return new Promise((resolve) => {
     const body = JSON.stringify({
       model: model,
       messages: [
@@ -128,62 +89,99 @@ app.post('/api/chat', (req, res) => {
       }
     };
 
-    const apiReq = https.request(options, (apiRes) => {
+    const req = https.request(options, (apiRes) => {
       let raw = '';
       apiRes.on('data', chunk => raw += chunk.toString());
       apiRes.on('end', () => {
         try {
           const parsed = JSON.parse(raw);
           if (parsed.error) {
-            const msg = parsed.error.message || '';
-            if (msg.includes('rate_limit') || msg.includes('Rate limit') || msg.includes('TPD') || msg.includes('TPM') || msg.includes('decommission') || msg.includes('deprecat') || msg.includes('no longer') || msg.includes('not found') || msg.includes('does not exist')) {
-              console.log('Rate limit/deprecated key', keyIdx+1, 'model', model, '- trying next...');
-              return tryCombo(keyIdx, modelIdx + 1); // try next model same key
-            }
-            res.write('data: ' + JSON.stringify({ error: msg }) + '\n\n');
-            res.write('data: [DONE]\n\n');
-            return res.end();
+            resolve({ ok: false, error: parsed.error.message || 'unknown error' });
+          } else {
+            const text = parsed?.choices?.[0]?.message?.content || '';
+            resolve({ ok: !!text, text: text, error: text ? null : 'empty response' });
           }
-
-          const text = parsed?.choices?.[0]?.message?.content || '';
-          if (!text) {
-            res.write('data: ' + JSON.stringify({ error: 'No response from ' + model }) + '\n\n');
-            res.write('data: [DONE]\n\n');
-            return res.end();
-          }
-
-          const chunkSize = 80;
-          let i = 0;
-          const interval = setInterval(() => {
-            if (i >= text.length) {
-              clearInterval(interval);
-              res.write('data: [DONE]\n\n');
-              res.end();
-              return;
-            }
-            res.write('data: ' + JSON.stringify({ text: text.slice(i, i + chunkSize) }) + '\n\n');
-            i += chunkSize;
-          }, 15);
-
         } catch(e) {
-          res.write('data: ' + JSON.stringify({ error: 'Parse error: ' + raw.slice(0, 100) }) + '\n\n');
-          res.write('data: [DONE]\n\n');
-          res.end();
+          resolve({ ok: false, error: 'parse error: ' + raw.slice(0, 100) });
         }
       });
     });
 
-    apiReq.on('error', (e) => {
-      res.write('data: ' + JSON.stringify({ error: e.message }) + '\n\n');
-      res.write('data: [DONE]\n\n');
-      res.end();
-    });
+    req.on('error', (e) => resolve({ ok: false, error: e.message }));
+    req.setTimeout(60000, () => { req.destroy(); resolve({ ok: false, error: 'timeout' }); });
+    req.write(body);
+    req.end();
+  });
+}
 
-    apiReq.write(body);
-    apiReq.end();
+function isRetryable(error) {
+  const e = (error || '').toLowerCase();
+  return e.includes('rate') || e.includes('limit') || e.includes('tpd') || e.includes('tpm') ||
+    e.includes('decommission') || e.includes('deprecat') || e.includes('no longer') ||
+    e.includes('not found') || e.includes('does not exist') || e.includes('timeout') ||
+    e.includes('quota') || e.includes('capacity') || e.includes('overloaded');
+}
+
+app.post('/api/chat', async (req, res) => {
+  const { messages } = req.body;
+
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+
+  const KEYS = [
+    process.env.GROQ_API_KEY,
+    process.env.GROQ_API_KEY_2,
+    process.env.GROQ_API_KEY_3
+  ].filter(Boolean);
+
+  const MODELS = [
+    'openai/gpt-oss-120b',
+    'openai/gpt-oss-20b',
+    'qwen/qwen3.6-27b',
+    'qwen/qwen3-32b'
+  ];
+
+  if (KEYS.length === 0) {
+    res.write('data: ' + JSON.stringify({ error: 'Chua set GROQ_API_KEY' }) + '\n\n');
+    res.write('data: [DONE]\n\n');
+    return res.end();
   }
 
-  tryCombo(0, 0);
+  const userMsg = messages[messages.length - 1].content;
+  let lastError = '';
+
+  // Try every key + model combo until one works
+  outer: for (let ki = 0; ki < KEYS.length; ki++) {
+    for (let mi = 0; mi < MODELS.length; mi++) {
+      console.log('Try key' + (ki+1) + ' model:' + MODELS[mi]);
+      const result = await callGroq(KEYS[ki], MODELS[mi], userMsg);
+      console.log('Result:', result.ok, result.error || 'OK');
+
+      if (result.ok && result.text) {
+        // Stream the text in chunks
+        const text = result.text;
+        const chunkSize = 80;
+        for (let i = 0; i < text.length; i += chunkSize) {
+          res.write('data: ' + JSON.stringify({ text: text.slice(i, i + chunkSize) }) + '\n\n');
+        }
+        res.write('data: [DONE]\n\n');
+        res.end();
+        return;
+      }
+
+      lastError = result.error || 'unknown';
+      if (!isRetryable(lastError)) {
+        // Non-retryable error - stop trying
+        break outer;
+      }
+      // Retryable - try next combo
+    }
+  }
+
+  res.write('data: ' + JSON.stringify({ error: 'Loi: ' + lastError }) + '\n\n');
+  res.write('data: [DONE]\n\n');
+  res.end();
 });
 
 app.post('/api/generate-image-pollinations', (req, res) => {
@@ -217,22 +215,8 @@ app.post('/api/generate-image-pollinations', (req, res) => {
   fetchImage(url, 0);
 });
 
-
-app.get('/debug', (req, res) => {
-  const keys = [
-    process.env.GROQ_API_KEY,
-    process.env.GROQ_API_KEY_2,
-    process.env.GROQ_API_KEY_3
-  ];
-  res.json({
-    keys_loaded: keys.filter(Boolean).length,
-    key1: keys[0] ? keys[0].slice(0,8)+'...' : 'MISSING',
-    key2: keys[1] ? keys[1].slice(0,8)+'...' : 'MISSING',
-    key3: keys[2] ? keys[2].slice(0,8)+'...' : 'MISSING',
-    models: MODELS,
-    groq_keys_count: GROQ_KEYS.length
-  });
-});
-
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => { console.log('AVTalent v3 port ' + PORT); console.log('Groq keys loaded:', GROQ_KEYS.length); });
+app.listen(PORT, () => {
+  const keys = [process.env.GROQ_API_KEY, process.env.GROQ_API_KEY_2, process.env.GROQ_API_KEY_3].filter(Boolean);
+  console.log('AVTalent port ' + PORT + ' | Groq keys: ' + keys.length);
+});
