@@ -217,4 +217,4 @@ app.post('/api/generate-image-pollinations', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log('AVTalent v3 port ' + PORT));
+app.listen(PORT, () => { console.log('AVTalent v3 port ' + PORT); console.log('Groq keys loaded:', GROQ_KEYS.length); });
