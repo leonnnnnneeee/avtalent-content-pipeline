@@ -174,7 +174,12 @@ body{font-family:Arial,sans-serif;background:#0f1117;color:#e8eaf6;height:100vh;
     <div class="fr"><div class="fg"><label class="fl">Chiến dịch</label><input type="text" id="s2c" placeholder="VD: Đào tạo nhân sự tháng 7..."/></div><div class="fg"><label class="fl">Số topics</label><select id="s2n"><option>5</option><option>6</option><option selected>8</option><option>10</option></select></div></div>
     <div class="fg"><label class="fl">Content Pillars</label><div class="cks" id="cks2"><span class="ck on" onclick="this.classList.toggle('on')">Uy tín &amp; Chuyên sâu</span><span class="ck on" onclick="this.classList.toggle('on')">Kỹ năng &amp; Phát triển</span><span class="ck on" onclick="this.classList.toggle('on')">Networking</span><span class="ck" onclick="this.classList.toggle('on')">Insight &amp; Xu hướng</span></div></div>
     <div class="fg"><label class="fl">Context thêm</label><textarea id="s2x" placeholder="Paste kế hoạch tháng hoặc context..."></textarea></div>
-    <button class="btn-g" id="bs2" onclick="run('s2')">Generate Topics</button><div id="os2"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+      <button class="btn-g" id="bs2" onclick="run('s2')">⚡ Generate (Phần 1: T1+T2)</button>
+      <button class="btn-g" id="bs2b" onclick="run('s2b')" style="background:#7c3aed">⚡ Generate (Phần 2: T3-Expert)</button>
+    </div>
+    <div id="os2"></div>
+    <div id="os2b"></div>
   </div>
 
   <div id="v-s3" class="sv" style="display:none">
