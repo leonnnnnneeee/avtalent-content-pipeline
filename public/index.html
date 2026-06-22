@@ -398,11 +398,17 @@ function mkP(id) {
       ' Không được dồn vào 1-2 loại. Mix đều các format: bài viết dài, tip list, câu hỏi, case study, infographic concept.' +
       ' Output: (1)Định hướng tháng có insight thực tế (2)Bảng content mix với % mỗi pillar (3)Lịch đăng chi tiết: Ngày|Giờ|Pillar|Chủ đề cụ thể|Format|Kênh (4)Ghi chú triển khai',
 
-    s2: 'Generate ' + gv('s2n') + ' content topics ĐA DẠNG cho AVTalent.' +
+    s2: 'Generate ' + gv('s2n') + ' content topics THEO CHIỀU SÂU cho AVTalent.' +
       ' Chiến dịch: ' + gv('s2c') + '. Pillars: ' + gc('cks2') + '. Context: ' + gv('s2x') + sheet +
-      '. BẮT BUỘC: Topics phải đa dạng về (1)Loại content: mix educational, storytelling, debate, practical tool, trending, community (2)Góc độ: không topic nào giống nhau về angle (3)Format: article, tip list, case study, poll, checklist, opinion piece (4)Audience focus: HR manager, L&D, C-level, team leader - không chỉ 1 đối tượng.' +
-      ' Tránh các topic chung chung như "Tầm quan trọng của X" hay "Lợi ích của Y".' +
-      ' Mỗi topic cần: Tên topic cụ thể có hook | Loại content | Angle độc đáo | Target reader cụ thể | Insight cốt lõi 1 câu | Format đề xuất | Kênh tốt nhất | CTA tự nhiên',
+      ' SẮP XẾP THEO 3 TẦNG CHIỀU SÂU:' +
+      ' TẦNG 1 - AWARENESS (30%): Topics rộng, giải quyết pain point phổ biến, thu hút nhiều người. VD: vấn đề ngành, xu hướng lớn, câu hỏi ai cũng có.' +
+      ' TẦNG 2 - CONSIDERATION (40%): Topics trung bình, đi sâu hơn vào giải pháp cụ thể, so sánh cách làm, framework, case study. Người đang cân nhắc thay đổi.' +
+      ' TẦNG 3 - DECISION/EXPERT (30%): Topics chuyên sâu, niche, dành cho người đã hiểu rõ vấn đề, muốn mastery. VD: advanced tactics, deep dive, expert opinion.' +
+      ' BẮT BUỘC đa dạng format: long-form article, tip list, case study, checklist, opinion/debate, poll, how-to guide, myth-busting, data insight, storytelling, tool review.' +
+      ' BẮT BUỘC đa dạng audience: HR Manager, L&D Manager, C-level/CEO, Training Manager, Team Lead - không chỉ 1 nhóm.' +
+      ' TRÁNH: topics na ná nhau, tiêu đề chung chung kiểu "Tầm quan trọng của X".' +
+      ' Đánh số thứ tự và ghi rõ [T1-Awareness], [T2-Consideration], [T3-Expert].' +
+      ' Mỗi topic: STT | [Tầng] | Tên topic có hook mạnh | Format | Angle độc đáo | Target reader | Kênh tốt nhất | CTA',
 
     s3: `Tạo title và hook cho topic sau của AVTalent:
 Topic: ${gv('s3t')}
