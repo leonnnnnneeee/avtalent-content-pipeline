@@ -137,7 +137,7 @@ app.post('/api/chat', (req, res) => {
       { role: 'system', content: SYSTEM_PROMPT },
       { role: 'user', content: userMsg }
     ],
-    max_tokens: 4096,
+    max_tokens: 8192,
     temperature: 0.7,
     stream: false
   });
