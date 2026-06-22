@@ -64,38 +64,46 @@ app.post('/api/fetch-sheet', (req, res) => {
   }).on('error', e => res.status(500).json({ error: e.message }));
 });
 
+const GROQ_KEYS = [
+  process.env.GROQ_API_KEY,
+  process.env.GROQ_API_KEY_2,
+  process.env.GROQ_API_KEY_3
+].filter(Boolean);
+
 const MODELS = [
-  'openai/gpt-oss-120b',
-  'openai/gpt-oss-20b',
-  'qwen/qwen3.6-27b',
+  'llama-3.3-70b-versatile',
+  'llama-3.1-8b-instant',
   'llama-3.2-11b-vision-preview'
 ];
 
 app.post('/api/chat', (req, res) => {
   const { messages } = req.body;
-  const key = process.env.GROQ_API_KEY;
-
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
 
-  if (!key) {
-    res.write('data: ' + JSON.stringify({ error: 'GROQ_API_KEY chua duoc set' }) + '\n\n');
+  if (GROQ_KEYS.length === 0) {
+    res.write('data: ' + JSON.stringify({ error: 'Chua set GROQ_API_KEY tren Railway' }) + '\n\n');
     res.write('data: [DONE]\n\n');
     return res.end();
   }
 
   const userMsg = messages[messages.length - 1].content;
 
-  function tryModel(idx) {
-    if (idx >= MODELS.length) {
-      res.write('data: ' + JSON.stringify({ error: 'Tat ca models deu bi rate limit. Vui long thu lai sau 1-2 gio hoac tao Groq key moi tai console.groq.com/keys' }) + '\n\n');
+  // Try each key x each model = max 9 combinations
+  function tryCombo(keyIdx, modelIdx) {
+    if (keyIdx >= GROQ_KEYS.length) {
+      res.write('data: ' + JSON.stringify({ error: 'Tat ca API keys deu bi rate limit hom nay. Thu lai ngay mai hoac them key moi tai console.groq.com/keys' }) + '\n\n');
       res.write('data: [DONE]\n\n');
       return res.end();
     }
+    if (modelIdx >= MODELS.length) {
+      return tryCombo(keyIdx + 1, 0); // next key, reset model
+    }
 
-    const model = MODELS[idx];
-    console.log('Trying model:', model);
+    const key = GROQ_KEYS[keyIdx];
+    const model = MODELS[modelIdx];
+    console.log('Trying key', keyIdx + 1, 'model:', model);
 
     const body = JSON.stringify({
       model: model,
@@ -127,9 +135,9 @@ app.post('/api/chat', (req, res) => {
           const parsed = JSON.parse(raw);
           if (parsed.error) {
             const msg = parsed.error.message || '';
-            if (msg.includes('rate_limit') || msg.includes('Rate limit') || msg.includes('TPD') || msg.includes('TPM') || msg.includes('limit')) {
-              console.log('Rate limit on', model, '- trying next model...');
-              return tryModel(idx + 1);
+            if (msg.includes('rate_limit') || msg.includes('Rate limit') || msg.includes('TPD') || msg.includes('TPM') || msg.includes('decommissioned') || msg.includes('deprecated')) {
+              console.log('Rate limit/deprecated key', keyIdx+1, 'model', model, '- trying next...');
+              return tryCombo(keyIdx, modelIdx + 1); // try next model same key
             }
             res.write('data: ' + JSON.stringify({ error: msg }) + '\n\n');
             res.write('data: [DONE]\n\n');
@@ -174,7 +182,7 @@ app.post('/api/chat', (req, res) => {
     apiReq.end();
   }
 
-  tryModel(0);
+  tryCombo(0, 0);
 });
 
 app.post('/api/generate-image-pollinations', (req, res) => {
