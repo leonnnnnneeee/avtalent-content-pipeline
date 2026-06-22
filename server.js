@@ -71,9 +71,10 @@ const GROQ_KEYS = [
 ].filter(Boolean);
 
 const MODELS = [
-  'llama-3.3-70b-versatile',
-  'llama-3.1-8b-instant',
-  'llama-3.2-11b-vision-preview'
+  'openai/gpt-oss-120b',
+  'openai/gpt-oss-20b',
+  'qwen/qwen3.6-27b',
+  'qwen/qwen3-32b'
 ];
 
 app.post('/api/chat', (req, res) => {
@@ -135,7 +136,7 @@ app.post('/api/chat', (req, res) => {
           const parsed = JSON.parse(raw);
           if (parsed.error) {
             const msg = parsed.error.message || '';
-            if (msg.includes('rate_limit') || msg.includes('Rate limit') || msg.includes('TPD') || msg.includes('TPM') || msg.includes('decommissioned') || msg.includes('deprecated')) {
+            if (msg.includes('rate_limit') || msg.includes('Rate limit') || msg.includes('TPD') || msg.includes('TPM') || msg.includes('decommission') || msg.includes('deprecat') || msg.includes('no longer') || msg.includes('not found') || msg.includes('does not exist')) {
               console.log('Rate limit/deprecated key', keyIdx+1, 'model', model, '- trying next...');
               return tryCombo(keyIdx, modelIdx + 1); // try next model same key
             }
