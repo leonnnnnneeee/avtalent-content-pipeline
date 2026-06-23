@@ -8,19 +8,7 @@ app.use(express.json({ limit: '10mb' }));
 
 const HTML = fs.readFileSync(path.join(__dirname, 'public', 'index.html'), 'utf8');
 
-const SYSTEM_PROMPT = `Ban la chuyen gia san xuat noi dung cao cap cho AVTalent - thuong hieu dao tao nhan su hang dau Viet Nam.
-
-AVTalent: avtalent.vn | 0364 202 992 | info@avtalent.vn
-Dinh vi: Doi tac phat trien nguon nang luc cho doanh nghiep toan cau
-Dich vu: Dao tao ky nang ban hang, phong thai doanh nhan, thuyet trinh & pitching, cham soc khach hang, Power BI, tuyen dung, tailor-made
-Khach hang: HR Manager, L&D Manager, Training Manager, C-level, truong phong
-
-NGUYEN TAC:
-- Giong van: chuyen nghiep, gan gui, nhu co van kinh nghiem noi truc tiep
-- Dung "ban" thay "quy khach". Cau ngan, mach lac.
-- TRANH: "trong boi canh hien nay", "khong the phu nhan", "dong vai tro quan trong"
-- 8 Content Pillars: Educational, Insight, Storytelling, Practical Tools, Debate, Trending, Community, Conversion(<=20%)
-- VIET TIENG VIET CO DAU DAY DU`;
+const SYSTEM_PROMPT = `AVTalent content expert. avtalent.vn | 0364 202 992 | info@avtalent.vn. Dao tao nhan su VN. Viet tieng Viet co dau, giong tu nhien, khong sao rong.`;
 
 app.get('/', (req, res) => {
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
@@ -64,16 +52,48 @@ app.post('/api/fetch-sheet', (req, res) => {
   }).on('error', e => res.status(500).json({ error: e.message }));
 });
 
+// Estimate token count (roughly 4 chars per token)
+function estimateTokens(text) {
+  return Math.ceil(text.length / 4);
+}
+
+// Truncate text to max tokens
+function truncateToTokens(text, maxTokens) {
+  const maxChars = maxTokens * 4;
+  if (text.length <= maxChars) return text;
+  return text.slice(0, maxChars) + '... [da cat ngan]';
+}
+
+// Build prompt with token budget
+function buildPrompt(userMsg, maxUserTokens) {
+  const sysTokens = estimateTokens(SYSTEM_PROMPT);
+  const budget = maxUserTokens - sysTokens - 200; // 200 buffer
+  if (estimateTokens(userMsg) > budget) {
+    return truncateToTokens(userMsg, Math.max(budget, 500));
+  }
+  return userMsg;
+}
+
 // Call Groq with one specific key + model
 function callGroq(key, model, userMsg) {
   return new Promise((resolve) => {
+    // Per-model TPM limits (conservative)
+    const modelLimits = {
+      'openai/gpt-oss-120b': 4000,
+      'openai/gpt-oss-20b': 4000,
+      'qwen/qwen3.6-27b': 4000,
+      'qwen/qwen3-32b': 4000
+    };
+    const maxTokens = modelLimits[model] || 4000;
+    const safeMsg = buildPrompt(userMsg, maxTokens - 1000); // 1000 for output
+
     const body = JSON.stringify({
       model: model,
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
-        { role: 'user', content: userMsg }
+        { role: 'user', content: safeMsg }
       ],
-      max_tokens: 8192,
+      max_tokens: Math.min(3000, maxTokens - estimateTokens(safeMsg) - estimateTokens(SYSTEM_PROMPT) - 100),
       temperature: 0.7,
       stream: false
     });
@@ -120,6 +140,23 @@ function isRetryable(error) {
     e.includes('decommission') || e.includes('deprecat') || e.includes('no longer') ||
     e.includes('not found') || e.includes('does not exist') || e.includes('timeout') ||
     e.includes('quota') || e.includes('capacity') || e.includes('overloaded');
+}
+
+function friendlyError(error) {
+  const e = (error || '').toLowerCase();
+  if (e.includes('tpm') || e.includes('tpd') || e.includes('request too large') || e.includes('token')) {
+    return 'Noi dung qua dai. Vui long rut ngan Context hoac Brief roi thu lai.';
+  }
+  if (e.includes('rate') || e.includes('limit') || e.includes('quota')) {
+    return 'API dang qua tai. He thong dang thu key khac...';
+  }
+  if (e.includes('decommission') || e.includes('deprecat') || e.includes('no longer')) {
+    return 'Model khong con hoat dong, dang thu model khac...';
+  }
+  if (e.includes('timeout')) {
+    return 'Ket noi qua cham, dang thu lai...';
+  }
+  return 'Loi: ' + error;
 }
 
 app.post('/api/chat', async (req, res) => {
@@ -179,7 +216,10 @@ app.post('/api/chat', async (req, res) => {
     }
   }
 
-  res.write('data: ' + JSON.stringify({ error: 'Loi: ' + lastError }) + '\n\n');
+  const userFriendlyErr = lastError.toLowerCase().includes('tpm') || lastError.toLowerCase().includes('request too large')
+    ? 'Noi dung nhap vao qua dai. Vui long rut ngan phan Context hoac Brief va thu lai.'
+    : 'Tat ca API keys deu bi rate limit. Thu lai sau 1-2 gio hoac them key moi tai console.groq.com/keys. Chi tiet: ' + lastError.slice(0, 100);
+  res.write('data: ' + JSON.stringify({ error: userFriendlyErr }) + '\n\n');
   res.write('data: [DONE]\n\n');
   res.end();
 });
