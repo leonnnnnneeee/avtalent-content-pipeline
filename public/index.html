@@ -632,7 +632,7 @@ async function run(id) {
             if (d === '[DONE]') { done = true; break; }
             try {
               var j = JSON.parse(d);
-              if (j.text) { full += j.text; ob.textContent = full; }
+              if (j.text) { full += j.text; ob.textContent = stripMd(full); }
               if (j.error) { ob.textContent = 'Lỗi: ' + j.error; }
             } catch(e2) {}
           }
@@ -886,7 +886,7 @@ async function runTranslate() {
           if (lines[i].slice(0,6) === 'data: ') {
             var d = lines[i].slice(6);
             if (d === '[DONE]') { done = true; break; }
-            try { var j = JSON.parse(d); if (j.text) { full += j.text; ob.textContent = full; } } catch(e2) {}
+            try { var j = JSON.parse(d); if (j.text) { full += j.text; ob.textContent = stripMd(full); } } catch(e2) {}
           }
         }
       }
@@ -938,6 +938,18 @@ try {
 } catch(e) {}
 
 updateHistBadge();
+
+function stripMd(text) {
+  return text
+    .replace(/^#{1,6} /gm, '')
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/\*(.+?)\*/g, '$1')
+    .replace(/^---+$/gm, '')
+    .replace(/^___+$/gm, '')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+}
+
 go('home');
 </script>
 </body>
