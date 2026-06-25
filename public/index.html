@@ -5,154 +5,225 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AVTalent Content Pipeline</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,sans-serif;background:#0f1117;color:#e8eaf6;height:100vh;display:flex;overflow:hidden}
+:root{
+  --bg:#f0ede8;--sb:#fff;--surf:#fff;--surf2:#f7f5f2;
+  --bdr:#e8e4de;--acc:#7c5cbf;--acc2:#f0ebff;
+  --txt:#1a1a1a;--mut:#888;--grn:#22c55e;--red:#ef4444;
+  --r:14px;--fn:'Inter',sans-serif
+}
+body{font-family:var(--fn);background:var(--bg);color:var(--txt);height:100vh;display:flex;overflow:hidden}
+/* LAYOUT */
 .app{display:flex;width:100%;height:100vh}
-.sb{width:230px;flex-shrink:0;background:#1a1d27;border-right:1px solid #2e3350;display:flex;flex-direction:column}
-.logo{padding:14px 16px;border-bottom:1px solid #2e3350;font-size:15px;font-weight:bold}
-.logo span{font-size:11px;color:#7b82a8;display:block}
-.nav{flex:1;overflow-y:auto;padding:8px}
-.nl{font-size:10px;font-weight:bold;color:#7b82a8;padding:10px 8px 4px;text-transform:uppercase;letter-spacing:.05em}
-.ni{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;cursor:pointer;font-size:13px;color:#7b82a8;border:none;background:none;width:100%;text-align:left;font-family:Arial,sans-serif}
-.ni:hover{background:#22263a;color:#e8eaf6}
-.ni.on{background:rgba(79,110,247,.15);color:#4f6ef7}
-.nn{width:20px;height:20px;border-radius:5px;background:#22263a;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:bold;flex-shrink:0;color:#4f6ef7}
-.ni.on .nn{background:#4f6ef7;color:#fff}
-.api{padding:12px;border-top:1px solid #2e3350}
-.api-r{display:flex;align-items:center;gap:6px;margin-bottom:6px;font-size:12px;color:#7b82a8}
-.dot{width:7px;height:7px;border-radius:50%;background:#ef4444;flex-shrink:0}
-.dot.on{background:#22c55e}
-.api-in{width:100%;background:#22263a;border:1px solid #2e3350;border-radius:8px;padding:7px 10px;color:#e8eaf6;font-size:12px;font-family:Arial,sans-serif;outline:none}
+/* SIDEBAR */
+.sb{width:240px;flex-shrink:0;background:var(--sb);border-right:1px solid var(--bdr);display:flex;flex-direction:column;overflow:hidden}
+.logo{padding:18px 16px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--bdr)}
+.logo-icon{width:34px;height:34px;border-radius:10px;background:var(--acc);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:600;flex-shrink:0}
+.logo-t{font-size:14px;font-weight:600;color:var(--txt)}
+.logo-s{font-size:10px;color:var(--mut)}
+.nav{flex:1;overflow-y:auto;padding:10px 8px}
+.nav::-webkit-scrollbar{width:3px}
+.nav::-webkit-scrollbar-thumb{background:var(--bdr)}
+.nl{font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);padding:12px 10px 5px}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:10px;cursor:pointer;font-size:13px;color:var(--mut);border:none;background:none;width:100%;text-align:left;font-family:var(--fn);transition:all .12s}
+.ni:hover{background:var(--surf2);color:var(--txt)}
+.ni.on{background:var(--acc2);color:var(--acc);font-weight:500}
+.ni-ic{width:22px;height:22px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.ni.on .ni-ic{background:var(--acc);color:#fff}
+.nbadge{margin-left:auto;background:var(--acc);color:#fff;font-size:10px;font-weight:600;padding:1px 7px;border-radius:20px}
+.sb-bot{padding:10px 8px;border-top:1px solid var(--bdr)}
+/* MAIN */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
-.topbar{padding:12px 20px;border-bottom:1px solid #2e3350;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.tbt{font-size:14px;font-weight:bold}
-.tbs{font-size:11px;color:#7b82a8}
-.btn-h{padding:5px 12px;background:none;border:1px solid #2e3350;border-radius:7px;color:#7b82a8;font-size:12px;cursor:pointer;font-family:Arial,sans-serif}
-.btn-h:hover{border-color:#4f6ef7;color:#e8eaf6}
-.ct{flex:1;overflow-y:auto;padding:20px 24px}
-.hg{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:18px}
-.hc{background:#1a1d27;border:1px solid #2e3350;border-radius:10px;padding:14px 10px;cursor:pointer;text-align:center}
-.hc:hover{border-color:#4f6ef7;background:rgba(79,110,247,.08)}
-.hc .ic{font-size:22px;margin-bottom:6px}
-.hc .lb{font-size:12px;font-weight:bold}
-.sg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.sc{background:#1a1d27;border:1px solid #2e3350;border-radius:10px;padding:14px;cursor:pointer}
-.sc:hover{border-color:#4f6ef7;background:rgba(79,110,247,.08)}
-.sn{font-size:10px;font-weight:bold;color:#4f6ef7;text-transform:uppercase;margin-bottom:5px}
-.st{font-size:13px;font-weight:bold;margin-bottom:3px}
-.sd{font-size:11px;color:#7b82a8;line-height:1.4}
-.slb{font-size:10px;font-weight:bold;color:#7b82a8;margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em}
-.sv h2{font-size:17px;font-weight:bold;margin-bottom:4px}
-.dsc{font-size:13px;color:#7b82a8;margin-bottom:16px}
-.fg{margin-bottom:13px}
-.fl{display:block;font-size:10px;font-weight:bold;color:#7b82a8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
-.fg input,.fg select,.fg textarea{width:100%;background:#22263a;border:1px solid #2e3350;border-radius:8px;padding:8px 11px;color:#e8eaf6;font-size:13px;font-family:Arial,sans-serif;outline:none}
-.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:#4f6ef7}
+/* TOPBAR */
+.topbar{background:var(--sb);border-bottom:1px solid var(--bdr);padding:13px 22px;display:flex;align-items:center;gap:14px;flex-shrink:0}
+.tb-l h2{font-size:11px;color:var(--mut);font-weight:400;margin-bottom:1px}
+.tb-l h1{font-size:15px;font-weight:600;color:var(--txt)}
+.search{flex:1;max-width:300px;margin:0 auto;position:relative}
+.search input{width:100%;padding:7px 14px 7px 34px;border-radius:20px;border:1px solid var(--bdr);background:var(--surf2);font-size:12px;color:var(--txt);outline:none;font-family:var(--fn)}
+.search input:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(124,92,191,.1)}
+.search-ic{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--mut)}
+.tb-dot{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mut)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--red);flex-shrink:0}
+.dot.on{background:var(--grn)}
+/* CONTENT */
+.ct{flex:1;overflow-y:auto;padding:18px 22px;display:flex;flex-direction:column;gap:14px}
+.ct::-webkit-scrollbar{width:4px}
+.ct::-webkit-scrollbar-thumb{background:var(--bdr)}
+/* BOARD HEADER */
+.bh{background:var(--sb);border:1px solid var(--bdr);border-radius:var(--r);padding:14px 18px;display:flex;align-items:center;gap:14px;flex-shrink:0}
+.bh-month{display:flex;align-items:center;gap:10px}
+.bh-box{width:40px;height:40px;border-radius:10px;background:var(--acc2);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:var(--acc);flex-shrink:0}
+.bh-txt p:first-child{font-size:13px;font-weight:500}
+.bh-txt p:last-child{font-size:11px;color:var(--mut)}
+.bh-mid{flex:1;text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:var(--mut)}
+.bh-mid strong{color:var(--txt);font-weight:600}
+.avs{display:flex}
+.av{width:28px;height:28px;border-radius:50%;border:2px solid var(--sb);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;margin-left:-7px;flex-shrink:0}
+.av:first-child{margin-left:0}
+/* VIEWS */
+.v-home .hg{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px}
+.hcard{background:var(--sb);border:1px solid var(--bdr);border-radius:var(--r);padding:14px 10px;cursor:pointer;text-align:center;transition:all .14s}
+.hcard:hover{border-color:var(--acc);background:var(--acc2);transform:translateY(-1px)}
+.hcard .ic{font-size:22px;margin-bottom:6px}
+.hcard .lb{font-size:12px;font-weight:500}
+.pg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pcard{background:var(--sb);border:1px solid var(--bdr);border-radius:var(--r);padding:14px;cursor:pointer;transition:all .14s}
+.pcard:hover{border-color:var(--acc);background:var(--acc2);transform:translateY(-1px)}
+.pcard .sn{font-size:10px;font-weight:600;color:var(--acc);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.pcard .st{font-size:13px;font-weight:500;margin-bottom:3px}
+.pcard .sd{font-size:11px;color:var(--mut);line-height:1.5}
+.slb{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--mut);margin-bottom:8px}
+/* STEP VIEWS */
+.sv h2{font-size:16px;font-weight:600;margin-bottom:3px}
+.sv .dsc{font-size:12px;color:var(--mut);margin-bottom:16px}
+.fg{margin-bottom:12px}
+.fl{display:block;font-size:10px;font-weight:600;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+.fg input,.fg select,.fg textarea{width:100%;background:var(--surf2);border:1px solid var(--bdr);border-radius:10px;padding:8px 12px;color:var(--txt);font-size:13px;font-family:var(--fn);outline:none;transition:border .14s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--acc)}
+.fg input::placeholder,.fg textarea::placeholder{color:var(--mut)}
 .fg textarea{resize:vertical;min-height:80px;line-height:1.6}
 .fr{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .cks{display:flex;flex-wrap:wrap;gap:6px}
-.ck{padding:5px 11px;background:#22263a;border:1px solid #2e3350;border-radius:20px;cursor:pointer;font-size:12px;color:#7b82a8;user-select:none}
-.ck.on{background:rgba(79,110,247,.12);border-color:rgba(79,110,247,.5);color:#4f6ef7}
-.sep{height:1px;background:#2e3350;margin:13px 0}
+.ck{padding:5px 12px;background:var(--surf2);border:1px solid var(--bdr);border-radius:20px;cursor:pointer;font-size:12px;color:var(--mut);user-select:none;transition:all .12s}
+.ck.on{background:var(--acc2);border-color:rgba(124,92,191,.4);color:var(--acc)}
+.sep{height:1px;background:var(--bdr);margin:13px 0}
 .sr{display:flex;gap:8px;margin-bottom:10px}
 .sr input{flex:1}
-.btn-sh{padding:8px 14px;background:#4f6ef7;border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:bold;cursor:pointer;font-family:Arial,sans-serif;white-space:nowrap}
-.btn-sh:hover{background:#3d5ce6}
-.emb{border:1px solid rgba(79,110,247,.3);border-radius:10px;overflow:hidden;margin-bottom:13px}
-.emb-top{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(79,110,247,.07);border-bottom:1px solid rgba(79,110,247,.2)}
-.emb-top span{font-size:12px;font-weight:bold;color:#4f6ef7}
-.emb-top a{font-size:11px;color:#4f6ef7;text-decoration:none;padding:2px 8px;border:1px solid rgba(79,110,247,.3);border-radius:5px}
-.emb-top .xb{background:none;border:none;color:#7b82a8;font-size:14px;cursor:pointer;padding:2px 6px}
-.emb iframe{width:100%;height:350px;border:none;display:block;background:#fff}
-.btn-g{display:inline-flex;align-items:center;gap:7px;padding:9px 20px;background:#4f6ef7;border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:bold;cursor:pointer;font-family:Arial,sans-serif;margin-top:4px}
-.btn-g:hover{background:#3d5ce6}
-.btn-g:disabled{background:#22263a;cursor:not-allowed;color:#7b82a8}
-.out{border:1px solid #2e3350;border-radius:10px;margin-top:14px;overflow:hidden}
-.out-top{display:flex;align-items:center;justify-content:space-between;padding:9px 13px;background:#22263a;border-bottom:1px solid #2e3350}
-.out-lbl{font-size:11px;font-weight:bold;color:#7b82a8;text-transform:uppercase;letter-spacing:.05em}
-.btn-cp{padding:3px 9px;background:none;border:1px solid #2e3350;border-radius:5px;color:#7b82a8;font-size:11px;cursor:pointer;font-family:Arial,sans-serif}
-.btn-cp:hover{border-color:#4f6ef7;color:#e8eaf6}
+.btn-sh{padding:8px 14px;background:var(--acc);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:500;cursor:pointer;font-family:var(--fn);white-space:nowrap}
+.btn-sh:hover{background:#6a4aad}
+.emb{border:1px solid rgba(124,92,191,.3);border-radius:var(--r);overflow:hidden;margin-bottom:12px}
+.emb-top{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(124,92,191,.06);border-bottom:1px solid rgba(124,92,191,.15)}
+.emb-top span{font-size:12px;font-weight:500;color:var(--acc)}
+.emb-top a{font-size:11px;color:var(--acc);text-decoration:none;padding:2px 8px;border:1px solid rgba(124,92,191,.3);border-radius:5px}
+.emb-top .xb{background:none;border:none;color:var(--mut);font-size:14px;cursor:pointer}
+.emb iframe{width:100%;height:340px;border:none;display:block;background:#fff}
+/* GENERATE BUTTON */
+.btn-g{display:inline-flex;align-items:center;gap:7px;padding:9px 20px;background:var(--acc);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:500;cursor:pointer;font-family:var(--fn);margin-top:4px;transition:background .14s}
+.btn-g:hover{background:#6a4aad}
+.btn-g:disabled{background:var(--surf2);cursor:not-allowed;color:var(--mut)}
+/* OUTPUT */
+.out{border:1px solid var(--bdr);border-radius:var(--r);margin-top:14px;overflow:hidden}
+.out-top{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:var(--surf2);border-bottom:1px solid var(--bdr)}
+.out-lbl{font-size:10px;font-weight:600;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
+.btn-cp{padding:3px 10px;background:none;border:1px solid var(--bdr);border-radius:6px;color:var(--mut);font-size:11px;cursor:pointer;font-family:var(--fn)}
+.btn-cp:hover{border-color:var(--acc);color:var(--acc)}
 .out-body{padding:14px 16px;font-size:13px;line-height:1.7;min-height:60px;white-space:pre-wrap;word-break:break-word}
-.nb{background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.25);border-radius:10px;padding:12px 14px;margin-top:12px}
-.nb-t{font-size:12px;font-weight:bold;color:#22c55e;margin-bottom:8px}
+/* NEXT BAR */
+.nb{background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.2);border-radius:var(--r);padding:12px 14px;margin-top:12px}
+.nb-t{font-size:12px;font-weight:600;color:var(--grn);margin-bottom:8px}
 .nbs{display:flex;gap:7px;flex-wrap:wrap}
-.nbtn{padding:6px 14px;background:#22263a;border:1px solid #2e3350;border-radius:8px;color:#e8eaf6;font-size:12px;cursor:pointer;font-family:Arial,sans-serif}
-.nbtn:hover{border-color:#4f6ef7;color:#4f6ef7}
+.nbtn{padding:6px 14px;background:var(--surf2);border:1px solid var(--bdr);border-radius:8px;color:var(--txt);font-size:12px;cursor:pointer;font-family:var(--fn)}
+.nbtn:hover{border-color:var(--acc);color:var(--acc)}
+/* SHEET BADGE */
+#sheet-badge{display:none;background:var(--acc2);border:1px solid rgba(124,92,191,.3);border-radius:7px;padding:4px 10px;font-size:11px;color:var(--acc);cursor:pointer;white-space:nowrap}
+/* HISTORY */
+.hist-card{border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;margin-bottom:10px}
+.hist-top{display:flex;align-items:center;justify-content:space-between;padding:9px 13px;background:var(--surf2)}
+.hist-info .step-name{font-size:11px;font-weight:600;color:var(--acc);text-transform:uppercase;letter-spacing:.04em}
+.hist-info .step-time{font-size:10px;color:var(--mut);margin-top:1px}
+.hist-info .step-prev{font-size:11px;color:var(--mut);margin-top:2px;font-style:italic}
+.hist-body{padding:12px 14px;font-size:12px;line-height:1.7;max-height:200px;overflow-y:auto;white-space:pre-wrap;word-break:break-word;color:var(--txt)}
+.hist-foot{padding:8px 13px;border-top:1px solid var(--bdr);display:flex;gap:6px}
+.hist-foot button{flex:1;padding:6px;background:var(--acc);border:none;border-radius:7px;color:#fff;font-size:12px;cursor:pointer;font-family:var(--fn)}
 </style>
 </head>
 <body>
 <div class="app">
 <aside class="sb">
-  <div class="logo">AVTalent<span>Content Pipeline</span></div>
-  <nav class="nav">
+  <div class="logo">
+    <div class="logo-icon">AV</div>
+    <div><div class="logo-t">AVTalent</div><div class="logo-s">Content Pipeline</div></div>
+  </div>
+  <nav class="nav" id="nav">
     <div class="nl">Bắt đầu nhanh</div>
-    <button class="ni" data-v="qp" onclick="go('qp')">&#128197; Kế hoạch tháng</button>
-    <button class="ni" data-v="qt" onclick="go('qt')">&#128161; Generate Topics</button>
-    <button class="ni" data-v="qw" onclick="go('qw')">&#9997; Viết bài ngay</button>
-    <button class="ni" data-v="qi" onclick="go('qi')">&#128444; Image Prompts</button>
-    <button class="ni" data-v="qc" onclick="go('qc')">&#128241; Convert kênh</button>
-    <button class="ni" data-v="qs" onclick="go('qs')">&#128202; Topics từ Sheet</button>
-    <button class="ni" data-v="trans" onclick="go('trans')">&#127760; Dịch VI ↔ EN</button>
-    <div class="nl" style="margin-top:10px">9 Bước Pipeline</div>
-    <button class="ni" data-v="s1" onclick="go('s1')"><span class="nn">1</span>Kế hoạch tháng</button>
-    <button class="ni" data-v="s2" onclick="go('s2')"><span class="nn">2</span>Generate Topics</button>
-    <button class="ni" data-v="s3" onclick="go('s3')"><span class="nn">3</span>Title &amp; Hook</button>
-    <button class="ni" data-v="s4" onclick="go('s4')"><span class="nn">4</span>Content Brief</button>
-    <button class="ni" data-v="s5" onclick="go('s5')"><span class="nn">5</span>Review Brief</button>
-    <button class="ni" data-v="s6" onclick="go('s6')"><span class="nn">6</span>Viết Full Content</button>
-    <button class="ni" data-v="s7" onclick="go('s7')"><span class="nn">7</span>Edit &amp; Polish</button>
-    <button class="ni" data-v="s8" onclick="go('s8')"><span class="nn">8</span>Convert Channel</button>
-    <button class="ni" data-v="s9" onclick="go('s9')"><span class="nn">9</span>Image Prompts</button>
+    <button class="ni" data-v="qp" onclick="go('qp')"><span class="ni-ic">🗓</span>Kế hoạch tháng</button>
+    <button class="ni" data-v="qt" onclick="go('qt')"><span class="ni-ic">💡</span>Generate Topics</button>
+    <button class="ni" data-v="qw" onclick="go('qw')"><span class="ni-ic">✍️</span>Viết bài ngay</button>
+    <button class="ni" data-v="qi" onclick="go('qi')"><span class="ni-ic">🖼</span>Image Prompts</button>
+    <button class="ni" data-v="qc" onclick="go('qc')"><span class="ni-ic">📱</span>Convert kênh</button>
+    <button class="ni" data-v="qs" onclick="go('qs')"><span class="ni-ic">📊</span>Topics từ Sheet</button>
+    <button class="ni" data-v="trans" onclick="go('trans')"><span class="ni-ic">🌐</span>Dịch VI ↔ EN</button>
+    <div class="nl" style="margin-top:8px">9 Bước Pipeline</div>
+    <button class="ni" data-v="s1" onclick="go('s1')"><span class="ni-ic" style="background:var(--acc2);color:var(--acc);font-size:10px;font-weight:700">1</span>Kế hoạch tháng</button>
+    <button class="ni" data-v="s2" onclick="go('s2')"><span class="ni-ic" style="background:var(--acc2);color:var(--acc);font-size:10px;font-weight:700">2</span>Generate Topics</button>
+    <button class="ni" data-v="s3" onclick="go('s3')"><span class="ni-ic" style="background:var(--acc2);color:var(--acc);font-size:10px;font-weight:700">3</span>Title &amp; Hook</button>
+    <button class="ni" data-v="s4" onclick="go('s4')"><span class="ni-ic" style="background:var(--acc2);color:var(--acc);font-size:10px;font-weight:700">4</span>Content Brief</button>
+    <button class="ni" data-v="s5" onclick="go('s5')"><span class="ni-ic" style="background:var(--acc2);color:var(--acc);font-size:10px;font-weight:700">5</span>Review Brief</button>
+    <button class="ni" data-v="s6" onclick="go('s6')"><span class="ni-ic" style="background:var(--acc2);color:var(--acc);font-size:10px;font-weight:700">6</span>Viết Full Content</button>
+    <button class="ni" data-v="s7" onclick="go('s7')"><span class="ni-ic" style="background:var(--acc2);color:var(--acc);font-size:10px;font-weight:700">7</span>Edit &amp; Polish</button>
+    <button class="ni" data-v="s8" onclick="go('s8')"><span class="ni-ic" style="background:var(--acc2);color:var(--acc);font-size:10px;font-weight:700">8</span>Convert Channel</button>
+    <button class="ni" data-v="s9" onclick="go('s9')"><span class="ni-ic" style="background:var(--acc2);color:var(--acc);font-size:10px;font-weight:700">9</span>Image Prompts</button>
   </nav>
-  <div class="api">
-    <div class="api-r"><div class="dot on" id="dot"></div><span id="albl">API đã kết nối</span></div>
-    <div style="margin-top:8px;display:flex;gap:6px">
-      <button onclick="go('history')" style="flex:1;padding:6px 8px;background:#22263a;border:1px solid #2e3350;border-radius:7px;color:#7b82a8;font-size:11px;cursor:pointer;font-family:Arial,sans-serif">📋 Lịch sử</button>
-      <button onclick="clearHistory()" style="padding:6px 8px;background:#22263a;border:1px solid #2e3350;border-radius:7px;color:#7b82a8;font-size:11px;cursor:pointer;font-family:Arial,sans-serif">🗑</button>
-    </div>
+  <div class="sb-bot">
+    <button class="ni" onclick="go('history')"><span class="ni-ic">📋</span>Lịch sử<span id="hist-badge" class="nbadge" style="display:none">0</span></button>
+    <button class="ni" onclick="clearHistory()"><span class="ni-ic">🗑</span>Xóa lịch sử</button>
   </div>
 </aside>
-<main class="main">
+
+<div class="main">
   <div class="topbar">
-    <div><div class="tbt" id="tbt">AVTalent Content Pipeline</div><div class="tbs" id="tbs">Chọn bước để bắt đầu</div></div>
-    <div style="display:flex;align-items:center;gap:8px">
-      <div id="sheet-badge" style="display:none;background:rgba(79,110,247,.15);border:1px solid rgba(79,110,247,.4);border-radius:6px;padding:4px 10px;font-size:11px;color:#4f6ef7;cursor:pointer" onclick="go('s1')">📊 Sheet đã lưu</div>
-      <button class="btn-h" onclick="go('home')">Home</button>
+    <div class="tb-l">
+      <h2>Xin chào,</h2>
+      <h1>AVTalent Team</h1>
     </div>
+    <div class="search">
+      <span class="search-ic">🔍</span>
+      <input type="text" placeholder="Tìm kiếm tính năng..." id="search-inp" oninput="doSearch(this.value)"/>
+    </div>
+    <div id="sheet-badge" onclick="go('s1')">📊 Sheet đã lưu</div>
+    <div class="tb-dot"><div class="dot on" id="dot"></div><span id="albl">API đã kết nối</span></div>
   </div>
+
   <div class="ct" id="ct">
 
-  <div id="v-home">
-    <p style="font-size:13px;color:#7b82a8;margin-bottom:16px">Công cụ sản xuất nội dung 9 bước cho AVTalent. Nhập API key góc trái.</p>
+  <!-- HOME -->
+  <div id="v-home" class="v-home">
+    <div class="bh" style="margin-bottom:2px">
+      <div class="bh-month">
+        <div class="bh-box">AV</div>
+        <div class="bh-txt">
+          <p>AVTalent</p>
+          <p>Content Production Pipeline — AI Powered</p>
+        </div>
+      </div>
+      <div class="bh-mid"><strong>Pipeline</strong><span>—</span><span>9 bước sản xuất nội dung</span>▾</div>
+      <div class="avs">
+        <div class="av" style="background:#ddeeff;color:#185FA5">HR</div>
+        <div class="av" style="background:#ece8ff;color:#3C3489">L&D</div>
+        <div class="av" style="background:#ffe5e0;color:#993C1D">CE</div>
+        <div class="av" style="background:var(--acc2);color:var(--acc)">+</div>
+      </div>
+    </div>
     <div class="slb">Bắt đầu nhanh</div>
     <div class="hg">
-      <div class="hc" onclick="go('qp')"><div class="ic">&#128197;</div><div class="lb">Kế hoạch tháng</div></div>
-      <div class="hc" onclick="go('qt')"><div class="ic">&#128161;</div><div class="lb">Generate Topics</div></div>
-      <div class="hc" onclick="go('qw')"><div class="ic">&#9997;</div><div class="lb">Viết bài ngay</div></div>
-      <div class="hc" onclick="go('qi')"><div class="ic">&#128444;</div><div class="lb">Image Prompts</div></div>
-      <div class="hc" onclick="go('qc')"><div class="ic">&#128241;</div><div class="lb">Convert kênh</div></div>
-      <div class="hc" onclick="go('qs')"><div class="ic">&#128202;</div><div class="lb">Topics từ Sheet</div></div>
+      <div class="hcard" onclick="go('qp')"><div class="ic">🗓</div><div class="lb">Kế hoạch tháng</div></div>
+      <div class="hcard" onclick="go('qt')"><div class="ic">💡</div><div class="lb">Generate Topics</div></div>
+      <div class="hcard" onclick="go('qw')"><div class="ic">✍️</div><div class="lb">Viết bài ngay</div></div>
+      <div class="hcard" onclick="go('qi')"><div class="ic">🖼</div><div class="lb">Image Prompts</div></div>
+      <div class="hcard" onclick="go('qc')"><div class="ic">📱</div><div class="lb">Convert kênh</div></div>
     </div>
-    <div class="slb">Pipeline đầy đủ</div>
-    <div class="sg">
-      <div class="sc" onclick="go('s1')"><div class="sn">Bước 1</div><div class="st">Kế hoạch nội dung tháng</div><div class="sd">Campaign, pillars, lịch đăng + Google Sheet</div></div>
-      <div class="sc" onclick="go('s2')"><div class="sn">Bước 2</div><div class="st">Generate Topics</div><div class="sd">5-8 topics với angle, audience và CTA</div></div>
-      <div class="sc" onclick="go('s3')"><div class="sn">Bước 3</div><div class="st">Title &amp; Hook</div><div class="sd">3 titles + 4 hooks mạnh</div></div>
-      <div class="sc" onclick="go('s4')"><div class="sn">Bước 4</div><div class="st">Content Brief</div><div class="sd">Brief đầy đủ SEO, outline, keywords</div></div>
-      <div class="sc" onclick="go('s5')"><div class="sn">Bước 5</div><div class="st">Review Brief</div><div class="sd">Checklist 7 tiêu chí + cải thiện</div></div>
-      <div class="sc" onclick="go('s6')"><div class="sn">Bước 6</div><div class="st">Viết Full Content</div><div class="sd">Bài hoàn chỉnh publish-ready</div></div>
-      <div class="sc" onclick="go('s7')"><div class="sn">Bước 7</div><div class="st">Edit &amp; Polish</div><div class="sd">Flow, tone, SEO, CTA</div></div>
-      <div class="sc" onclick="go('s8')"><div class="sn">Bước 8</div><div class="st">Convert by Channel</div><div class="sd">Website · Facebook · LinkedIn</div></div>
-      <div class="sc" onclick="go('s9')"><div class="sn">Bước 9</div><div class="st">Image Ideas &amp; Prompts</div><div class="sd">3 concepts + AI image prompts</div></div>
+    <div class="slb">Pipeline đầy đủ — 9 bước</div>
+    <div class="pg">
+      <div class="pcard" onclick="go('s1')"><div class="sn">Bước 1</div><div class="st">Kế hoạch nội dung tháng</div><div class="sd">Campaign, pillars, lịch đăng + Google Sheet</div></div>
+      <div class="pcard" onclick="go('s2')"><div class="sn">Bước 2</div><div class="st">Generate Topics</div><div class="sd">30 topics theo 3 tầng chiều sâu</div></div>
+      <div class="pcard" onclick="go('s3')"><div class="sn">Bước 3</div><div class="st">Title &amp; Hook</div><div class="sd">3 titles + 4 hooks mạnh</div></div>
+      <div class="pcard" onclick="go('s4')"><div class="sn">Bước 4</div><div class="st">Content Brief</div><div class="sd">Brief đầy đủ SEO, outline, keywords</div></div>
+      <div class="pcard" onclick="go('s5')"><div class="sn">Bước 5</div><div class="st">Review Brief</div><div class="sd">Checklist 7 tiêu chí + cải thiện</div></div>
+      <div class="pcard" onclick="go('s6')"><div class="sn">Bước 6</div><div class="st">Viết Full Content</div><div class="sd">Bài hoàn chỉnh publish-ready</div></div>
+      <div class="pcard" onclick="go('s7')"><div class="sn">Bước 7</div><div class="st">Edit &amp; Polish</div><div class="sd">Flow, tone, SEO, CTA</div></div>
+      <div class="pcard" onclick="go('s8')"><div class="sn">Bước 8</div><div class="st">Convert by Channel</div><div class="sd">Website · Facebook · LinkedIn</div></div>
+      <div class="pcard" onclick="go('s9')"><div class="sn">Bước 9</div><div class="st">Image Ideas &amp; Prompts</div><div class="sd">3 concepts + AI image prompts</div></div>
     </div>
   </div>
 
+  <!-- S1 -->
   <div id="v-s1" class="sv" style="display:none">
-    <h2>Bước 1 — Kế hoạch nội dung tháng</h2><p class="dsc">Import Google Sheet tháng trước + tạo kế hoạch tháng mới</p>
+    <h2>📅 Bước 1 — Kế hoạch nội dung tháng</h2><p class="dsc">Import Google Sheet tháng trước + tạo kế hoạch tháng mới</p>
     <div class="fg"><label class="fl">Google Sheet kế hoạch tháng trước</label>
       <div class="sr"><input type="text" id="s1u" placeholder="Paste link Google Sheet..."/><button class="btn-sh" onclick="addSheet()">+ Thêm</button></div>
       <div id="s1e" style="display:none" class="emb">
-        <div class="emb-top"><span id="s1lbl">Google Sheet</span><div style="display:flex;gap:6px;align-items:center"><a id="s1a" href="#" target="_blank">Mở full ↗</a><button class="xb" onclick="removeSheet()">x</button></div></div>
+        <div class="emb-top"><span id="s1lbl">Google Sheet</span><div style="display:flex;gap:6px;align-items:center"><a id="s1a" href="#" target="_blank">Mở full ↗</a><button class="xb" onclick="removeSheet()">✕</button></div></div>
         <iframe id="s1f" src=""></iframe>
       </div>
     </div>
@@ -164,14 +235,15 @@ body{font-family:Arial,sans-serif;background:#0f1117;color:#e8eaf6;height:100vh;
     <div class="fg"><label class="fl">Chiến dịch / Chủ đề</label><input type="text" id="s1c" placeholder="VD: Mùa hè kỹ năng + Scale team SMEs..."/></div>
     <div class="fg"><label class="fl">Kênh</label><div class="cks" id="cks1"><span class="ck on" onclick="this.classList.toggle('on')">LinkedIn</span><span class="ck on" onclick="this.classList.toggle('on')">Facebook</span><span class="ck on" onclick="this.classList.toggle('on')">Website</span><span class="ck" onclick="this.classList.toggle('on')">Email</span></div></div>
     <div class="fg"><label class="fl">Ghi chú</label><textarea id="s1n" placeholder="Sự kiện đặc biệt, target audience..."></textarea></div>
-    <button class="btn-g" id="bs1" onclick="run('s1')">Tạo kế hoạch tháng</button>
+    <button class="btn-g" id="bs1" onclick="run('s1')">⚡ Tạo kế hoạch tháng</button>
     <div id="os1"></div>
-    <div id="ns1" style="display:none" class="nb"><div class="nb-t">Xong! Bước tiếp theo:</div><div class="nbs"><button class="nbtn" onclick="go('s2')">Topics</button><button class="nbtn" onclick="go('s3')">Title &amp; Hook</button><button class="nbtn" onclick="go('s6')">Viết bài</button><button class="nbtn" onclick="go('s9')">Images</button></div></div>
+    <div id="ns1" style="display:none" class="nb"><div class="nb-t">✅ Xong! Bước tiếp theo:</div><div class="nbs"><button class="nbtn" onclick="go('s2')">💡 Topics</button><button class="nbtn" onclick="go('s3')">🎯 Title &amp; Hook</button><button class="nbtn" onclick="go('s6')">✍️ Viết bài</button><button class="nbtn" onclick="go('s9')">🖼 Images</button></div></div>
   </div>
 
+  <!-- S2 -->
   <div id="v-s2" class="sv" style="display:none">
-    <h2>Bước 2 — Generate Topics</h2><p class="dsc">5-8 topics với content angle, audience và CTA</p>
-    <div class="fr"><div class="fg"><label class="fl">Chiến dịch</label><input type="text" id="s2c" placeholder="VD: Đào tạo nhân sự tháng 7..."/></div><div class="fg"><label class="fl">Số topics</label><select id="s2n"><option>5</option><option>6</option><option selected>8</option><option>10</option></select></div></div>
+    <h2>💡 Bước 2 — Generate Topics</h2><p class="dsc">30 topics theo 3 tầng: Awareness → Consideration → Expert</p>
+    <div class="fr"><div class="fg"><label class="fl">Chiến dịch</label><input type="text" id="s2c" placeholder="VD: Đào tạo nhân sự tháng 7..."/></div><div class="fg"><label class="fl">Số topics</label><select id="s2n"><option>10</option><option>15</option><option>20</option><option selected>30</option><option>50</option></select></div></div>
     <div class="fg"><label class="fl">Content Pillars</label><div class="cks" id="cks2"><span class="ck on" onclick="this.classList.toggle('on')">Uy tín &amp; Chuyên sâu</span><span class="ck on" onclick="this.classList.toggle('on')">Kỹ năng &amp; Phát triển</span><span class="ck on" onclick="this.classList.toggle('on')">Networking</span><span class="ck" onclick="this.classList.toggle('on')">Insight &amp; Xu hướng</span></div></div>
     <div class="fg"><label class="fl">Context thêm</label><textarea id="s2x" placeholder="Paste kế hoạch tháng hoặc context..."></textarea></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
@@ -182,153 +254,146 @@ body{font-family:Arial,sans-serif;background:#0f1117;color:#e8eaf6;height:100vh;
     <div id="os2b"></div>
   </div>
 
+  <!-- S3 -->
   <div id="v-s3" class="sv" style="display:none">
-    <h2>Bước 3 — Title &amp; Hook</h2><p class="dsc">3 title options + 4 hooks mạnh</p>
+    <h2>🎯 Bước 3 — Title &amp; Hook</h2><p class="dsc">3 title options + 4 hooks mạnh</p>
     <div class="fg"><label class="fl">Topic</label><input type="text" id="s3t" placeholder="VD: Tại sao 70% chương trình đào tạo thất bại?"/></div>
     <div class="fr"><div class="fg"><label class="fl">Pillar</label><select id="s3p"><option>Uy tín &amp; Chuyên sâu</option><option>Kỹ năng &amp; Phát triển</option><option>Networking</option></select></div><div class="fg"><label class="fl">Kênh</label><select id="s3h"><option>LinkedIn</option><option>Facebook</option><option>Website</option></select></div></div>
     <div class="fg"><label class="fl">Target audience</label><input type="text" id="s3a" placeholder="VD: HR Manager, L&D Manager..."/></div>
-    <button class="btn-g" id="bs3" onclick="run('s3')">Tạo Title &amp; Hook</button><div id="os3"></div>
+    <button class="btn-g" id="bs3" onclick="run('s3')">⚡ Tạo Title &amp; Hook</button><div id="os3"></div>
   </div>
 
+  <!-- S4 -->
   <div id="v-s4" class="sv" style="display:none">
-    <h2>Bước 4 — Content Brief</h2><p class="dsc">Brief đầy đủ SEO, outline, keywords, meta, slug</p>
+    <h2>📋 Bước 4 — Content Brief</h2><p class="dsc">Brief đầy đủ SEO, outline, keywords, meta, slug</p>
     <div class="fg"><label class="fl">Title</label><input type="text" id="s4t" placeholder="Tiêu đề bài viết..."/></div>
     <div class="fg"><label class="fl">Hook</label><textarea id="s4h" style="min-height:58px" placeholder="Dán hook từ bước 3..."></textarea></div>
     <div class="fr"><div class="fg"><label class="fl">Kênh</label><select id="s4c"><option>LinkedIn</option><option>Facebook</option><option>Website</option></select></div><div class="fg"><label class="fl">Keyword chính</label><input type="text" id="s4k" placeholder="VD: đào tạo nhân sự doanh nghiệp"/></div></div>
     <div class="fg"><label class="fl">Context thêm</label><textarea id="s4x" placeholder="Key points, sản phẩm AVTalent..."></textarea></div>
-    <button class="btn-g" id="bs4" onclick="run('s4')">Tạo Content Brief</button><div id="os4"></div>
+    <button class="btn-g" id="bs4" onclick="run('s4')">⚡ Tạo Content Brief</button><div id="os4"></div>
   </div>
 
+  <!-- S5 -->
   <div id="v-s5" class="sv" style="display:none">
-    <h2>Bước 5 — Review Brief</h2><p class="dsc">Checklist 7 tiêu chí + revised brief</p>
+    <h2>🔍 Bước 5 — Review Brief</h2><p class="dsc">Checklist 7 tiêu chí + revised brief</p>
     <div class="fg"><label class="fl">Paste brief cần review</label><textarea id="s5b" style="min-height:180px" placeholder="Dán brief từ bước 4..."></textarea></div>
-    <button class="btn-g" id="bs5" onclick="run('s5')">Review &amp; Cải thiện</button><div id="os5"></div>
+    <button class="btn-g" id="bs5" onclick="run('s5')">⚡ Review &amp; Cải thiện</button><div id="os5"></div>
   </div>
 
+  <!-- S6 -->
   <div id="v-s6" class="sv" style="display:none">
-    <h2>Bước 6 — Viết Full Content</h2><p class="dsc">Bài viết hoàn chỉnh, publish-ready</p>
+    <h2>✍️ Bước 6 — Viết Full Content</h2><p class="dsc">Bài viết hoàn chỉnh, publish-ready</p>
     <div class="fg"><label class="fl">Title</label><input type="text" id="s6t" placeholder="Tiêu đề bài viết..."/></div>
     <div class="fg"><label class="fl">Brief / Key points</label><textarea id="s6b" style="min-height:110px" placeholder="Dán brief hoặc outline..."></textarea></div>
     <div class="fr"><div class="fg"><label class="fl">Kênh</label><select id="s6c"><option>LinkedIn (VI+EN)</option><option>Facebook</option><option>Website / Blog</option></select></div><div class="fg"><label class="fl">Độ dài</label><select id="s6l"><option>~600 từ</option><option selected>~1000 từ</option><option>~1500 từ</option><option>~2000 từ</option></select></div></div>
     <div class="fg"><label class="fl">Keyword SEO</label><input type="text" id="s6k" placeholder="VD: giải pháp đào tạo nhân sự"/></div>
-    <button class="btn-g" id="bs6" onclick="run('s6')">Viết bài hoàn chỉnh</button><div id="os6"></div>
+    <button class="btn-g" id="bs6" onclick="run('s6')">⚡ Viết bài hoàn chỉnh</button><div id="os6"></div>
   </div>
 
+  <!-- S7 -->
   <div id="v-s7" class="sv" style="display:none">
-    <h2>Bước 7 — Edit &amp; Polish</h2><p class="dsc">Cải thiện intro, flow, readability, SEO, CTA</p>
+    <h2>✨ Bước 7 — Edit &amp; Polish</h2><p class="dsc">Cải thiện intro, flow, readability, SEO, CTA</p>
     <div class="fg"><label class="fl">Bài viết cần edit</label><textarea id="s7t" style="min-height:150px" placeholder="Dán draft bài viết..."></textarea></div>
-    <div class="fg"><label class="fl">Tập trung</label><div class="cks" id="cks7"><span class="ck on" onclick="this.classList.toggle('on')">Intro mạnh hơn</span><span class="ck on" onclick="this.classList.toggle('on')">Flow</span><span class="ck on" onclick="this.classList.toggle('on')">Readability</span><span class="ck" onclick="this.classList.toggle('on')">SEO</span><span class="ck" onclick="this.classList.toggle('on')">Softer CTA</span></div></div>
-    <button class="btn-g" id="bs7" onclick="run('s7')">Edit &amp; Polish</button><div id="os7"></div>
+    <div class="fg"><label class="fl">Tập trung cải thiện</label><div class="cks" id="cks7"><span class="ck on" onclick="this.classList.toggle('on')">Intro mạnh hơn</span><span class="ck on" onclick="this.classList.toggle('on')">Flow</span><span class="ck on" onclick="this.classList.toggle('on')">Readability</span><span class="ck" onclick="this.classList.toggle('on')">SEO</span><span class="ck" onclick="this.classList.toggle('on')">Softer CTA</span></div></div>
+    <button class="btn-g" id="bs7" onclick="run('s7')">⚡ Edit &amp; Polish</button><div id="os7"></div>
   </div>
 
+  <!-- S8 -->
   <div id="v-s8" class="sv" style="display:none">
-    <h2>Bước 8 — Convert by Channel</h2><p class="dsc">Chuyển đổi nội dung giữa các kênh</p>
+    <h2>🔄 Bước 8 — Convert by Channel</h2><p class="dsc">Chuyển đổi nội dung giữa các kênh</p>
     <div class="fg"><label class="fl">Nội dung gốc</label><textarea id="s8t" style="min-height:130px" placeholder="Dán bài viết cần chuyển..."></textarea></div>
     <div class="fr"><div class="fg"><label class="fl">Từ kênh</label><select id="s8f"><option>Website</option><option>LinkedIn</option><option>Facebook</option></select></div><div class="fg"><label class="fl">Sang kênh</label><select id="s8o"><option>Facebook</option><option>LinkedIn</option><option>Website</option></select></div></div>
-    <button class="btn-g" id="bs8" onclick="run('s8')">Convert nội dung</button><div id="os8"></div>
+    <button class="btn-g" id="bs8" onclick="run('s8')">⚡ Convert nội dung</button><div id="os8"></div>
   </div>
 
+  <!-- S9 -->
   <div id="v-s9" class="sv" style="display:none">
-    <h2>Bước 9 — Image Ideas &amp; Prompts</h2><p class="dsc">3 concepts + AI image prompts đầy đủ</p>
+    <h2>🖼 Bước 9 — Image Ideas &amp; Prompts</h2><p class="dsc">3 concepts + AI image prompts + tạo ảnh thật</p>
     <div class="fg"><label class="fl">Title bài viết</label><input type="text" id="s9t" placeholder="VD: 5 bài toán SMEs khi scale team"/></div>
     <div class="fg"><label class="fl">Tóm tắt nội dung</label><textarea id="s9s" style="min-height:65px" placeholder="Mô tả ngắn để AI tạo hình đúng hướng..."></textarea></div>
-    <div class="fr"><div class="fg"><label class="fl">Kênh</label><select id="s9c"><option>Website (852×568px)</option><option>Facebook</option><option>Cả hai</option></select></div><div class="fg"><label class="fl">Phong cách</label><select id="s9y"><option>Modern Corporate</option><option>Minimalist</option><option>Bold</option></select></div></div>
-    <button class="btn-g" id="bs9" onclick="run('s9')">Tạo Image Prompts</button>
-    <button class="btn-g" id="bimg9" onclick="generateImage()" style="margin-left:8px;background:#7c3aed">&#128444; Tạo ảnh AI</button>
+    <div class="fr"><div class="fg"><label class="fl">Kênh</label><select id="s9c"><option>Website (852×568px)</option><option>Facebook</option><option>Cả hai</option></select></div><div class="fg"><label class="fl">Phong cách</label><select id="s9y"><option>Modern Corporate</option><option>Minimalist Professional</option><option>Bold &amp; Dynamic</option><option>Warm &amp; Human</option><option>Blue &amp; Gold Premium</option></select></div></div>
+    <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap">
+      <button class="btn-g" id="bs9" onclick="run('s9')">⚡ Tạo Image Prompts</button>
+      <button class="btn-g" id="bimg9" onclick="generateImage()" style="background:#7c3aed">🖼 Tạo ảnh AI</button>
+    </div>
     <div id="os9"></div>
-    <div id="img9" style="margin-top:14px;display:none">
-      <div style="font-size:11px;font-weight:bold;color:#7b82a8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Ảnh AI Generated</div>
+    <div id="img9" style="display:none;margin-top:14px">
+      <div style="font-size:10px;font-weight:600;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Ảnh AI Generated</div>
       <div id="img9-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px"></div>
     </div>
   </div>
 
+  <!-- QUICK VIEWS -->
   <div id="v-qp" class="sv" style="display:none">
-    <h2>Kế hoạch nội dung tháng</h2><p class="dsc">Tạo nhanh content plan và lịch đăng bài</p>
+    <h2>🗓 Kế hoạch nội dung tháng</h2><p class="dsc">Tạo nhanh content plan và lịch đăng bài</p>
     <div class="fr"><div class="fg"><label class="fl">Tháng</label><select id="qpm"><option>Tháng 7/2026</option><option>Tháng 8/2026</option><option>Tháng 9/2026</option></select></div><div class="fg"><label class="fl">Mục tiêu</label><select id="qpg"><option>Brand Awareness + Lead Gen</option><option>Brand Awareness</option><option>Lead Generation</option></select></div></div>
     <div class="fg"><label class="fl">Chiến dịch</label><input type="text" id="qpc" placeholder="VD: Kỹ năng mùa hè + Scale SMEs"/></div>
-    <button class="btn-g" id="bqp" onclick="run('qp')">Tạo kế hoạch</button><div id="oqp"></div>
+    <button class="btn-g" id="bqp" onclick="run('qp')">⚡ Tạo kế hoạch</button><div id="oqp"></div>
   </div>
 
   <div id="v-qt" class="sv" style="display:none">
-    <h2>Generate Topics nhanh</h2><p class="dsc">Nhập chủ đề, nhận ngay 8 topics</p>
+    <h2>💡 Generate Topics nhanh</h2><p class="dsc">Nhập chủ đề, nhận ngay 30 topics theo chiều sâu</p>
     <div class="fg"><label class="fl">Chủ đề</label><input type="text" id="qtt" placeholder="VD: Đào tạo nhân sự tháng 7..."/></div>
     <div class="fg"><label class="fl">Kênh</label><div class="cks" id="cksqt"><span class="ck on" onclick="this.classList.toggle('on')">LinkedIn</span><span class="ck on" onclick="this.classList.toggle('on')">Facebook</span><span class="ck" onclick="this.classList.toggle('on')">Website</span></div></div>
-    <button class="btn-g" id="bqt" onclick="run('qt')">Generate Topics</button><div id="oqt"></div>
+    <button class="btn-g" id="bqt" onclick="run('qt')">⚡ Generate Topics</button><div id="oqt"></div>
   </div>
 
   <div id="v-qw" class="sv" style="display:none">
-    <h2>Viết bài ngay</h2><p class="dsc">Nhập topic, nhận bài hoàn chỉnh</p>
+    <h2>✍️ Viết bài ngay</h2><p class="dsc">Nhập topic, nhận bài hoàn chỉnh</p>
     <div class="fg"><label class="fl">Topic / Ý tưởng</label><textarea id="qwt" placeholder="VD: Viết về tailor-made training của AVTalent..."></textarea></div>
     <div class="fr"><div class="fg"><label class="fl">Kênh</label><select id="qwc"><option>LinkedIn (VI+EN)</option><option>Facebook</option><option>Website</option></select></div><div class="fg"><label class="fl">Độ dài</label><select id="qwl"><option>~600 từ</option><option selected>~1000 từ</option><option>~1800 từ</option></select></div></div>
-    <button class="btn-g" id="bqw" onclick="run('qw')">Viết bài ngay</button><div id="oqw"></div>
+    <button class="btn-g" id="bqw" onclick="run('qw')">⚡ Viết bài ngay</button><div id="oqw"></div>
   </div>
 
   <div id="v-qi" class="sv" style="display:none">
-    <h2>Image Prompts nhanh</h2><p class="dsc">Nhập title, nhận 3 concepts + AI prompts</p>
+    <h2>🖼 Image Prompts nhanh</h2><p class="dsc">Nhập title, nhận 3 concepts + AI prompts</p>
     <div class="fg"><label class="fl">Title bài viết</label><input type="text" id="qit" placeholder="VD: Mô hình ủy thác vận hành..."/></div>
     <div class="fg"><label class="fl">Kênh</label><div class="cks" id="cksqi"><span class="ck on" onclick="this.classList.toggle('on')">Website (852×568px)</span><span class="ck on" onclick="this.classList.toggle('on')">Facebook</span></div></div>
-    <button class="btn-g" id="bqi" onclick="run('qi')">Tạo Image Prompts</button><div id="oqi"></div>
+    <button class="btn-g" id="bqi" onclick="run('qi')">⚡ Tạo Image Prompts</button><div id="oqi"></div>
   </div>
 
   <div id="v-qc" class="sv" style="display:none">
-    <h2>Convert kênh nhanh</h2><p class="dsc">Chuyển nội dung giữa Website · Facebook · LinkedIn</p>
+    <h2>📱 Convert kênh nhanh</h2><p class="dsc">Chuyển nội dung giữa Website · Facebook · LinkedIn</p>
     <div class="fg"><label class="fl">Nội dung gốc</label><textarea id="qct" style="min-height:130px" placeholder="Dán bài viết cần chuyển..."></textarea></div>
     <div class="fr"><div class="fg"><label class="fl">Từ kênh</label><select id="qcf"><option>Website</option><option>LinkedIn</option><option>Facebook</option></select></div><div class="fg"><label class="fl">Sang kênh</label><select id="qco"><option>Facebook</option><option>LinkedIn</option><option>Website</option></select></div></div>
-    <button class="btn-g" id="bqc" onclick="run('qc')">Convert ngay</button><div id="oqc"></div>
+    <button class="btn-g" id="bqc" onclick="run('qc')">⚡ Convert ngay</button><div id="oqc"></div>
   </div>
 
   <div id="v-qs" class="sv" style="display:none">
-    <h2>&#128202; Generate Topics từ Google Sheet</h2><p class="dsc">Đọc kế hoạch từ Google Sheet và generate topics mới phù hợp</p>
+    <h2>📊 Generate Topics từ Google Sheet</h2><p class="dsc">Đọc kế hoạch từ Sheet và generate topics mới phù hợp</p>
     <div class="fg"><label class="fl">Link Google Sheet kế hoạch</label>
-      <div class="sr"><input type="text" id="qsu" placeholder="Paste link Google Sheet..." /><button class="btn-sh" onclick="loadSheetAndGenerate()">Đọc &amp; Generate</button></div>
-      <div id="qs-status" style="font-size:12px;color:#7b82a8;margin-top:6px"></div>
+      <div class="sr"><input type="text" id="qsu" placeholder="Paste link Google Sheet..."/><button class="btn-sh" onclick="loadSheetAndGenerate()">Đọc &amp; Generate</button></div>
+      <div id="qs-status" style="font-size:12px;color:var(--mut);margin-top:6px"></div>
     </div>
-    <div class="fg"><label class="fl">Số topics cần tạo</label>
-      <select id="qsn"><option>8 topics</option><option>10 topics</option><option>12 topics</option><option>15 topics</option></select></div>
-    <div class="fg"><label class="fl">Tháng lập kế hoạch</label>
-      <select id="qsm"><option>Tháng 7/2026</option><option>Tháng 8/2026</option><option>Tháng 9/2026</option></select></div>
-    <div class="fg"><label class="fl">Ghi chú thêm</label>
-      <textarea id="qsx" placeholder="Yêu cầu đặc biệt, focus vào chủ đề gì..."></textarea></div>
+    <div class="fg"><label class="fl">Số topics cần tạo</label><select id="qsn"><option>8 topics</option><option>10 topics</option><option selected>12 topics</option><option>15 topics</option></select></div>
+    <div class="fg"><label class="fl">Tháng lập kế hoạch</label><select id="qsm"><option>Tháng 7/2026</option><option>Tháng 8/2026</option><option>Tháng 9/2026</option></select></div>
+    <div class="fg"><label class="fl">Ghi chú thêm</label><textarea id="qsx" placeholder="Yêu cầu đặc biệt, focus vào chủ đề gì..."></textarea></div>
     <div id="out-qs"></div>
   </div>
 
   <div id="v-trans" class="sv" style="display:none">
-    <h2>&#127760; Dịch Tiếng Việt ↔ English</h2>
-    <p class="dsc">Dịch nội dung marketing, bài viết LinkedIn, email chuyên nghiệp</p>
-    <div class="fr" style="margin-bottom:12px">
-      <div class="fg">
-        <label class="fl">Ngôn ngữ nguồn</label>
-        <select id="trans-from"><option value="vi">Tiếng Việt → English</option><option value="en">English → Tiếng Việt</option></select>
-      </div>
-      <div class="fg">
-        <label class="fl">Phong cách dịch</label>
-        <select id="trans-style">
-          <option>Chuyên nghiệp - Business</option>
-          <option>Marketing - Hấp dẫn</option>
-          <option>LinkedIn - Personal voice</option>
-          <option>Email - Formal</option>
-          <option>Tự nhiên - Conversational</option>
-        </select>
-      </div>
+    <h2>🌐 Dịch Tiếng Việt ↔ English</h2><p class="dsc">Dịch nội dung marketing, LinkedIn, email chuyên nghiệp</p>
+    <div class="fr">
+      <div class="fg"><label class="fl">Ngôn ngữ nguồn</label><select id="trans-from"><option value="vi">Tiếng Việt → English</option><option value="en">English → Tiếng Việt</option></select></div>
+      <div class="fg"><label class="fl">Phong cách dịch</label><select id="trans-style"><option>Chuyên nghiệp - Business</option><option>Marketing - Hấp dẫn</option><option>LinkedIn - Personal voice</option><option>Email - Formal</option><option>Tự nhiên - Conversational</option></select></div>
     </div>
-    <div class="fg">
-      <label class="fl">Nội dung cần dịch</label>
-      <textarea id="trans-input" style="min-height:160px" placeholder="Nhập nội dung cần dịch..."></textarea>
-    </div>
-    <button class="btn-g" id="btrans" onclick="runTranslate()">&#127760; Dịch ngay</button>
+    <div class="fg"><label class="fl">Nội dung cần dịch</label><textarea id="trans-input" style="min-height:160px" placeholder="Nhập nội dung cần dịch..."></textarea></div>
+    <button class="btn-g" id="btrans" onclick="runTranslate()">🌐 Dịch ngay</button>
     <div id="out-trans" style="margin-top:14px"></div>
   </div>
 
-    <div id="v-history" class="sv" style="display:none">
-    <h2>📋 Lịch sử kết quả</h2>
-    <p class="dsc">Các kết quả đã tạo được lưu tự động — tồn tại qua các lần reload</p>
+  <!-- HISTORY -->
+  <div id="v-history" class="sv" style="display:none">
+    <h2>📋 Lịch sử kết quả</h2><p class="dsc">Tất cả kết quả đã generate — tự động lưu, tồn tại qua reload</p>
     <div id="history-list"></div>
   </div>
 
-  </div>
-</main>
-</div>
+  </div><!-- end ct -->
+</div><!-- end main -->
+</div><!-- end app -->
+
 <script>
+
 var apiKey = '';
 var sheetURL = '';
 var T = {home:'AVTalent Content Pipeline',s1:'Kế hoạch nội dung tháng',s2:'Generate Topics',s3:'Title & Hook',s4:'Content Brief',s5:'Review Brief',s6:'Viết Full Content',s7:'Edit & Polish',s8:'Convert by Channel',s9:'Image Prompts',qp:'Kế hoạch tháng',qt:'Generate Topics',qw:'Viết bài ngay',qi:'Image Prompts',qc:'Convert kênh',qs:'Topics từ Sheet',trans:'Dịch Tiếng Việt ↔ English',history:'Lịch sử kết quả'};
@@ -841,6 +906,38 @@ async function runTranslate() {
   btn.textContent = '&#127760; Dịch lại';
 }
 
+go('home');
+
+function doSearch(val) {
+  var v = val.toLowerCase();
+  document.querySelectorAll('.ni').forEach(function(b) {
+    var t = b.textContent.toLowerCase();
+    b.style.opacity = (!v || t.includes(v)) ? '1' : '0.3';
+  });
+}
+
+function updateHistBadge() {
+  try {
+    var h = JSON.parse(localStorage.getItem('avt_history') || '[]');
+    var badge = document.getElementById('hist-badge');
+    if (badge) { badge.textContent = h.length; badge.style.display = h.length ? '' : 'none'; }
+  } catch(e) {}
+}
+
+var _origSaveToHistory = saveToHistory;
+saveToHistory = function(id, preview, result) {
+  _origSaveToHistory(id, preview, result);
+  updateHistBadge();
+};
+
+try {
+  var sk = localStorage.getItem('avt_key');
+  if (sk) { setKey(sk); }
+  var ss = localStorage.getItem('avt_sheet');
+  if (ss) { document.getElementById('s1u').value = ss; addSheet(); }
+} catch(e) {}
+
+updateHistBadge();
 go('home');
 </script>
 </body>
