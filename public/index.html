@@ -1190,20 +1190,52 @@ function restoreSheetFiles() {
     var saved = localStorage.getItem('avt_sheet_files');
     if (saved) {
       sheetFiles = JSON.parse(saved);
-      var sel = sheetFiles.find(function(f) { return f.isSelected; });
-      if (sel) {
-        selectedSheetId = sel.id;
-        sheetURL = sel.url;
-        document.getElementById('s1f').src = sel.previewUrl;
-        document.getElementById('s1a').href = sel.url;
-        document.getElementById('s1lbl').textContent = sel.name;
-        document.getElementById('s1e').style.display = 'block';
-        var badge = document.getElementById('sheet-badge');
-        if (badge) { badge.style.display = 'flex'; badge.textContent = 'Sheet: ' + sel.name.slice(0, 12); }
-      }
-      renderSheetFileList();
     }
-  } catch(e) {}
+
+    // Migrate old single sheet (avt_sheet) if not already in list
+    var oldUrl = localStorage.getItem('avt_sheet');
+    if (oldUrl) {
+      var sheetId = parseGoogleSheetId(oldUrl);
+      if (sheetId) {
+        var alreadyExists = sheetFiles.find(function(f) { return f.sheetId === sheetId; });
+        if (!alreadyExists) {
+          var gm = oldUrl.match(/gid=([0-9]+)/);
+          var gid = gm ? gm[1] : '0';
+          var migratedFile = {
+            id: 'sf_legacy',
+            name: 'Ke hoach thang (cu)',
+            url: oldUrl,
+            sheetId: sheetId,
+            gid: gid,
+            status: 'connected',
+            isSelected: sheetFiles.length === 0,
+            previewUrl: 'https://docs.google.com/spreadsheets/d/' + sheetId + '/preview?gid=' + gid + '&rm=minimal'
+          };
+          sheetFiles.unshift(migratedFile);
+          try { localStorage.setItem('avt_sheet_files', JSON.stringify(sheetFiles)); } catch(e2) {}
+        }
+      }
+    }
+
+    // Select first if none selected
+    var hasSel = sheetFiles.find(function(f) { return f.isSelected; });
+    if (!hasSel && sheetFiles.length > 0) {
+      sheetFiles[0].isSelected = true;
+    }
+
+    var sel = sheetFiles.find(function(f) { return f.isSelected; });
+    if (sel) {
+      selectedSheetId = sel.id;
+      sheetURL = sel.url;
+      document.getElementById('s1f').src = sel.previewUrl;
+      document.getElementById('s1a').href = sel.url;
+      document.getElementById('s1lbl').textContent = sel.name;
+      document.getElementById('s1e').style.display = 'block';
+      var badge = document.getElementById('sheet-badge');
+      if (badge) { badge.style.display = 'flex'; badge.textContent = 'Sheet: ' + sel.name.slice(0, 12); }
+    }
+    renderSheetFileList();
+  } catch(e) { console.log('restoreSheetFiles error:', e); }
 }
 
 go('home');
