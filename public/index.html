@@ -117,6 +117,25 @@ body{font-family:var(--fn);background:var(--bg);color:var(--txt);height:100vh;di
 .nbtn:hover{border-color:var(--acc);color:var(--acc)}
 /* SHEET BADGE */
 #sheet-badge{display:none;background:var(--acc2);border:1px solid rgba(124,92,191,.3);border-radius:7px;padding:4px 10px;font-size:11px;color:var(--acc);cursor:pointer;white-space:nowrap}
+/* MULTI-SHEET */
+.sheet-file-item{display:flex;align-items:center;gap:10px;padding:10px 13px;background:#fff;border:1.5px solid var(--bdr);border-radius:10px;cursor:pointer;transition:all .14s}
+.sheet-file-item:hover{border-color:var(--acc);background:#faf9ff}
+.sheet-file-item.selected{border-color:var(--acc);background:#f5f0ff;box-shadow:0 0 0 3px rgba(124,92,191,.1)}
+.sheet-file-ic{width:32px;height:32px;border-radius:8px;background:#e8e3f7;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.sheet-file-ic.selected{background:var(--acc)}
+.sheet-file-info{flex:1;min-width:0}
+.sheet-file-name{font-size:13px;font-weight:500;color:var(--txt)}
+.sheet-file-url{font-size:11px;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sheet-file-status{font-size:10px;font-weight:500;padding:2px 7px;border-radius:10px;flex-shrink:0}
+.status-connected{background:#dcfce7;color:#15803d}
+.status-loading{background:#fef9c3;color:#854d0e}
+.status-error{background:#fee2e2;color:#991b1b}
+.sheet-file-actions{display:flex;gap:5px;flex-shrink:0}
+.sheet-action-btn{padding:4px 9px;border-radius:6px;border:1px solid var(--bdr);background:none;font-size:11px;cursor:pointer;color:var(--mut);font-family:var(--fn);transition:all .12s}
+.sheet-action-btn:hover{border-color:var(--acc);color:var(--acc)}
+.sheet-action-btn.danger:hover{border-color:#ef4444;color:#ef4444}
+.sheet-selected-badge{font-size:10px;font-weight:600;background:var(--acc);color:#fff;padding:2px 8px;border-radius:10px;flex-shrink:0}
+/* HISTORY */
 /* HISTORY */
 .hist-card{border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;margin-bottom:10px}
 .hist-top{display:flex;align-items:center;justify-content:space-between;padding:9px 13px;background:var(--surf2)}
@@ -220,10 +239,33 @@ body{font-family:var(--fn);background:var(--bg);color:var(--txt);height:100vh;di
   <!-- S1 -->
   <div id="v-s1" class="sv" style="display:none">
     <h2>📅 Bước 1 — Kế hoạch nội dung tháng</h2><p class="dsc">Import Google Sheet tháng trước + tạo kế hoạch tháng mới</p>
-    <div class="fg"><label class="fl">Google Sheet kế hoạch tháng trước</label>
-      <div class="sr"><input type="text" id="s1u" placeholder="Paste link Google Sheet..."/><button class="btn-sh" onclick="addSheet()">+ Thêm</button></div>
+    <!-- MULTI-SHEET MANAGER -->
+    <div class="fg">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <label class="fl" style="margin-bottom:0">Google Sheet kế hoạch</label>
+        <button onclick="showAddSheetForm()" style="padding:4px 12px;background:var(--acc);border:none;border-radius:8px;color:#fff;font-size:12px;font-weight:500;cursor:pointer;font-family:var(--fn)">+ Thêm file mới</button>
+      </div>
+
+      <!-- Add new sheet form -->
+      <div id="add-sheet-form" style="display:none;background:#f9f7ff;border:1px solid rgba(124,92,191,.2);border-radius:12px;padding:14px;margin-bottom:10px">
+        <div class="fr" style="margin-bottom:8px">
+          <div class="fg" style="margin-bottom:0"><label class="fl">Tên file</label><input type="text" id="new-sheet-name" placeholder="VD: Kế hoạch tháng 6, Content Seeding..."/></div>
+          <div class="fg" style="margin-bottom:0"><label class="fl">Link Google Sheet</label><input type="text" id="new-sheet-url" placeholder="Paste link Google Sheet..."/></div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button onclick="addSheetFile()" style="padding:7px 16px;background:var(--acc);border:none;border-radius:8px;color:#fff;font-size:12px;font-weight:500;cursor:pointer;font-family:var(--fn)">+ Thêm</button>
+          <button onclick="document.getElementById('add-sheet-form').style.display='none'" style="padding:7px 12px;background:none;border:1px solid var(--bdr);border-radius:8px;color:var(--mut);font-size:12px;cursor:pointer;font-family:var(--fn)">Hủy</button>
+        </div>
+        <div id="add-sheet-error" style="color:#ef4444;font-size:11px;margin-top:6px;display:none"></div>
+      </div>
+
+      <!-- File list -->
+      <div id="sheet-file-list" style="display:flex;flex-direction:column;gap:7px;margin-bottom:10px"></div>
+      <div id="sheet-hint" style="font-size:11px;color:var(--mut);margin-bottom:8px;display:none">📌 Chọn file dữ liệu để AI thực hiện tác vụ tiếp theo</div>
+
+      <!-- Preview panel -->
       <div id="s1e" style="display:none" class="emb">
-        <div class="emb-top"><span id="s1lbl">Google Sheet</span><div style="display:flex;gap:6px;align-items:center"><a id="s1a" href="#" target="_blank">Mở full ↗</a><button class="xb" onclick="removeSheet()">✕</button></div></div>
+        <div class="emb-top"><span id="s1lbl">Google Sheet</span><div style="display:flex;gap:6px;align-items:center"><a id="s1a" href="#" target="_blank">Mở full ↗</a></div></div>
         <iframe id="s1f" src=""></iframe>
       </div>
     </div>
@@ -948,6 +990,173 @@ function stripMd(text) {
     .replace(/^___+$/gm, '')
     .replace(/`([^`]+)`/g, '$1')
     .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+}
+
+
+// ── MULTI-SHEET MANAGER ──────────────────────────────
+var sheetFiles = [];
+var selectedSheetId = null;
+
+function parseGoogleSheetId(url) {
+  var m = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  return m ? m[1] : null;
+}
+
+function showAddSheetForm() {
+  document.getElementById('add-sheet-form').style.display = 'block';
+  document.getElementById('new-sheet-name').focus();
+}
+
+function addSheetFile() {
+  var name = document.getElementById('new-sheet-name').value.trim();
+  var url = document.getElementById('new-sheet-url').value.trim();
+  var errEl = document.getElementById('add-sheet-error');
+  errEl.style.display = 'none';
+
+  if (!name) { errEl.textContent = 'Vui lòng nhập tên file'; errEl.style.display = 'block'; return; }
+  if (!url) { errEl.textContent = 'Vui lòng nhập link Google Sheet'; errEl.style.display = 'block'; return; }
+
+  var sheetId = parseGoogleSheetId(url);
+  if (!sheetId) { errEl.textContent = 'Link không hợp lệ. Vui lòng dùng link Google Sheet đúng định dạng.'; errEl.style.display = 'block'; return; }
+
+  // Check duplicate
+  var duplicate = sheetFiles.find(function(f) { return f.sheetId === sheetId; });
+  if (duplicate) { errEl.textContent = 'File này đã được thêm rồi.'; errEl.style.display = 'block'; return; }
+
+  var fileId = 'sf_' + Date.now();
+  var gm = url.match(/gid=([0-9]+)/);
+  var gid = gm ? gm[1] : '0';
+
+  var file = {
+    id: fileId,
+    name: name,
+    url: url,
+    sheetId: sheetId,
+    gid: gid,
+    status: 'connected',
+    isSelected: false,
+    previewUrl: 'https://docs.google.com/spreadsheets/d/' + sheetId + '/preview?gid=' + gid + '&rm=minimal'
+  };
+
+  sheetFiles.push(file);
+
+  // Auto-select if first file
+  if (sheetFiles.length === 1) {
+    selectSheetFile(fileId);
+  }
+
+  // Save to localStorage
+  try { localStorage.setItem('avt_sheet_files', JSON.stringify(sheetFiles)); } catch(e) {}
+
+  // Reset form
+  document.getElementById('new-sheet-name').value = '';
+  document.getElementById('new-sheet-url').value = '';
+  document.getElementById('add-sheet-form').style.display = 'none';
+
+  renderSheetFileList();
+}
+
+function selectSheetFile(fileId) {
+  sheetFiles.forEach(function(f) { f.isSelected = f.id === fileId; });
+  selectedSheetId = fileId;
+
+  var selected = sheetFiles.find(function(f) { return f.id === fileId; });
+  if (selected) {
+    // Update preview
+    document.getElementById('s1f').src = selected.previewUrl;
+    document.getElementById('s1a').href = selected.url;
+    document.getElementById('s1lbl').textContent = selected.name;
+    document.getElementById('s1e').style.display = 'block';
+
+    // Update global sheetURL for AI prompts
+    sheetURL = selected.url;
+    try { localStorage.setItem('avt_sheet', selected.url); } catch(e) {}
+
+    // Update badge in topbar
+    var badge = document.getElementById('sheet-badge');
+    if (badge) { badge.style.display = 'flex'; badge.textContent = 'Sheet: ' + selected.name.slice(0, 12); }
+  }
+
+  try { localStorage.setItem('avt_sheet_files', JSON.stringify(sheetFiles)); } catch(e) {}
+  renderSheetFileList();
+}
+
+function removeSheetFile(fileId) {
+  var wasSelected = sheetFiles.find(function(f) { return f.id === fileId && f.isSelected; });
+  sheetFiles = sheetFiles.filter(function(f) { return f.id !== fileId; });
+
+  if (wasSelected && sheetFiles.length > 0) {
+    selectSheetFile(sheetFiles[0].id);
+  } else if (sheetFiles.length === 0) {
+    selectedSheetId = null;
+    sheetURL = '';
+    document.getElementById('s1e').style.display = 'none';
+    document.getElementById('sheet-hint').style.display = 'none';
+    var badge = document.getElementById('sheet-badge');
+    if (badge) badge.style.display = 'none';
+    try { localStorage.removeItem('avt_sheet'); localStorage.removeItem('avt_sheet_files'); } catch(e) {}
+  }
+
+  try { localStorage.setItem('avt_sheet_files', JSON.stringify(sheetFiles)); } catch(e) {}
+  renderSheetFileList();
+}
+
+function getSelectedSheetFile() {
+  return sheetFiles.find(function(f) { return f.isSelected; }) || null;
+}
+
+function renderSheetFileList() {
+  var list = document.getElementById('sheet-file-list');
+  var hint = document.getElementById('sheet-hint');
+  if (!list) return;
+
+  if (sheetFiles.length === 0) {
+    list.innerHTML = '';
+    if (hint) hint.style.display = 'none';
+    return;
+  }
+
+  if (hint) hint.style.display = 'block';
+
+  list.innerHTML = sheetFiles.map(function(file) {
+    var isSelected = file.isSelected;
+    var shortId = file.sheetId.slice(0, 16) + '...';
+    return '<div class="sheet-file-item' + (isSelected ? ' selected' : '') + '" onclick="selectSheetFile('' + file.id + '')">' +
+      '<div class="sheet-file-ic' + (isSelected ? ' selected' : '') + '">' + (isSelected ? '✓' : '📊') + '</div>' +
+      '<div class="sheet-file-info">' +
+        '<div class="sheet-file-name">' + file.name + '</div>' +
+        '<div class="sheet-file-url">' + shortId + '</div>' +
+      '</div>' +
+      '<span class="sheet-file-status status-' + file.status + '">' + (file.status === 'connected' ? 'Đã kết nối' : file.status === 'loading' ? 'Đang tải' : 'Lỗi') + '</span>' +
+      (isSelected ? '<span class="sheet-selected-badge">Đang dùng</span>' : '') +
+      '<div class="sheet-file-actions">' +
+        '<button class="sheet-action-btn" onclick="event.stopPropagation();selectSheetFile('' + file.id + '')">Xem</button>' +
+        '<button class="sheet-action-btn danger" onclick="event.stopPropagation();removeSheetFile('' + file.id + '')">✕</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+// Restore saved sheet files on load
+function restoreSheetFiles() {
+  try {
+    var saved = localStorage.getItem('avt_sheet_files');
+    if (saved) {
+      sheetFiles = JSON.parse(saved);
+      var sel = sheetFiles.find(function(f) { return f.isSelected; });
+      if (sel) {
+        selectedSheetId = sel.id;
+        sheetURL = sel.url;
+        document.getElementById('s1f').src = sel.previewUrl;
+        document.getElementById('s1a').href = sel.url;
+        document.getElementById('s1lbl').textContent = sel.name;
+        document.getElementById('s1e').style.display = 'block';
+        var badge = document.getElementById('sheet-badge');
+        if (badge) { badge.style.display = 'flex'; badge.textContent = 'Sheet: ' + sel.name.slice(0, 12); }
+      }
+      renderSheetFileList();
+    }
+  } catch(e) {}
 }
 
 go('home');
