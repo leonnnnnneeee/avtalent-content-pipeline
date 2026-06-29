@@ -1238,6 +1238,8 @@ function restoreSheetFiles() {
   } catch(e) { console.log('restoreSheetFiles error:', e); }
 }
 
+try { var sk = localStorage.getItem('avt_key'); if (sk) { setKey(sk); } } catch(e) {}
+restoreSheetFiles();
 go('home');
 </script>
 </body>
