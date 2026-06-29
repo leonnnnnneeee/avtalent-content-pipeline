@@ -1118,23 +1118,70 @@ function renderSheetFileList() {
 
   if (hint) hint.style.display = 'block';
 
-  list.innerHTML = sheetFiles.map(function(file) {
+  var items = [];
+  for (var i = 0; i < sheetFiles.length; i++) {
+    var file = sheetFiles[i];
     var isSelected = file.isSelected;
-    var shortId = file.sheetId.slice(0, 16) + '...';
-    return '<div class="sheet-file-item' + (isSelected ? ' selected' : '') + '" onclick="selectSheetFile('' + file.id + '')">' +
-      '<div class="sheet-file-ic' + (isSelected ? ' selected' : '') + '">' + (isSelected ? '✓' : '📊') + '</div>' +
-      '<div class="sheet-file-info">' +
-        '<div class="sheet-file-name">' + file.name + '</div>' +
-        '<div class="sheet-file-url">' + shortId + '</div>' +
-      '</div>' +
-      '<span class="sheet-file-status status-' + file.status + '">' + (file.status === 'connected' ? 'Đã kết nối' : file.status === 'loading' ? 'Đang tải' : 'Lỗi') + '</span>' +
-      (isSelected ? '<span class="sheet-selected-badge">Đang dùng</span>' : '') +
-      '<div class="sheet-file-actions">' +
-        '<button class="sheet-action-btn" onclick="event.stopPropagation();selectSheetFile('' + file.id + '')">Xem</button>' +
-        '<button class="sheet-action-btn danger" onclick="event.stopPropagation();removeSheetFile('' + file.id + '')">✕</button>' +
-      '</div>' +
-    '</div>';
-  }).join('');
+    var shortId = file.sheetId.slice(0, 18) + '...';
+    var statusText = file.status === 'connected' ? 'Da ket noi' : file.status === 'loading' ? 'Dang tai' : 'Loi';
+    var statusClass = 'status-' + file.status;
+    var selectedClass = isSelected ? ' selected' : '';
+    var icContent = isSelected ? 'V' : '#';
+
+    var wrapper = document.createElement('div');
+    wrapper.className = 'sheet-file-item' + selectedClass;
+    wrapper.setAttribute('data-fid', file.id);
+    wrapper.onclick = (function(fid) { return function() { selectSheetFile(fid); }; })(file.id);
+
+    var ic = document.createElement('div');
+    ic.className = 'sheet-file-ic' + selectedClass;
+    ic.textContent = icContent;
+
+    var info = document.createElement('div');
+    info.className = 'sheet-file-info';
+    info.innerHTML = '<div class="sheet-file-name">' + file.name + '</div><div class="sheet-file-url">' + shortId + '</div>';
+
+    var status = document.createElement('span');
+    status.className = 'sheet-file-status ' + statusClass;
+    status.textContent = statusText;
+
+    var actions = document.createElement('div');
+    actions.className = 'sheet-file-actions';
+
+    var previewBtn = document.createElement('button');
+    previewBtn.className = 'sheet-action-btn';
+    previewBtn.textContent = 'Xem';
+    previewBtn.onclick = (function(fid) { return function(e) { e.stopPropagation(); selectSheetFile(fid); }; })(file.id);
+
+    var removeBtn = document.createElement('button');
+    removeBtn.className = 'sheet-action-btn danger';
+    removeBtn.textContent = 'X';
+    removeBtn.onclick = (function(fid) { return function(e) { e.stopPropagation(); removeSheetFile(fid); }; })(file.id);
+
+    actions.appendChild(previewBtn);
+    actions.appendChild(removeBtn);
+
+    if (isSelected) {
+      var badge = document.createElement('span');
+      badge.className = 'sheet-selected-badge';
+      badge.textContent = 'Dang dung';
+      wrapper.appendChild(ic);
+      wrapper.appendChild(info);
+      wrapper.appendChild(status);
+      wrapper.appendChild(badge);
+      wrapper.appendChild(actions);
+    } else {
+      wrapper.appendChild(ic);
+      wrapper.appendChild(info);
+      wrapper.appendChild(status);
+      wrapper.appendChild(actions);
+    }
+
+    items.push(wrapper);
+  }
+
+  list.innerHTML = '';
+  items.forEach(function(item) { list.appendChild(item); });
 }
 
 // Restore saved sheet files on load
